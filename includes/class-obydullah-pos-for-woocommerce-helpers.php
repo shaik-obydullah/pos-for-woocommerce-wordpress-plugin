@@ -21,7 +21,7 @@ class Obydullah_POS_For_WooCommerce_Helpers
      * @since 1.0.0
      * @return array
      */
-    public static function get_settings()
+    public static function opfw_get_settings()
     {
         return array(
             'currency' => get_option('opfw_currency', '$'),
@@ -42,7 +42,7 @@ class Obydullah_POS_For_WooCommerce_Helpers
      * @param float $amount The amount to calculate VAT for.
      * @return float
      */
-    public static function calculate_vat($amount)
+    public static function opfw_calculate_vat($amount)
     {
         $vat_rate = floatval(get_option('opfw_vat_rate', '0'));
         return ($amount * $vat_rate) / 100;
@@ -55,7 +55,7 @@ class Obydullah_POS_For_WooCommerce_Helpers
      * @param float $amount The amount to calculate TAX for.
      * @return float
      */
-    public static function calculate_tax($amount)
+    public static function opfw_calculate_tax($amount)
     {
         $tax_rate = floatval(get_option('opfw_tax_rate', '0'));
         return ($amount * $tax_rate) / 100;
@@ -68,10 +68,10 @@ class Obydullah_POS_For_WooCommerce_Helpers
      * @param float $subtotal The subtotal amount.
      * @return array
      */
-    public static function calculate_totals($subtotal)
+    public static function opfw_calculate_totals($subtotal)
     {
-        $vat_amount = self::calculate_vat($subtotal);
-        $tax_amount = self::calculate_tax($subtotal);
+        $vat_amount = self::opfw_calculate_vat($subtotal);
+        $tax_amount = self::opfw_calculate_tax($subtotal);
         $total = $subtotal + $vat_amount + $tax_amount;
 
         return array(
@@ -88,7 +88,7 @@ class Obydullah_POS_For_WooCommerce_Helpers
      * @since 1.0.0
      * @return bool
      */
-    public static function is_vat_enabled()
+    public static function opfw_is_vat_enabled()
     {
         $vat_rate = floatval(get_option('opfw_vat_rate', '0'));
         return $vat_rate > 0;
@@ -100,7 +100,7 @@ class Obydullah_POS_For_WooCommerce_Helpers
      * @since 1.0.0
      * @return bool
      */
-    public static function is_tax_enabled()
+    public static function opfw_is_tax_enabled()
     {
         $tax_rate = floatval(get_option('opfw_tax_rate', '0'));
         return $tax_rate > 0;
@@ -112,7 +112,7 @@ class Obydullah_POS_For_WooCommerce_Helpers
      * @since 1.0.0
      * @return float
      */
-    public static function get_vat_rate()
+    public static function opfw_get_vat_rate()
     {
         return floatval(get_option('opfw_vat_rate', '0'));
     }
@@ -123,7 +123,7 @@ class Obydullah_POS_For_WooCommerce_Helpers
      * @since 1.0.0
      * @return float
      */
-    public static function get_tax_rate()
+    public static function opfw_get_tax_rate()
     {
         return floatval(get_option('opfw_tax_rate', '0'));
     }
@@ -135,9 +135,9 @@ class Obydullah_POS_For_WooCommerce_Helpers
      * @param float|string $amount The amount to format.
      * @return string
      */
-    public static function format_currency($amount)
+    public static function opfw_format_currency($amount)
     {
-        $settings = self::get_settings();
+        $settings = self::opfw_get_settings();
         $currency = $settings['currency'];
         $position = $settings['currency_position'];
 
@@ -163,9 +163,9 @@ class Obydullah_POS_For_WooCommerce_Helpers
      * @param string $date_string The date string to format.
      * @return string
      */
-    public static function format_date($date_string)
+    public static function opfw_format_date($date_string)
     {
-        $settings = self::get_settings();
+        $settings = self::opfw_get_settings();
         $date_format = $settings['date_format'];
 
         if (empty($date_string)) {
@@ -186,9 +186,9 @@ class Obydullah_POS_For_WooCommerce_Helpers
      * @since 1.0.0
      * @return array
      */
-    public static function get_shop_info()
+    public static function opfw_get_shop_info()
     {
-        $settings = self::get_settings();
+        $settings = self::opfw_get_settings();
 
         return array(
             'name' => $settings['shop_name'],
@@ -203,9 +203,9 @@ class Obydullah_POS_For_WooCommerce_Helpers
      * @since 1.0.0
      * @return string
      */
-    public static function get_shop_name()
+    public static function opfw_get_shop_name()
     {
-        $settings = self::get_settings();
+        $settings = self::opfw_get_settings();
         return !empty($settings['shop_name'])
             ? $settings['shop_name']
             : __('Restaurant POS', 'obydullah-pos-for-woocommerce');
@@ -217,12 +217,12 @@ class Obydullah_POS_For_WooCommerce_Helpers
      * @since 1.0.0
      * @return string
      */
-    public static function get_currency_symbol()
+    public static function opfw_get_currency_symbol()
     {
         if (function_exists('get_woocommerce_currency_symbol') && function_exists('get_woocommerce_currency')) {
             return get_woocommerce_currency_symbol(get_woocommerce_currency());
         }
-        $settings = self::get_settings();
+        $settings = self::opfw_get_settings();
         return $settings['currency'];
     }
 
@@ -232,9 +232,9 @@ class Obydullah_POS_For_WooCommerce_Helpers
      * @since 1.0.0
      * @return string
      */
-    public static function get_currency_position()
+    public static function opfw_get_currency_position()
     {
-        $settings = self::get_settings();
+        $settings = self::opfw_get_settings();
         return $settings['currency_position'];
     }
 
@@ -244,9 +244,9 @@ class Obydullah_POS_For_WooCommerce_Helpers
      * @since 1.0.0
      * @return string
      */
-    public static function get_date_format()
+    public static function opfw_get_date_format()
     {
-        $settings = self::get_settings();
+        $settings = self::opfw_get_settings();
         return $settings['date_format'];
     }
 
@@ -257,7 +257,7 @@ class Obydullah_POS_For_WooCommerce_Helpers
      * @param mixed $price The price to sanitize.
      * @return float
      */
-    public static function sanitize_price($price)
+    public static function opfw_sanitize_price($price)
     {
         return floatval(preg_replace('/[^0-9.-]/', '', $price));
     }
@@ -269,7 +269,7 @@ class Obydullah_POS_For_WooCommerce_Helpers
      * @param float $price The price to format.
      * @return string
      */
-    public static function format_price($price)
+    public static function opfw_format_price($price)
     {
         return number_format(floatval($price), 2, '.', '');
     }
@@ -282,7 +282,7 @@ class Obydullah_POS_For_WooCommerce_Helpers
      * @param string $format Date format to check against.
      * @return bool
      */
-    public static function is_valid_date($date, $format = 'Y-m-d')
+    public static function opfw_is_valid_date($date, $format = 'Y-m-d')
     {
         $d = DateTime::createFromFormat($format, $date);
         return $d && $d->format($format) === $date;
@@ -294,9 +294,9 @@ class Obydullah_POS_For_WooCommerce_Helpers
      * @since 1.0.0
      * @return string
      */
-    public static function get_current_date()
+    public static function opfw_get_current_date()
     {
-        return self::format_date(current_time('mysql'));
+        return self::opfw_format_date(current_time('mysql'));
     }
 
     /**
@@ -305,7 +305,7 @@ class Obydullah_POS_For_WooCommerce_Helpers
      * @since 1.0.0
      * @return array
      */
-    public static function get_default_settings()
+    public static function opfw_get_default_settings()
     {
         return array(
             'date_format' => 'Y-m-d',

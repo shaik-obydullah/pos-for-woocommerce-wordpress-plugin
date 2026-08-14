@@ -22,17 +22,17 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
         global $wpdb;
         $this->adjustment_log_table = $wpdb->prefix . 'opfw_stock_adjustment_log';
 
-        add_action('wp_ajax_opfw_get_stocks', [$this, 'ajax_get_stocks']);
-        add_action('wp_ajax_opfw_update_stock', [$this, 'ajax_update_stock']);
-        add_action('wp_ajax_opfw_get_products_for_stocks', [$this, 'ajax_get_products_for_stocks']);
-        add_action('wp_ajax_opfw_get_stock_adjustments', [$this, 'ajax_get_adjustments']);
-        add_action('wp_ajax_opfw_add_stock_adjustment', [$this, 'ajax_add_adjustment']);
-        add_action('wp_ajax_opfw_delete_stock_adjustment', [$this, 'ajax_delete_adjustment']);
-        add_action('wp_ajax_opfw_get_products_for_adjustments', [$this, 'ajax_get_products_for_adjustments']);
-        add_action('wp_ajax_opfw_get_current_stock', [$this, 'ajax_get_current_stock']);
+        add_action('wp_ajax_opfw_get_stocks', [$this, 'opfw_ajax_get_stocks']);
+        add_action('wp_ajax_opfw_update_stock', [$this, 'opfw_ajax_update_stock']);
+        add_action('wp_ajax_opfw_get_products_for_stocks', [$this, 'opfw_ajax_get_products_for_stocks']);
+        add_action('wp_ajax_opfw_get_stock_adjustments', [$this, 'opfw_ajax_get_adjustments']);
+        add_action('wp_ajax_opfw_add_stock_adjustment', [$this, 'opfw_ajax_add_adjustment']);
+        add_action('wp_ajax_opfw_delete_stock_adjustment', [$this, 'opfw_ajax_delete_adjustment']);
+        add_action('wp_ajax_opfw_get_products_for_adjustments', [$this, 'opfw_ajax_get_products_for_adjustments']);
+        add_action('wp_ajax_opfw_get_current_stock', [$this, 'opfw_ajax_get_current_stock']);
     }
 
-    public function render_stock_page()
+    public function opfw_render_stock_page()
     {
         ?>
 <div class="wrap opfw-stocks-page">
@@ -73,7 +73,7 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
             <div class="bg-light p-4 rounded shadow-sm">
                 <h2 class="mb-3 mt-1"><?php esc_html_e('Update Stock', 'obydullah-pos-for-woocommerce'); ?></h2>
                 <form id="update-stock-form" method="post">
-                    <?php wp_nonce_field('opfw_update_stock', 'stock_nonce'); ?>
+                    <?php wp_nonce_field('opfw_update_stock'); ?>
 
                     <div class="mb-3">
                         <label for="stock-product" class="form-label d-block mb-1">
@@ -136,7 +136,7 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
                     <div class="d-flex mt-4">
                         <button type="submit" id="submit-stock" class="btn-primary mr-2">
                             <span class="btn-text"><?php esc_html_e('Update Stock', 'obydullah-pos-for-woocommerce'); ?></span>
-                            <span class="spinner" style="display: none; margin-left: 5px;"></span>
+                            <span class="spinner opfw-hidden"></span>
                         </button>
                     </div>
                 </form>
@@ -218,7 +218,7 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
 <?php
     }
 
-    public function render_adjustments_page()
+    public function opfw_render_adjustments_page()
     {
         ?>
 <div class="wrap">
@@ -232,7 +232,7 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
             <div class="bg-light p-4 rounded shadow-sm mb-4">
                 <h2 class="h4 mb-3 mt-1"><?php esc_html_e('New Stock Adjustment', 'obydullah-pos-for-woocommerce'); ?></h2>
                 <form id="add-adjustment-form" method="post">
-                    <?php wp_nonce_field('opfw_add_stock_adjustment', 'adjustment_nonce'); ?>
+                    <?php wp_nonce_field('opfw_add_stock_adjustment'); ?>
 
                     <div class="form-group mb-3">
                         <label for="adjustment-product" class="form-label fw-semibold">
@@ -287,7 +287,7 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
                     <div class="mt-4">
                         <button type="submit" id="submit-adjustment" class="btn btn-primary w-100">
                             <span class="btn-text"><?php esc_html_e('Apply Adjustment', 'obydullah-pos-for-woocommerce'); ?></span>
-                            <span class="spinner" style="display:none;"></span>
+                            <span class="spinner opfw-hidden"></span>
                         </button>
                     </div>
                 </form>
@@ -353,14 +353,14 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
 <?php
     }
 
-    public function ajax_get_products_for_stocks()
+    public function opfw_ajax_get_products_for_stocks()
     {
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
         }
-        $nonce = sanitize_text_field(wp_unslash($_REQUEST['nonce'] ?? ''));
-        if (!wp_verify_nonce($nonce, 'opfw_get_products_for_stocks')) {
-            wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'));
+        $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($opfw_nonce, 'opfw_get_products_for_stocks')) {
+            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
         }
 
         $products = wc_get_products([
@@ -384,14 +384,14 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
         wp_send_json_success($formatted);
     }
 
-    public function ajax_get_stocks()
+    public function opfw_ajax_get_stocks()
     {
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
         }
-        $nonce = sanitize_text_field(wp_unslash($_REQUEST['nonce'] ?? ''));
-        if (!wp_verify_nonce($nonce, 'opfw_get_stocks')) {
-            wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'));
+        $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($opfw_nonce, 'opfw_get_stocks')) {
+            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
         }
 
         $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
@@ -446,14 +446,15 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
         ]);
     }
 
-    public function ajax_update_stock()
+    public function opfw_ajax_update_stock()
     {
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
         }
         $nonce = sanitize_text_field(wp_unslash($_POST['nonce'] ?? ''));
-        if (!wp_verify_nonce($nonce, 'opfw_update_stock')) {
-            wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'));
+        $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($opfw_nonce, 'opfw_update_stock')) {
+            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
         }
 
         $product_id = intval($_POST['product_id'] ?? 0);
@@ -490,21 +491,21 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
         update_post_meta($product_id, '_opfw_buy_price', $buy_price);
 
         if ($quantity !== $old_quantity) {
-            $this->log_adjustment($product_id, $quantity > $old_quantity ? 'increase' : 'decrease',
+            $this->opfw_log_adjustment($product_id, $quantity > $old_quantity ? 'increase' : 'decrease',
                 abs($quantity - $old_quantity), $old_quantity, $quantity, __('Stock update', 'obydullah-pos-for-woocommerce'));
         }
 
         wp_send_json_success(__('Stock updated successfully', 'obydullah-pos-for-woocommerce'));
     }
 
-    public function ajax_get_products_for_adjustments()
+    public function opfw_ajax_get_products_for_adjustments()
     {
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
         }
-        $nonce = sanitize_text_field(wp_unslash($_REQUEST['nonce'] ?? ''));
-        if (!wp_verify_nonce($nonce, 'opfw_get_products_for_adjustments')) {
-            wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'));
+        $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($opfw_nonce, 'opfw_get_products_for_adjustments')) {
+            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
         }
 
         $products = wc_get_products([
@@ -527,14 +528,14 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
         wp_send_json_success($formatted);
     }
 
-    public function ajax_get_current_stock()
+    public function opfw_ajax_get_current_stock()
     {
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
         }
-        $nonce = sanitize_text_field(wp_unslash($_REQUEST['nonce'] ?? ''));
-        if (!wp_verify_nonce($nonce, 'opfw_get_current_stock')) {
-            wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'));
+        $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($opfw_nonce, 'opfw_get_current_stock')) {
+            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
         }
 
         $product_id = intval($_GET['product_id'] ?? 0);
@@ -548,14 +549,15 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
         wp_send_json_success(['current_stock' => $quantity]);
     }
 
-    public function ajax_add_adjustment()
+    public function opfw_ajax_add_adjustment()
     {
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
         }
         $nonce = sanitize_text_field(wp_unslash($_POST['nonce'] ?? ''));
-        if (!wp_verify_nonce($nonce, 'opfw_add_stock_adjustment')) {
-            wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'));
+        $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($opfw_nonce, 'opfw_add_stock_adjustment')) {
+            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
         }
 
         $product_id = intval($_POST['product_id'] ?? 0);
@@ -597,19 +599,19 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
 
         $product->save();
 
-        $this->log_adjustment($product_id, $adjustment_type, $quantity, $old_quantity, $new_quantity, $note);
+        $this->opfw_log_adjustment($product_id, $adjustment_type, $quantity, $old_quantity, $new_quantity, $note);
 
         wp_send_json_success(__('Stock adjustment applied successfully', 'obydullah-pos-for-woocommerce'));
     }
 
-    public function ajax_get_adjustments()
+    public function opfw_ajax_get_adjustments()
     {
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
         }
-        $nonce = sanitize_text_field(wp_unslash($_REQUEST['nonce'] ?? ''));
-        if (!wp_verify_nonce($nonce, 'opfw_get_stock_adjustments')) {
-            wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'));
+        $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($opfw_nonce, 'opfw_get_stock_adjustments')) {
+            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
         }
 
         global $wpdb;
@@ -639,7 +641,7 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
             $prepare_args[] = $date;
         }
 
-        $count_query = "SELECT COUNT(*) FROM {$this->adjustment_log_table} a LEFT JOIN {$wpdb->posts} p ON a.product_id = p.ID WHERE {$where}";
+        $count_query = "SELECT COUNT(*) FROM " . esc_sql($this->adjustment_log_table) . " a LEFT JOIN {$wpdb->posts} p ON a.product_id = p.ID WHERE {$where}";
         if (!empty($prepare_args)) {
             $count_query = $wpdb->prepare($count_query, $prepare_args);
         }
@@ -647,7 +649,7 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
         $total_pages = max(1, ceil(intval($total) / $per_page));
 
         $query = "SELECT a.*, p.post_title as product_name 
-             FROM {$this->adjustment_log_table} a 
+             FROM " . esc_sql($this->adjustment_log_table) . " a 
              LEFT JOIN {$wpdb->posts} p ON a.product_id = p.ID 
              WHERE {$where}
              ORDER BY a.created_at DESC 
@@ -667,14 +669,15 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
         ]);
     }
 
-    public function ajax_delete_adjustment()
+    public function opfw_ajax_delete_adjustment()
     {
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
         }
         $nonce = sanitize_text_field(wp_unslash($_POST['nonce'] ?? ''));
-        if (!wp_verify_nonce($nonce, 'opfw_delete_stock_adjustment')) {
-            wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'));
+        $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($opfw_nonce, 'opfw_delete_stock_adjustment')) {
+            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
         }
 
         global $wpdb;
@@ -692,7 +695,7 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
         wp_send_json_success(__('Adjustment deleted successfully', 'obydullah-pos-for-woocommerce'));
     }
 
-    private function log_adjustment($product_id, $type, $quantity, $old_qty, $new_qty, $note = '')
+    private function opfw_log_adjustment($product_id, $type, $quantity, $old_qty, $new_qty, $note = '')
     {
         global $wpdb;
 

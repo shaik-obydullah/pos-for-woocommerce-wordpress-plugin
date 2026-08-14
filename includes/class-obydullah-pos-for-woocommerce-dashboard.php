@@ -19,17 +19,17 @@ class Obydullah_POS_For_WooCommerce_Dashboard
         $this->helpers = new Obydullah_POS_For_WooCommerce_Helpers();
     }
 
-    private function format_currency($amount)
+    private function opfw_format_currency($amount)
     {
-        return $this->helpers->format_currency($amount);
+        return $this->helpers->opfw_format_currency($amount);
     }
 
-    private function format_number($number)
+    private function opfw_format_number($number)
     {
         return number_format(intval($number), 0, '.', ',');
     }
 
-    private function get_stock_value()
+    private function opfw_get_stock_value()
     {
         $total = 0;
         $products = wc_get_products([
@@ -47,7 +47,7 @@ class Obydullah_POS_For_WooCommerce_Dashboard
         return $total;
     }
 
-    private function get_today_sales_count()
+    private function opfw_get_today_sales_count()
     {
         $orders = wc_get_orders([
             'date_created' => current_time('Y-m-d'),
@@ -58,7 +58,7 @@ class Obydullah_POS_For_WooCommerce_Dashboard
         return count($orders);
     }
 
-    private function get_month_sales_count()
+    private function opfw_get_month_sales_count()
     {
         $first_day = current_time('Y-m-01');
         $last_day  = current_time('Y-m-t');
@@ -72,7 +72,7 @@ class Obydullah_POS_For_WooCommerce_Dashboard
         return count($orders);
     }
 
-    private function get_today_income()
+    private function opfw_get_today_income()
     {
         $total = 0;
         $orders = wc_get_orders([
@@ -94,7 +94,7 @@ class Obydullah_POS_For_WooCommerce_Dashboard
         return $total;
     }
 
-    private function get_month_income()
+    private function opfw_get_month_income()
     {
         $first_day = current_time('Y-m-01');
         $last_day  = current_time('Y-m-t');
@@ -119,14 +119,14 @@ class Obydullah_POS_For_WooCommerce_Dashboard
         return $total;
     }
 
-    private function get_today_expense()
+    private function opfw_get_today_expense()
     {
         global $wpdb;
         $table = $wpdb->prefix . 'opfw_accounting';
 
         $result = $wpdb->get_var(
             $wpdb->prepare(
-                "SELECT SUM(out_amount) FROM {$table} WHERE DATE(created_at) = %s",
+                "SELECT SUM(out_amount) FROM " . esc_sql($table) . " WHERE DATE(created_at) = %s",
                 current_time('Y-m-d')
             )
         );
@@ -134,14 +134,14 @@ class Obydullah_POS_For_WooCommerce_Dashboard
         return $result ? floatval($result) : 0;
     }
 
-    private function get_month_expense()
+    private function opfw_get_month_expense()
     {
         global $wpdb;
         $table = $wpdb->prefix . 'opfw_accounting';
 
         $result = $wpdb->get_var(
             $wpdb->prepare(
-                "SELECT SUM(out_amount) FROM {$table} WHERE DATE(created_at) BETWEEN %s AND %s",
+                "SELECT SUM(out_amount) FROM " . esc_sql($table) . " WHERE DATE(created_at) BETWEEN %s AND %s",
                 current_time('Y-m-01'),
                 current_time('Y-m-t')
             )
@@ -150,7 +150,7 @@ class Obydullah_POS_For_WooCommerce_Dashboard
         return $result ? floatval($result) : 0;
     }
 
-    private function get_low_stock_count()
+    private function opfw_get_low_stock_count()
     {
         $count = 0;
         $products = wc_get_products([
@@ -168,7 +168,7 @@ class Obydullah_POS_For_WooCommerce_Dashboard
         return $count;
     }
 
-    private function get_top_products($limit = 5)
+    private function opfw_get_top_products($limit = 5)
     {
         global $wpdb;
 
@@ -215,17 +215,17 @@ class Obydullah_POS_For_WooCommerce_Dashboard
         return $top;
     }
 
-    public function render_page()
+    public function opfw_render_page()
     {
         $dashboard_data = [
-            'stock_value'     => $this->get_stock_value(),
-            'today_sale'      => $this->get_today_sales_count(),
-            'month_sale'      => $this->get_month_sales_count(),
-            'today_income'    => $this->get_today_income(),
-            'month_income'    => $this->get_month_income(),
-            'today_expense'   => $this->get_today_expense(),
-            'month_expense'   => $this->get_month_expense(),
-            'low_stock_count' => $this->get_low_stock_count(),
+            'stock_value'     => $this->opfw_get_stock_value(),
+            'today_sale'      => $this->opfw_get_today_sales_count(),
+            'month_sale'      => $this->opfw_get_month_sales_count(),
+            'today_income'    => $this->opfw_get_today_income(),
+            'month_income'    => $this->opfw_get_month_income(),
+            'today_expense'   => $this->opfw_get_today_expense(),
+            'month_expense'   => $this->opfw_get_month_expense(),
+            'low_stock_count' => $this->opfw_get_low_stock_count(),
         ];
         ?>
 <div class="wrap">
@@ -244,7 +244,7 @@ class Obydullah_POS_For_WooCommerce_Dashboard
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="bg-light p-4 rounded shadow-sm stock-summary-card border-left border-info">
                 <h3 class="fs-6 fw-normal text-muted mb-2"><?php esc_html_e('Stock Value', 'obydullah-pos-for-woocommerce'); ?></h3>
-                <p class="summary-number text-info mb-0 fs-3 fw-bold"><?php echo esc_html($this->format_currency($dashboard_data['stock_value'])); ?></p>
+                <p class="summary-number text-info mb-0 fs-3 fw-bold"><?php echo esc_html($this->opfw_format_currency($dashboard_data['stock_value'])); ?></p>
                 <small class="text-muted mb-3"><?php esc_html_e('Current inventory value', 'obydullah-pos-for-woocommerce'); ?></small>
             </div>
         </div>
@@ -252,7 +252,7 @@ class Obydullah_POS_For_WooCommerce_Dashboard
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="bg-light p-4 rounded shadow-sm stock-summary-card border-left border-success">
                 <h3 class="fs-6 fw-normal text-muted mb-2"><?php esc_html_e("Today's Sales", 'obydullah-pos-for-woocommerce'); ?></h3>
-                <p class="summary-number text-success mb-0 fs-3 fw-bold"><?php echo esc_html($this->format_number($dashboard_data['today_sale'])); ?></p>
+                <p class="summary-number text-success mb-0 fs-3 fw-bold"><?php echo esc_html($this->opfw_format_number($dashboard_data['today_sale'])); ?></p>
                 <small class="text-muted mb-3"><?php esc_html_e('Completed orders today', 'obydullah-pos-for-woocommerce'); ?></small>
             </div>
         </div>
@@ -260,7 +260,7 @@ class Obydullah_POS_For_WooCommerce_Dashboard
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="bg-light p-4 rounded shadow-sm stock-summary-card border-left border-primary">
                 <h3 class="fs-6 fw-normal text-muted mb-2"><?php esc_html_e('Monthly Sales', 'obydullah-pos-for-woocommerce'); ?></h3>
-                <p class="summary-number text-success mb-0 fs-3 fw-bold"><?php echo esc_html($this->format_number($dashboard_data['month_sale'])); ?></p>
+                <p class="summary-number text-success mb-0 fs-3 fw-bold"><?php echo esc_html($this->opfw_format_number($dashboard_data['month_sale'])); ?></p>
                 <small class="text-muted mb-3"><?php esc_html_e('Total orders this month', 'obydullah-pos-for-woocommerce'); ?></small>
             </div>
         </div>
@@ -268,7 +268,7 @@ class Obydullah_POS_For_WooCommerce_Dashboard
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="bg-light p-4 rounded shadow-sm stock-summary-card border-left border-lime">
                 <h3 class="fs-6 fw-normal text-muted mb-2"><?php esc_html_e("Today's Income", 'obydullah-pos-for-woocommerce'); ?></h3>
-                <p class="summary-number text-lime mb-0 fs-3 fw-bold"><?php echo esc_html($this->format_currency($dashboard_data['today_income'])); ?></p>
+                <p class="summary-number text-lime mb-0 fs-3 fw-bold"><?php echo esc_html($this->opfw_format_currency($dashboard_data['today_income'])); ?></p>
                 <small class="text-muted mb-3"><?php esc_html_e('Revenue generated today', 'obydullah-pos-for-woocommerce'); ?></small>
             </div>
         </div>
@@ -276,7 +276,7 @@ class Obydullah_POS_For_WooCommerce_Dashboard
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="bg-light p-4 rounded shadow-sm stock-summary-card border-left border-success">
                 <h3 class="fs-6 fw-normal text-muted mb-2"><?php esc_html_e('Monthly Income', 'obydullah-pos-for-woocommerce'); ?></h3>
-                <p class="summary-number text-success mb-0 fs-3 fw-bold"><?php echo esc_html($this->format_currency($dashboard_data['month_income'])); ?></p>
+                <p class="summary-number text-success mb-0 fs-3 fw-bold"><?php echo esc_html($this->opfw_format_currency($dashboard_data['month_income'])); ?></p>
                 <small class="text-muted mb-3"><?php esc_html_e('Total revenue this month', 'obydullah-pos-for-woocommerce'); ?></small>
             </div>
         </div>
@@ -284,7 +284,7 @@ class Obydullah_POS_For_WooCommerce_Dashboard
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="bg-light p-4 rounded shadow-sm stock-summary-card border-left border-warning">
                 <h3 class="fs-6 fw-normal text-muted mb-2"><?php esc_html_e("Today's Expense", 'obydullah-pos-for-woocommerce'); ?></h3>
-                <p class="summary-number text-warning mb-0 fs-3 fw-bold"><?php echo esc_html($this->format_currency($dashboard_data['today_expense'])); ?></p>
+                <p class="summary-number text-warning mb-0 fs-3 fw-bold"><?php echo esc_html($this->opfw_format_currency($dashboard_data['today_expense'])); ?></p>
                 <small class="text-muted mb-3"><?php esc_html_e('Expenses incurred today', 'obydullah-pos-for-woocommerce'); ?></small>
             </div>
         </div>
@@ -292,7 +292,7 @@ class Obydullah_POS_For_WooCommerce_Dashboard
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="bg-light p-4 rounded shadow-sm stock-summary-card border-left border-danger">
                 <h3 class="fs-6 fw-normal text-muted mb-2"><?php esc_html_e('Monthly Expense', 'obydullah-pos-for-woocommerce'); ?></h3>
-                <p class="summary-number text-danger mb-0 fs-3 fw-bold"><?php echo esc_html($this->format_currency($dashboard_data['month_expense'])); ?></p>
+                <p class="summary-number text-danger mb-0 fs-3 fw-bold"><?php echo esc_html($this->opfw_format_currency($dashboard_data['month_expense'])); ?></p>
                 <small class="text-muted mb-3"><?php esc_html_e('Total expenses this month', 'obydullah-pos-for-woocommerce'); ?></small>
             </div>
         </div>
@@ -305,7 +305,7 @@ class Obydullah_POS_For_WooCommerce_Dashboard
                     <h3 class="fs-6 fw-semibold mb-0"><?php esc_html_e('Top Selling Products', 'obydullah-pos-for-woocommerce'); ?></h3>
                 </div>
 
-                <?php $top_products = $this->get_top_products(5); ?>
+                <?php $top_products = $this->opfw_get_top_products(5); ?>
 
                 <?php if (!empty($top_products)): ?>
                 <div class="table-responsive">
@@ -327,8 +327,8 @@ class Obydullah_POS_For_WooCommerce_Dashboard
                                         Status: <?php echo esc_html(ucfirst($product['product_status'])); ?>
                                     </small>
                                 </td>
-                                <td class="text-center fw-bold"><?php echo esc_html($this->format_number($product['total_orders'])); ?></td>
-                                <td class="text-center fw-bold text-primary"><?php echo esc_html($this->format_number($product['total_sold'])); ?></td>
+                                <td class="text-center fw-bold"><?php echo esc_html($this->opfw_format_number($product['total_orders'])); ?></td>
+                                <td class="text-center fw-bold text-primary"><?php echo esc_html($this->opfw_format_number($product['total_sold'])); ?></td>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>

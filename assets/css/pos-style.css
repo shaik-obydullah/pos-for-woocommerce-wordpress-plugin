@@ -851,3 +851,35 @@ tr:hover .pos-row-actions {
   margin-top: 1px;
 }
 
+
+/* ==========================================================================
+   99. No-inline helpers (WP.org no-inline-style compliance)
+   ========================================================================== */
+.opfw-hidden {
+  display: none;
+}
+
+#opfw-cart-items {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+#opfw-saved-list {
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+#opfw-discount,
+#opfw-delivery {
+  width: 90px;
+}
+
+#clear-invoice-search,
+#clear-search {
+  padding: 0;
+}
+
+#search-sales .spinner,
+#submit-stock .spinner {
+  margin-left: 5px;
+}

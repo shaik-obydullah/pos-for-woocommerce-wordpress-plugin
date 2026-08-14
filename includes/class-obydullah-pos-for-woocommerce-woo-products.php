@@ -17,12 +17,12 @@ class Obydullah_POS_For_WooCommerce_Woo_Products
 {
     public function __construct()
     {
-        add_action('wp_ajax_opfw_get_products', [$this, 'ajax_get_products']);
-        add_action('wp_ajax_opfw_get_categories_for_products', [$this, 'ajax_get_categories']);
-        add_action('wp_ajax_opfw_update_buy_price', [$this, 'ajax_update_buy_price']);
+        add_action('wp_ajax_opfw_get_products', [$this, 'opfw_ajax_get_products']);
+        add_action('wp_ajax_opfw_get_categories_for_products', [$this, 'opfw_ajax_get_categories']);
+        add_action('wp_ajax_opfw_update_buy_price', [$this, 'opfw_ajax_update_buy_price']);
     }
 
-    public function render_page()
+    public function opfw_render_page()
     {
         ?>
 <div class="wrap opfw-products-page">
@@ -52,8 +52,7 @@ class Obydullah_POS_For_WooCommerce_Woo_Products
                                     <input type="text" id="product-search" class="form-control form-control-sm"
                                         placeholder="<?php esc_attr_e('Product name', 'obydullah-pos-for-woocommerce'); ?>">
                                     <button type="button" id="clear-search"
-                                        class="btn btn-sm btn-link text-decoration-none position-absolute end-0 top-50 translate-middle-y"
-                                        style="display: none; padding: 0;">
+                                        class="btn btn-sm btn-link text-decoration-none position-absolute end-0 top-50 translate-middle-y" opfw-hidden">
                                         <span class="text-muted fs-5">&times;</span>
                                     </button>
                                 </div>
@@ -145,14 +144,14 @@ class Obydullah_POS_For_WooCommerce_Woo_Products
 <?php
     }
 
-    public function ajax_get_products()
+    public function opfw_ajax_get_products()
     {
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
         }
-        $nonce = sanitize_text_field(wp_unslash($_REQUEST['nonce'] ?? ''));
-        if (!wp_verify_nonce($nonce, 'opfw_get_products')) {
-            wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'), 403);
+        $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($opfw_nonce, 'opfw_get_products')) {
+            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
         }
 
         $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
@@ -208,14 +207,14 @@ class Obydullah_POS_For_WooCommerce_Woo_Products
         ]);
     }
 
-    public function ajax_get_categories()
+    public function opfw_ajax_get_categories()
     {
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
         }
-        $nonce = sanitize_text_field(wp_unslash($_REQUEST['nonce'] ?? ''));
-        if (!wp_verify_nonce($nonce, 'opfw_get_categories_for_products')) {
-            wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'), 403);
+        $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($opfw_nonce, 'opfw_get_categories_for_products')) {
+            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
         }
 
         $terms = get_terms([
@@ -237,13 +236,14 @@ class Obydullah_POS_For_WooCommerce_Woo_Products
         wp_send_json_success($categories);
     }
 
-    public function ajax_update_buy_price()
+    public function opfw_ajax_update_buy_price()
     {
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
         }
-        if (!check_ajax_referer('opfw_update_buy_price', 'nonce', false)) {
-            wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'), 403);
+        $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($opfw_nonce, 'opfw_update_buy_price')) {
+            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
         }
 
         $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;

@@ -15,7 +15,7 @@ class Obydullah_POS_For_WooCommerce_Deactivator
     /**
      * Plugin deactivation callback
      */
-    public static function deactivate()
+    public static function opfw_deactivate()
     {
         flush_rewrite_rules();
     }

@@ -125,7 +125,7 @@
           page: self.config.currentPage,
           per_page: self.config.perPage,
           search: self.config.searchTerm,
-          nonce: self.config.getNonce,
+          _wpnonce: self.config.getNonce,
         },
         success: function (response) {
           tbody.empty();
@@ -234,7 +234,7 @@
         action: "opfw_update_buy_price",
         product_id: productId,
         buy_price: buyPrice,
-        nonce: self.config.updateBuyPriceNonce,
+        _wpnonce: self.config.updateBuyPriceNonce,
       })
         .done(function (response) {
           if (response.success) {

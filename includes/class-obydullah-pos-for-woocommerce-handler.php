@@ -41,10 +41,10 @@ if (!class_exists('Obydullah_POS_For_WooCommerce_Handler')) {
 
         public function __construct()
         {
-            $this->init();
+            $this->opfw_init();
         }
 
-        private function init()
+        private function opfw_init()
         {
             $this->settings = new Obydullah_POS_For_WooCommerce_Settings();
             $this->woo_products = new Obydullah_POS_For_WooCommerce_Woo_Products();
@@ -54,18 +54,18 @@ if (!class_exists('Obydullah_POS_For_WooCommerce_Handler')) {
             $this->dashboard = new Obydullah_POS_For_WooCommerce_Dashboard();
             $this->accounting = new Obydullah_POS_For_WooCommerce_Accounting();
 
-            add_action('admin_menu', [$this, 'register_admin_menu']);
-            add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_scripts']);
+            add_action('admin_menu', [$this, 'opfw_register_admin_menu']);
+            add_action('admin_enqueue_scripts', [$this, 'opfw_enqueue_admin_scripts']);
         }
 
-        public function register_admin_menu()
+        public function opfw_register_admin_menu()
         {
             add_menu_page(
                 __('Restaurant POS', 'obydullah-pos-for-woocommerce'),
                 __('Restaurant POS', 'obydullah-pos-for-woocommerce'),
                 'manage_options',
                 'obydullah-pos-for-woocommerce',
-                [$this->dashboard, 'render_page'],
+                [$this->dashboard, 'opfw_render_page'],
                 'dashicons-store',
                 25
             );
@@ -73,8 +73,8 @@ if (!class_exists('Obydullah_POS_For_WooCommerce_Handler')) {
             $submenus = [
                 'obydullah-pos-for-woocommerce' => [__('Dashboard', 'obydullah-pos-for-woocommerce'), $this->dashboard],
                 'obydullah-pos-for-woocommerce-products' => [__('Products', 'obydullah-pos-for-woocommerce'), $this->woo_products],
-                'obydullah-pos-for-woocommerce-stock' => [__('Stock Management', 'obydullah-pos-for-woocommerce'), $this->woo_stock, 'render_stock_page'],
-                'obydullah-pos-for-woocommerce-stock-adjustments' => [__('Stock Adjustments', 'obydullah-pos-for-woocommerce'), $this->woo_stock, 'render_adjustments_page'],
+                'obydullah-pos-for-woocommerce-stock' => [__('Stock Management', 'obydullah-pos-for-woocommerce'), $this->woo_stock, 'opfw_render_stock_page'],
+                'obydullah-pos-for-woocommerce-stock-adjustments' => [__('Stock Adjustments', 'obydullah-pos-for-woocommerce'), $this->woo_stock, 'opfw_render_adjustments_page'],
                 'obydullah-pos-for-woocommerce-pos' => [__('POS', 'obydullah-pos-for-woocommerce'), $this->pos],
                 'obydullah-pos-for-woocommerce-sales' => [__('Sales', 'obydullah-pos-for-woocommerce'), $this->sales],
                 'obydullah-pos-for-woocommerce-accounting' => [__('Accounting', 'obydullah-pos-for-woocommerce'), $this->accounting],
@@ -82,7 +82,7 @@ if (!class_exists('Obydullah_POS_For_WooCommerce_Handler')) {
             ];
 
             foreach ($submenus as $slug => $data) {
-                $render_method = isset($data[2]) ? $data[2] : 'render_page';
+                $render_method = isset($data[2]) ? $data[2] : 'opfw_render_page';
                 add_submenu_page(
                     'obydullah-pos-for-woocommerce',
                     $data[0],
@@ -94,7 +94,7 @@ if (!class_exists('Obydullah_POS_For_WooCommerce_Handler')) {
             }
         }
 
-        public function enqueue_admin_scripts($hook)
+        public function opfw_enqueue_admin_scripts($hook)
         {
             $current_page = isset($_GET['page'])
                 ? sanitize_text_field(wp_unslash($_GET['page']))
@@ -225,9 +225,9 @@ if (!class_exists('Obydullah_POS_For_WooCommerce_Handler')) {
                     );
                     wp_localize_script('opfw-pos-js', 'opfw_pos', [
                         'ajaxUrl' => admin_url('admin-ajax.php'),
-                        'currencySymbol' => $helpers->get_currency_symbol(),
-                        'vatRate' => $helpers->get_vat_rate(),
-                        'taxRate' => $helpers->get_tax_rate(),
+                        'currencySymbol' => $helpers->opfw_get_currency_symbol(),
+                        'vatRate' => $helpers->opfw_get_vat_rate(),
+                        'taxRate' => $helpers->opfw_get_tax_rate(),
                         'nonces' => [
                             'categories' => wp_create_nonce('opfw_get_categories_for_pos'),
                             'customers' => wp_create_nonce('opfw_get_customers_for_pos'),
@@ -265,7 +265,7 @@ if (!class_exists('Obydullah_POS_For_WooCommerce_Handler')) {
 
                 case 'obydullah-pos-for-woocommerce-sales':
                     $helpers = new Obydullah_POS_For_WooCommerce_Helpers();
-                    $shop_info = $helpers->get_shop_info();
+                    $shop_info = $helpers->opfw_get_shop_info();
                     wp_enqueue_script(
                         'opfw-sales-js',
                         OPFW_URL . 'assets/js/sales.js',
@@ -278,7 +278,7 @@ if (!class_exists('Obydullah_POS_For_WooCommerce_Handler')) {
                         'nonce_get_sales' => wp_create_nonce('opfw_get_sales'),
                         'nonce_print_sale' => wp_create_nonce('opfw_print_sale'),
                         'nonce_delete_sale' => wp_create_nonce('opfw_delete_sale'),
-                        'currency_symbol' => $helpers->get_currency_symbol(),
+                        'currency_symbol' => $helpers->opfw_get_currency_symbol(),
                         'shop_info' => $shop_info,
                         'strings' => [
                             'items' => __('items', 'obydullah-pos-for-woocommerce'),

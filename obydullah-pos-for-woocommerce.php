@@ -3,7 +3,7 @@
  * Plugin Name: Obydullah POS for WooCommerce
  * Plugin URI: https://obydullah.com/project/wordpress-restaurant-pos-lite-plugin
  * Description: A free plugin to manage restaurant orders, menu, and sales directly from your WordPress dashboard. Requires WooCommerce.
- * Version: 2.0.5
+ * Version: 2.0.6
  * Author: Shaik Obydullah
  * Author URI: https://obydullah.com
  * License: GPLv2 or later
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('OPFW_VERSION', '2.0.5');
+define('OPFW_VERSION', '2.0.6');
 define('OPFW_PATH', plugin_dir_path(__FILE__));
 define('OPFW_URL', plugin_dir_url(__FILE__));
 
@@ -44,5 +44,5 @@ function opfw_init()
     return $plugin;
 }
 
-register_activation_hook(__FILE__, ['Obydullah_POS_For_WooCommerce_Activator', 'activate']);
-register_deactivation_hook(__FILE__, ['Obydullah_POS_For_WooCommerce_Deactivator', 'deactivate']);
+register_activation_hook(__FILE__, ['Obydullah_POS_For_WooCommerce_Activator', 'opfw_activate']);
+register_deactivation_hook(__FILE__, ['Obydullah_POS_For_WooCommerce_Deactivator', 'opfw_deactivate']);

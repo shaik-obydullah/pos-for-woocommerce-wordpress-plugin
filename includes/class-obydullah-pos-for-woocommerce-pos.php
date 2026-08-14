@@ -18,18 +18,18 @@ class Obydullah_POS_For_WooCommerce_POS
     {
         $this->helpers = new Obydullah_POS_For_WooCommerce_Helpers();
 
-        add_action('wp_ajax_opfw_get_categories_for_pos', [$this, 'ajax_get_categories_for_pos']);
-        add_action('wp_ajax_opfw_get_products_by_category', [$this, 'ajax_get_products_by_category']);
-        add_action('wp_ajax_opfw_get_customers_for_pos', [$this, 'ajax_get_customers_for_pos']);
-        add_action('wp_ajax_opfw_process_sale', [$this, 'ajax_process_sale']);
-        add_action('wp_ajax_opfw_get_saved_sales', [$this, 'ajax_get_saved_sales']);
-        add_action('wp_ajax_opfw_load_saved_sale', [$this, 'ajax_load_saved_sale']);
-        add_action('wp_ajax_opfw_delete_saved_sale', [$this, 'ajax_delete_saved_sale']);
+        add_action('wp_ajax_opfw_get_categories_for_pos', [$this, 'opfw_ajax_get_categories_for_pos']);
+        add_action('wp_ajax_opfw_get_products_by_category', [$this, 'opfw_ajax_get_products_by_category']);
+        add_action('wp_ajax_opfw_get_customers_for_pos', [$this, 'opfw_ajax_get_customers_for_pos']);
+        add_action('wp_ajax_opfw_process_sale', [$this, 'opfw_ajax_process_sale']);
+        add_action('wp_ajax_opfw_get_saved_sales', [$this, 'opfw_ajax_get_saved_sales']);
+        add_action('wp_ajax_opfw_load_saved_sale', [$this, 'opfw_ajax_load_saved_sale']);
+        add_action('wp_ajax_opfw_delete_saved_sale', [$this, 'opfw_ajax_delete_saved_sale']);
     }
 
-    public function render_page()
+    public function opfw_render_page()
     {
-        $currency = $this->helpers->get_currency_symbol();
+        $currency = $this->helpers->opfw_get_currency_symbol();
         ?>
 <div class="wrap">
     <h1 class="wp-heading-inline"><?php esc_html_e('Point of Sale (POS)', 'obydullah-pos-for-woocommerce'); ?></h1>
@@ -106,7 +106,7 @@ class Obydullah_POS_For_WooCommerce_POS
                         </div>
                     </div>
 
-                    <div id="takeAwayOptions" class="pos-tab-content" style="display: none;">
+                    <div id="takeAwayOptions" class="pos-tab-content opfw-hidden">
                         <div class="form-group mb-2">
                             <label class="form-label"><?php esc_html_e('Customer Name', 'obydullah-pos-for-woocommerce'); ?></label>
                             <input type="text" id="takeaway-name" class="form-control form-control-sm"
@@ -140,7 +140,7 @@ class Obydullah_POS_For_WooCommerce_POS
                         </div>
                     </div>
 
-                    <div id="pickupOptions" class="pos-tab-content" style="display: none;">
+                    <div id="pickupOptions" class="pos-tab-content opfw-hidden">
                         <div class="form-group mb-2">
                             <label class="form-label"><?php esc_html_e('Customer Name', 'obydullah-pos-for-woocommerce'); ?></label>
                             <input type="text" id="pickup-name" class="form-control form-control-sm"
@@ -156,7 +156,7 @@ class Obydullah_POS_For_WooCommerce_POS
 
                 <div class="mb-3">
                     <h4><?php esc_html_e('Cart', 'obydullah-pos-for-woocommerce'); ?></h4>
-                    <div class="opfw-cart-items" id="opfw-cart-items" style="max-height: 200px; overflow-y: auto;">
+                    <div class="opfw-cart-items" id="opfw-cart-items">
                         <div class="text-center py-3 text-muted"><?php esc_html_e('Cart is empty', 'obydullah-pos-for-woocommerce'); ?></div>
                     </div>
                 </div>
@@ -167,35 +167,35 @@ class Obydullah_POS_For_WooCommerce_POS
                             <tbody>
                                 <tr>
                                     <td class="pl-0"><?php esc_html_e('Subtotal:', 'obydullah-pos-for-woocommerce'); ?></td>
-                                    <td class="text-right pr-0 font-weight-bold" id="opfw-subtotal"><?php echo esc_html($this->helpers->format_currency(0)); ?></td>
+                                    <td class="text-right pr-0 font-weight-bold" id="opfw-subtotal"><?php echo esc_html($this->helpers->opfw_format_currency(0)); ?></td>
                                 </tr>
                                 <tr>
                                     <td class="pl-0"><?php esc_html_e('Discount:', 'obydullah-pos-for-woocommerce'); ?></td>
                                     <td class="text-right pr-0">
-                                        <input type="number" id="opfw-discount" class="form-control form-control-sm d-inline-block" value="0" min="0" step="0.01" style="width: 90px;">
+                                        <input type="number" id="opfw-discount" class="form-control form-control-sm d-inline-block" value="0" min="0" step="0.01">
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="pl-0"><?php esc_html_e('Delivery:', 'obydullah-pos-for-woocommerce'); ?></td>
                                     <td class="text-right pr-0">
-                                        <input type="number" id="opfw-delivery" class="form-control form-control-sm d-inline-block" value="0" min="0" step="0.01" style="width: 90px;">
+                                        <input type="number" id="opfw-delivery" class="form-control form-control-sm d-inline-block" value="0" min="0" step="0.01">
                                     </td>
                                 </tr>
-                                <?php if ($this->helpers->is_tax_enabled()): ?>
+                                <?php if ($this->helpers->opfw_is_tax_enabled()): ?>
                                 <tr>
                                     <td class="pl-0"><?php esc_html_e('Tax:', 'obydullah-pos-for-woocommerce'); ?></td>
-                                    <td class="text-right pr-0" id="opfw-tax"><?php echo esc_html($this->helpers->format_currency(0)); ?></td>
+                                    <td class="text-right pr-0" id="opfw-tax"><?php echo esc_html($this->helpers->opfw_format_currency(0)); ?></td>
                                 </tr>
                                 <?php endif; ?>
-                                <?php if ($this->helpers->is_vat_enabled()): ?>
+                                <?php if ($this->helpers->opfw_is_vat_enabled()): ?>
                                 <tr>
                                     <td class="pl-0"><?php esc_html_e('VAT:', 'obydullah-pos-for-woocommerce'); ?></td>
-                                    <td class="text-right pr-0" id="opfw-vat"><?php echo esc_html($this->helpers->format_currency(0)); ?></td>
+                                    <td class="text-right pr-0" id="opfw-vat"><?php echo esc_html($this->helpers->opfw_format_currency(0)); ?></td>
                                 </tr>
                                 <?php endif; ?>
                                 <tr class="border-top">
                                     <td class="pl-0 pt-2"><strong><?php esc_html_e('Total:', 'obydullah-pos-for-woocommerce'); ?></strong></td>
-                                    <td class="text-right pr-0 pt-2"><strong id="opfw-grand-total" class="text-primary"><?php echo esc_html($this->helpers->format_currency(0)); ?></strong></td>
+                                    <td class="text-right pr-0 pt-2"><strong id="opfw-grand-total" class="text-primary"><?php echo esc_html($this->helpers->opfw_format_currency(0)); ?></strong></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -227,7 +227,7 @@ class Obydullah_POS_For_WooCommerce_POS
                     <button type="button" id="opfw-load-saved" class="btn btn-outline-secondary btn-sm mb-2">
                         <?php esc_html_e('Refresh List', 'obydullah-pos-for-woocommerce'); ?>
                     </button>
-                    <div class="opfw-saved-list" id="opfw-saved-list" style="max-height: 150px; overflow-y: auto;"></div>
+                    <div class="opfw-saved-list" id="opfw-saved-list"></div>
                 </div>
             </div>
         </div>
@@ -237,12 +237,15 @@ class Obydullah_POS_For_WooCommerce_POS
 <?php
     }
 
-    public function ajax_get_categories_for_pos()
+    public function opfw_ajax_get_categories_for_pos()
     {
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
         }
-        check_ajax_referer('opfw_get_categories_for_pos', 'nonce');
+        $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($opfw_nonce, 'opfw_get_categories_for_pos')) {
+            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
+        }
 
         $terms = get_terms([
             'taxonomy' => 'product_cat',
@@ -263,12 +266,15 @@ class Obydullah_POS_For_WooCommerce_POS
         wp_send_json_success($categories);
     }
 
-    public function ajax_get_customers_for_pos()
+    public function opfw_ajax_get_customers_for_pos()
     {
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
         }
-        check_ajax_referer('opfw_get_customers_for_pos', 'nonce');
+        $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($opfw_nonce, 'opfw_get_customers_for_pos')) {
+            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
+        }
 
         $customers = get_users(['role__in' => ['customer', 'subscriber'], 'fields' => 'all']);
         $formatted = [];
@@ -286,9 +292,12 @@ class Obydullah_POS_For_WooCommerce_POS
         wp_send_json_success($formatted);
     }
 
-    public function ajax_get_products_by_category()
+    public function opfw_ajax_get_products_by_category()
     {
-        check_ajax_referer('opfw_get_products_by_category', 'nonce');
+        $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($opfw_nonce, 'opfw_get_products_by_category')) {
+            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
+        }
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error('Unauthorized access');
@@ -325,12 +334,15 @@ class Obydullah_POS_For_WooCommerce_POS
         wp_send_json_success($formatted);
     }
 
-    public function ajax_get_saved_sales()
+    public function opfw_ajax_get_saved_sales()
     {
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
         }
-        check_ajax_referer('opfw_get_saved_sales', 'nonce');
+        $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($opfw_nonce, 'opfw_get_saved_sales')) {
+            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
+        }
 
         $orders = wc_get_orders([
             'status' => ['draft', 'pending'],
@@ -360,12 +372,15 @@ class Obydullah_POS_For_WooCommerce_POS
         wp_send_json_success($formatted);
     }
 
-    public function ajax_load_saved_sale()
+    public function opfw_ajax_load_saved_sale()
     {
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
         }
-        check_ajax_referer('opfw_load_saved_sale', 'nonce');
+        $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($opfw_nonce, 'opfw_load_saved_sale')) {
+            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
+        }
 
         $order_id = intval($_GET['sale_id'] ?? 0);
         if (!$order_id) {
@@ -401,12 +416,15 @@ class Obydullah_POS_For_WooCommerce_POS
         ]);
     }
 
-    public function ajax_delete_saved_sale()
+    public function opfw_ajax_delete_saved_sale()
     {
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
         }
-        check_ajax_referer('opfw_delete_saved_sale', 'nonce');
+        $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($opfw_nonce, 'opfw_delete_saved_sale')) {
+            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
+        }
 
         $order_id = intval($_POST['sale_id'] ?? 0);
         if (!$order_id) {
@@ -428,12 +446,15 @@ class Obydullah_POS_For_WooCommerce_POS
         ]);
     }
 
-    public function ajax_process_sale()
+    public function opfw_ajax_process_sale()
     {
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
         }
-        check_ajax_referer('opfw_process_sale', 'nonce');
+        $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($opfw_nonce, 'opfw_process_sale')) {
+            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
+        }
 
         try {
             if (!isset($_POST['sale_data']) || empty($_POST['sale_data'])) {
@@ -511,8 +532,8 @@ class Obydullah_POS_For_WooCommerce_POS
             $delivery_cost = floatval($data['delivery_cost'] ?? 0);
             $taxable_amount = $subtotal - $discount;
 
-            $vat_amount = $this->helpers->is_vat_enabled() ? ($taxable_amount * $this->helpers->get_vat_rate() / 100) : 0;
-            $tax_amount = $this->helpers->is_tax_enabled() ? ($taxable_amount * $this->helpers->get_tax_rate() / 100) : 0;
+            $vat_amount = $this->helpers->opfw_is_vat_enabled() ? ($taxable_amount * $this->helpers->opfw_get_vat_rate() / 100) : 0;
+            $tax_amount = $this->helpers->opfw_is_tax_enabled() ? ($taxable_amount * $this->helpers->opfw_get_tax_rate() / 100) : 0;
 
             if ($delivery_cost > 0) {
                 $order->set_shipping_total($delivery_cost);
@@ -559,7 +580,7 @@ class Obydullah_POS_For_WooCommerce_POS
                 $order->set_customer_note(sanitize_textarea_field($data['note']));
             }
 
-            $order->calculate_totals();
+            $order->opfw_calculate_totals();
 
             if ($discount > 0) {
                 $order->set_discount_total($discount);

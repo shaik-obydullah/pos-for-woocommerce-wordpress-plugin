@@ -118,7 +118,7 @@
         type: "GET",
         data: {
           action: "opfw_get_products_for_stocks",
-          nonce: self.config.productsNonce,
+          _wpnonce: self.config.productsNonce,
         },
         success: function (response) {
           if (response.success) {
@@ -157,7 +157,7 @@
           per_page: self.config.perPage,
           search: self.config.searchTerm,
           status: self.config.statusFilter,
-          nonce: self.config.getNonce,
+          _wpnonce: self.config.getNonce,
         },
         success: function (response) {
           tbody.empty();
@@ -276,7 +276,7 @@
         sale_price: salePrice,
         quantity: quantity,
         stock_status: stockStatus,
-        nonce: self.config.addNonce,
+        _wpnonce: self.config.addNonce,
       })
         .done(function (res) {
           if (res.success) {

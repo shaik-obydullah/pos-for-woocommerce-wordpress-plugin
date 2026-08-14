@@ -14,9 +14,9 @@ class Obydullah_POS_For_WooCommerce_Accounting
 {
     public function __construct()
     {
-        add_action('wp_ajax_opfw_add_accounting_entry', array($this, 'ajax_add_opfw_accounting_entry'));
-        add_action('wp_ajax_opfw_get_accounting_entries', array($this, 'ajax_get_opfw_accounting_entries'));
-        add_action('wp_ajax_opfw_delete_accounting_entry', array($this, 'ajax_delete_opfw_accounting_entry'));
+        add_action('wp_ajax_opfw_add_accounting_entry', array($this, 'opfw_ajax_add_opfw_accounting_entry'));
+        add_action('wp_ajax_opfw_get_accounting_entries', array($this, 'opfw_ajax_get_opfw_accounting_entries'));
+        add_action('wp_ajax_opfw_delete_accounting_entry', array($this, 'opfw_ajax_delete_opfw_accounting_entry'));
     }
 
     /**
@@ -25,9 +25,9 @@ class Obydullah_POS_For_WooCommerce_Accounting
      * @param float $amount The amount to format.
      * @return string
      */
-    private function format_currency($amount)
+    private function opfw_format_currency($amount)
     {
-        return Obydullah_POS_For_WooCommerce_Helpers::format_currency($amount);
+        return Obydullah_POS_For_WooCommerce_Helpers::opfw_format_currency($amount);
     }
 
     /**
@@ -36,9 +36,9 @@ class Obydullah_POS_For_WooCommerce_Accounting
      * @param string $date_string The date string to format.
      * @return string
      */
-    private function format_date($date_string)
+    private function opfw_format_date($date_string)
     {
-        return Obydullah_POS_For_WooCommerce_Helpers::format_date($date_string);
+        return Obydullah_POS_For_WooCommerce_Helpers::opfw_format_date($date_string);
     }
 
     /**
@@ -46,7 +46,7 @@ class Obydullah_POS_For_WooCommerce_Accounting
      *
      * @return string
      */
-    private function get_table_name()
+    private function opfw_get_table_name()
     {
         global $wpdb;
         return $wpdb->prefix . 'opfw_accounting';
@@ -55,12 +55,12 @@ class Obydullah_POS_For_WooCommerce_Accounting
     /**
      * Convert a date from the configured date format to MySQL Y-m-d
      */
-    private function normalize_date($date)
+    private function opfw_normalize_date($date)
     {
         if (empty($date)) {
             return '';
         }
-        $date_format = Obydullah_POS_For_WooCommerce_Helpers::get_date_format();
+        $date_format = Obydullah_POS_For_WooCommerce_Helpers::opfw_get_date_format();
         $dt = DateTime::createFromFormat($date_format, $date);
         if ($dt && $dt->format($date_format) === $date) {
             return $dt->format('Y-m-d');
@@ -72,9 +72,9 @@ class Obydullah_POS_For_WooCommerce_Accounting
     /**
      * Render the accounting page
      */
-    public function render_page()
+    public function opfw_render_page()
     {
-        $current_date = $this->format_date(gmdate('Y-m-d'));
+        $current_date = $this->opfw_format_date(gmdate('Y-m-d'));
         ?>
 <div class="wrap">
     <h1 class="wp-heading-inline mb-3">
@@ -90,7 +90,7 @@ class Obydullah_POS_For_WooCommerce_Accounting
                     <?php esc_html_e('Total Income', 'obydullah-pos-for-woocommerce'); ?>
                 </h3>
                 <p class="summary-number text-success mb-0 fs-3 fw-bold" id="total-income">
-                    <?php echo esc_html($this->format_currency(0)); ?>
+                    <?php echo esc_html($this->opfw_format_currency(0)); ?>
                 </p>
             </div>
         </div>
@@ -100,7 +100,7 @@ class Obydullah_POS_For_WooCommerce_Accounting
                     <?php esc_html_e('Total Expense', 'obydullah-pos-for-woocommerce'); ?>
                 </h3>
                 <p class="summary-number text-danger mb-0 fs-3 fw-bold" id="total-expense">
-                    <?php echo esc_html($this->format_currency(0)); ?>
+                    <?php echo esc_html($this->opfw_format_currency(0)); ?>
                 </p>
             </div>
         </div>
@@ -114,7 +114,7 @@ class Obydullah_POS_For_WooCommerce_Accounting
                     <?php esc_html_e('Add Accounting Entry', 'obydullah-pos-for-woocommerce'); ?>
                 </h2>
                 <form id="add-accounting-form" method="post">
-                    <?php wp_nonce_field('opfw_add_accounting_entry', 'accounting_nonce'); ?>
+                    <?php wp_nonce_field('opfw_add_accounting_entry'); ?>
 
                     <div class="mb-3">
                         <!-- Income Amount -->
@@ -273,11 +273,12 @@ class Obydullah_POS_For_WooCommerce_Accounting
     }
 
     /** Get accounting entries with pagination and date filter */
-    public function ajax_get_opfw_accounting_entries()
+    public function opfw_ajax_get_opfw_accounting_entries()
     {
         // Check nonce
-        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['nonce'] ?? '')), 'opfw_get_accounting_entries')) {
-            wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'));
+        $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($opfw_nonce, 'opfw_get_accounting_entries')) {
+            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
         }
 
         // Check capabilities
@@ -286,12 +287,12 @@ class Obydullah_POS_For_WooCommerce_Accounting
         }
 
         global $wpdb;
-        $accounting_table = $this->get_table_name();
+        $accounting_table = $this->opfw_get_table_name();
 
         $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
         $per_page = isset($_GET['per_page']) ? max(1, intval($_GET['per_page'])) : 10;
-        $date_from = isset($_GET['date_from']) ? $this->normalize_date(sanitize_text_field(wp_unslash($_GET['date_from']))) : '';
-        $date_to = isset($_GET['date_to']) ? $this->normalize_date(sanitize_text_field(wp_unslash($_GET['date_to']))) : '';
+        $date_from = isset($_GET['date_from']) ? $this->opfw_normalize_date(sanitize_text_field(wp_unslash($_GET['date_from']))) : '';
+        $date_to = isset($_GET['date_to']) ? $this->opfw_normalize_date(sanitize_text_field(wp_unslash($_GET['date_to']))) : '';
 
         $offset = ($page - 1) * $per_page;
 
@@ -310,14 +311,14 @@ class Obydullah_POS_For_WooCommerce_Accounting
         }
 
         // Get total count
-        $count_query = "SELECT COUNT(*) FROM {$accounting_table} WHERE $where_clause";
+        $count_query = "SELECT COUNT(*) FROM " . esc_sql($accounting_table) . " WHERE $where_clause";
         if (!empty($prepare_args)) {
             $count_query = $wpdb->prepare($count_query, $prepare_args);
         }
         $total = $wpdb->get_var($count_query);
 
         // Get entries data
-        $query = "SELECT * FROM {$accounting_table} WHERE $where_clause ORDER BY created_at DESC LIMIT %d OFFSET %d";
+        $query = "SELECT * FROM " . esc_sql($accounting_table) . " WHERE $where_clause ORDER BY created_at DESC LIMIT %d OFFSET %d";
 
         // Always add pagination parameters
         $pagination_args = array($per_page, $offset);
@@ -333,9 +334,9 @@ class Obydullah_POS_For_WooCommerce_Accounting
         // Format entries with helper functions
         if ($entries) {
             foreach ($entries as $entry) {
-                $entry->formatted_date = $this->format_date($entry->created_at);
-                $entry->formatted_in_amount = $this->format_currency($entry->in_amount);
-                $entry->formatted_out_amount = $this->format_currency($entry->out_amount);
+                $entry->formatted_date = $this->opfw_format_date($entry->created_at);
+                $entry->formatted_in_amount = $this->opfw_format_currency($entry->in_amount);
+                $entry->formatted_out_amount = $this->opfw_format_currency($entry->out_amount);
             }
         }
 
@@ -343,7 +344,7 @@ class Obydullah_POS_For_WooCommerce_Accounting
         $totals_query = "SELECT 
             COALESCE(SUM(in_amount), 0) as total_income,
             COALESCE(SUM(out_amount), 0) as total_expense
-            FROM {$accounting_table} WHERE $where_clause";
+            FROM " . esc_sql($accounting_table) . " WHERE $where_clause";
 
         if (!empty($prepare_args)) {
             $totals_query = $wpdb->prepare($totals_query, $prepare_args);
@@ -352,8 +353,8 @@ class Obydullah_POS_For_WooCommerce_Accounting
 
         // Format totals
         $formatted_totals = array(
-            'total_income' => $this->format_currency($totals->total_income),
-            'total_expense' => $this->format_currency($totals->total_expense)
+            'total_income' => $this->opfw_format_currency($totals->total_income),
+            'total_expense' => $this->opfw_format_currency($totals->total_expense)
         );
 
         // Calculate showing range
@@ -374,11 +375,12 @@ class Obydullah_POS_For_WooCommerce_Accounting
     }
 
     /** Add accounting entry */
-    public function ajax_add_opfw_accounting_entry()
+    public function opfw_ajax_add_opfw_accounting_entry()
     {
         // Check nonce
-        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'] ?? '')), 'opfw_add_accounting_entry')) {
-            wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'));
+        $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($opfw_nonce, 'opfw_add_accounting_entry')) {
+            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
         }
 
         // Check capabilities
@@ -387,7 +389,7 @@ class Obydullah_POS_For_WooCommerce_Accounting
         }
 
         global $wpdb;
-        $table = $this->get_table_name();
+        $table = $this->opfw_get_table_name();
 
         $in_amount = floatval($_POST['in_amount'] ?? 0);
         $out_amount = floatval($_POST['out_amount'] ?? 0);
@@ -415,7 +417,7 @@ class Obydullah_POS_For_WooCommerce_Accounting
 
         // Set custom date if provided (converted to MySQL format)
         if (!empty($entry_date)) {
-            $normalized_date = $this->normalize_date($entry_date);
+            $normalized_date = $this->opfw_normalize_date($entry_date);
             if ($normalized_date) {
                 $data['created_at'] = $normalized_date . ' ' . gmdate('H:i:s');
                 $format[] = '%s';
@@ -432,11 +434,12 @@ class Obydullah_POS_For_WooCommerce_Accounting
     }
 
     /** Delete accounting entry */
-    public function ajax_delete_opfw_accounting_entry()
+    public function opfw_ajax_delete_opfw_accounting_entry()
     {
         // Check nonce
-        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'] ?? '')), 'opfw_delete_accounting_entry')) {
-            wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'));
+        $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($opfw_nonce, 'opfw_delete_accounting_entry')) {
+            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
         }
 
         // Check capabilities
@@ -445,7 +448,7 @@ class Obydullah_POS_For_WooCommerce_Accounting
         }
 
         global $wpdb;
-        $table = $this->get_table_name();
+        $table = $this->opfw_get_table_name();
         $id = intval($_POST['id'] ?? 0);
 
         if (!$id) {

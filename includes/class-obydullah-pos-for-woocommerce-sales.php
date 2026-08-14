@@ -14,12 +14,12 @@ class Obydullah_POS_For_WooCommerce_Sales
 {
     public function __construct()
     {
-        add_action('wp_ajax_opfw_get_sales', [$this, 'ajax_get_opfw_sales']);
-        add_action('wp_ajax_opfw_delete_sale', [$this, 'ajax_delete_opfw_sale']);
-        add_action('wp_ajax_opfw_print_sale', [$this, 'ajax_print_opfw_sale']);
+        add_action('wp_ajax_opfw_get_sales', [$this, 'opfw_ajax_get_opfw_sales']);
+        add_action('wp_ajax_opfw_delete_sale', [$this, 'opfw_ajax_delete_opfw_sale']);
+        add_action('wp_ajax_opfw_print_sale', [$this, 'opfw_ajax_print_opfw_sale']);
     }
 
-    public function render_page()
+    public function opfw_render_page()
     {
         ?>
         <div class="wrap">
@@ -47,8 +47,7 @@ class Obydullah_POS_For_WooCommerce_Sales
                                                 class="form-control form-control-sm"
                                                 placeholder="<?php esc_attr_e('Invoice number...', 'obydullah-pos-for-woocommerce'); ?>">
                                             <button type="button" id="clear-invoice-search"
-                                                class="btn btn-sm btn-link text-decoration-none position-absolute end-0 top-50 translate-middle-y"
-                                                style="display: none; padding: 0;">
+                                                class="btn btn-sm btn-link text-decoration-none position-absolute end-0 top-50 translate-middle-y" opfw-hidden">
                                                 <span class="text-muted fs-5">&times;</span>
                                             </button>
                                         </div>
@@ -102,7 +101,7 @@ class Obydullah_POS_For_WooCommerce_Sales
                                 <div class="d-flex align-items-center gap-2">
                                     <button type="button" id="search-sales" class="btn btn-primary btn-sm">
                                         <span class="btn-text"><?php esc_html_e('Search', 'obydullah-pos-for-woocommerce'); ?></span>
-                                        <span class="spinner" style="display: none; margin-left: 5px;"></span>
+                                        <span class="spinner opfw-hidden"></span>
                                     </button>
                                     <button type="button" id="reset-filters" class="btn btn-outline-secondary btn-sm ml-1">
                                         <?php esc_html_e('Reset', 'obydullah-pos-for-woocommerce'); ?>
@@ -165,10 +164,11 @@ class Obydullah_POS_For_WooCommerce_Sales
         <?php
     }
 
-    public function ajax_get_opfw_sales()
+    public function opfw_ajax_get_opfw_sales()
     {
-        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['nonce'] ?? '')), 'opfw_get_sales')) {
-            wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'));
+        $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($opfw_nonce, 'opfw_get_sales')) {
+            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
         }
 
         if (!current_user_can('manage_options')) {
@@ -261,13 +261,14 @@ class Obydullah_POS_For_WooCommerce_Sales
         ]);
     }
 
-    public function ajax_print_opfw_sale()
+    public function opfw_ajax_print_opfw_sale()
     {
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
         }
-        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'] ?? '')), 'opfw_print_sale')) {
-            wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'));
+        $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($opfw_nonce, 'opfw_print_sale')) {
+            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
         }
 
         $sale_id = intval($_POST['sale_id'] ?? 0);
@@ -304,17 +305,18 @@ class Obydullah_POS_For_WooCommerce_Sales
             'customer_email'  => $order->get_billing_email(),
             'customer_address'=> $order->get_billing_address_1(),
             'items'           => $items,
-            'shop_info'       => Obydullah_POS_For_WooCommerce_Helpers::get_shop_info(),
+            'shop_info'       => Obydullah_POS_For_WooCommerce_Helpers::opfw_get_shop_info(),
         ]);
     }
 
-    public function ajax_delete_opfw_sale()
+    public function opfw_ajax_delete_opfw_sale()
     {
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
         }
-        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'] ?? '')), 'opfw_delete_sale')) {
-            wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'));
+        $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($opfw_nonce, 'opfw_delete_sale')) {
+            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
         }
 
         $id = intval($_POST['id'] ?? 0);

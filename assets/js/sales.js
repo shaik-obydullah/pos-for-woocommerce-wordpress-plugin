@@ -182,7 +182,7 @@
           date_to: self.config.dateTo,
           sale_type: self.config.saleType,
           status: self.config.saleStatus,
-          nonce: self.config.nonces.get_sales,
+          _wpnonce: self.config.nonces.get_sales,
         },
         success: function (response) {
           tbody.empty();
@@ -254,7 +254,7 @@
         data: {
           action: "opfw_print_sale",
           sale_id: saleId,
-          nonce: self.config.nonces.print_sale,
+          _wpnonce: self.config.nonces.print_sale,
         },
         success: function (response) {
           if (response.success) {
@@ -342,7 +342,7 @@
           $.post(self.config.ajaxUrl, {
             action: "opfw_delete_sale",
             id: id,
-            nonce: self.config.nonces.delete_sale,
+            _wpnonce: self.config.nonces.delete_sale,
           })
             .done(function (res) {
               if (res.success) {

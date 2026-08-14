@@ -15,25 +15,25 @@ class Obydullah_POS_For_WooCommerce_Settings
 
     public function __construct()
     {
-        add_action('admin_init', array($this, 'register_settings'));
+        add_action('admin_init', array($this, 'opfw_register_settings'));
     }
 
-    public function register_settings()
+    public function opfw_register_settings()
     {
-        register_setting('opfw_settings_group', 'opfw_settings', array($this, 'sanitize_settings'));
+        register_setting('opfw_settings_group', 'opfw_settings', array($this, 'opfw_sanitize_settings'));
 
         // General Settings Section
         add_settings_section(
             'opfw_general_section',
             __('General Settings', 'obydullah-pos-for-woocommerce'),
-            array($this, 'general_section_callback'),
+            array($this, 'opfw_general_section_callback'),
             'obydullah-pos-for-woocommerce-settings'
         );
 
         add_settings_field(
             'date_format',
             __('Date Format', 'obydullah-pos-for-woocommerce'),
-            array($this, 'date_format_callback'),
+            array($this, 'opfw_date_format_callback'),
             'obydullah-pos-for-woocommerce-settings',
             'opfw_general_section'
         );
@@ -41,7 +41,7 @@ class Obydullah_POS_For_WooCommerce_Settings
         add_settings_field(
             'currency',
             __('Currency', 'obydullah-pos-for-woocommerce'),
-            array($this, 'currency_callback'),
+            array($this, 'opfw_currency_callback'),
             'obydullah-pos-for-woocommerce-settings',
             'opfw_general_section'
         );
@@ -49,7 +49,7 @@ class Obydullah_POS_For_WooCommerce_Settings
         add_settings_field(
             'currency_position',
             __('Currency Position', 'obydullah-pos-for-woocommerce'),
-            array($this, 'currency_position_callback'),
+            array($this, 'opfw_currency_position_callback'),
             'obydullah-pos-for-woocommerce-settings',
             'opfw_general_section'
         );
@@ -57,7 +57,7 @@ class Obydullah_POS_For_WooCommerce_Settings
         add_settings_field(
             'vat_rate',
             __('VAT Rate (%)', 'obydullah-pos-for-woocommerce'),
-            array($this, 'vat_rate_callback'),
+            array($this, 'opfw_vat_rate_callback'),
             'obydullah-pos-for-woocommerce-settings',
             'opfw_general_section'
         );
@@ -65,7 +65,7 @@ class Obydullah_POS_For_WooCommerce_Settings
         add_settings_field(
             'tax_rate',
             __('Tax Rate (%)', 'obydullah-pos-for-woocommerce'),
-            array($this, 'tax_rate_callback'),
+            array($this, 'opfw_tax_rate_callback'),
             'obydullah-pos-for-woocommerce-settings',
             'opfw_general_section'
         );
@@ -74,14 +74,14 @@ class Obydullah_POS_For_WooCommerce_Settings
         add_settings_section(
             'opfw_shop_section',
             __('Shop Information', 'obydullah-pos-for-woocommerce'),
-            array($this, 'shop_section_callback'),
+            array($this, 'opfw_shop_section_callback'),
             'obydullah-pos-for-woocommerce-settings'
         );
 
         add_settings_field(
             'shop_name',
             __('Restaurant Name', 'obydullah-pos-for-woocommerce'),
-            array($this, 'shop_name_callback'),
+            array($this, 'opfw_shop_name_callback'),
             'obydullah-pos-for-woocommerce-settings',
             'opfw_shop_section'
         );
@@ -89,7 +89,7 @@ class Obydullah_POS_For_WooCommerce_Settings
         add_settings_field(
             'shop_address',
             __('Address', 'obydullah-pos-for-woocommerce'),
-            array($this, 'shop_address_callback'),
+            array($this, 'opfw_shop_address_callback'),
             'obydullah-pos-for-woocommerce-settings',
             'opfw_shop_section'
         );
@@ -97,13 +97,13 @@ class Obydullah_POS_For_WooCommerce_Settings
         add_settings_field(
             'shop_phone',
             __('Phone Number', 'obydullah-pos-for-woocommerce'),
-            array($this, 'shop_phone_callback'),
+            array($this, 'opfw_shop_phone_callback'),
             'obydullah-pos-for-woocommerce-settings',
             'opfw_shop_section'
         );
     }
 
-    public function sanitize_settings($input)
+    public function opfw_sanitize_settings($input)
     {
         $sanitized = array();
 
@@ -140,17 +140,17 @@ class Obydullah_POS_For_WooCommerce_Settings
         return $sanitized;
     }
 
-    public function general_section_callback()
+    public function opfw_general_section_callback()
     {
         echo '<p class="text-muted">' . esc_html__('Configure general POS system settings.', 'obydullah-pos-for-woocommerce') . '</p>';
     }
 
-    public function shop_section_callback()
+    public function opfw_shop_section_callback()
     {
         echo '<p class="text-muted">' . esc_html__('Enter your restaurant/shop information that will be used on receipts and reports.', 'obydullah-pos-for-woocommerce') . '</p>';
     }
 
-    public function date_format_callback()
+    public function opfw_date_format_callback()
     {
         $date_format = get_option('opfw_date_format', 'Y-m-d');
 
@@ -175,7 +175,7 @@ class Obydullah_POS_For_WooCommerce_Settings
         <?php
     }
 
-    public function currency_callback()
+    public function opfw_currency_callback()
     {
         $currency = get_option('opfw_currency', '$');
 
@@ -207,7 +207,7 @@ class Obydullah_POS_For_WooCommerce_Settings
         <?php
     }
 
-    public function currency_position_callback()
+    public function opfw_currency_position_callback()
     {
         $position = get_option('opfw_currency_position', 'left');
         ?>
@@ -231,7 +231,7 @@ class Obydullah_POS_For_WooCommerce_Settings
         <?php
     }
 
-    public function vat_rate_callback()
+    public function opfw_vat_rate_callback()
     {
         $vat_rate = get_option('opfw_vat_rate', '0');
         ?>
@@ -246,7 +246,7 @@ class Obydullah_POS_For_WooCommerce_Settings
         <?php
     }
 
-    public function tax_rate_callback()
+    public function opfw_tax_rate_callback()
     {
         $tax_rate = get_option('opfw_tax_rate', '0');
         ?>
@@ -261,7 +261,7 @@ class Obydullah_POS_For_WooCommerce_Settings
         <?php
     }
 
-    public function shop_name_callback()
+    public function opfw_shop_name_callback()
     {
         $shop_name = get_option('opfw_shop_name', '');
         ?>
@@ -270,7 +270,7 @@ class Obydullah_POS_For_WooCommerce_Settings
         <?php
     }
 
-    public function shop_address_callback()
+    public function opfw_shop_address_callback()
     {
         $shop_address = get_option('opfw_shop_address', '');
         ?>
@@ -279,7 +279,7 @@ class Obydullah_POS_For_WooCommerce_Settings
         <?php
     }
 
-    public function shop_phone_callback()
+    public function opfw_shop_phone_callback()
     {
         $shop_phone = get_option('opfw_shop_phone', '');
         ?>
@@ -288,7 +288,7 @@ class Obydullah_POS_For_WooCommerce_Settings
         <?php
     }
 
-    public function render_page()
+    public function opfw_render_page()
     {
         if (!current_user_can('manage_options')) {
             wp_die(esc_html__('You do not have sufficient permissions to access this page.', 'obydullah-pos-for-woocommerce'));
@@ -327,16 +327,16 @@ class Obydullah_POS_For_WooCommerce_Settings
                         <div class="mb-3">
                             <p class="mb-1">
                                 <strong><?php esc_html_e('Current Date Format:', 'obydullah-pos-for-woocommerce'); ?></strong>
-                                <?php echo esc_html(Obydullah_POS_For_WooCommerce_Helpers::get_current_date()); ?>
+                                <?php echo esc_html(Obydullah_POS_For_WooCommerce_Helpers::opfw_get_current_date()); ?>
                             </p>
                             <p class="mb-1">
                                 <strong><?php esc_html_e('Currency Format:', 'obydullah-pos-for-woocommerce'); ?></strong>
-                                <?php echo esc_html(Obydullah_POS_For_WooCommerce_Helpers::format_currency(100)); ?>
+                                <?php echo esc_html(Obydullah_POS_For_WooCommerce_Helpers::opfw_format_currency(100)); ?>
                             </p>
                             <p class="mb-1">
                                 <strong><?php esc_html_e('VAT Rate:', 'obydullah-pos-for-woocommerce'); ?></strong>
                                 <span class="badge bg-info"><?php echo esc_html(get_option('opfw_vat_rate', '0')); ?>%</span>
-                                <?php if (Obydullah_POS_For_WooCommerce_Helpers::is_vat_enabled()): ?>
+                                <?php if (Obydullah_POS_For_WooCommerce_Helpers::opfw_is_vat_enabled()): ?>
                                     <span class="badge bg-success ms-1"><?php esc_html_e('Enabled', 'obydullah-pos-for-woocommerce'); ?></span>
                                 <?php else: ?>
                                     <span class="badge bg-secondary ms-1"><?php esc_html_e('Disabled', 'obydullah-pos-for-woocommerce'); ?></span>
@@ -355,18 +355,18 @@ class Obydullah_POS_For_WooCommerce_Settings
                             </p>
                         </div>
 
-                        <?php if (Obydullah_POS_For_WooCommerce_Helpers::is_vat_enabled()): ?>
+                        <?php if (Obydullah_POS_For_WooCommerce_Helpers::opfw_is_vat_enabled()): ?>
                             <div class="mb-3 p-3 bg-white rounded border">
                                 <h4 class="fs-6 fw-semibold mb-2"><?php esc_html_e('VAT Calculation Example', 'obydullah-pos-for-woocommerce'); ?></h4>
                                 <p class="mb-1">
                                     <small class="text-muted"><?php esc_html_e('On $100:', 'obydullah-pos-for-woocommerce'); ?></small>
                                 </p>
                                 <?php
-                                $totals = Obydullah_POS_For_WooCommerce_Helpers::calculate_totals(100);
+                                $totals = Obydullah_POS_For_WooCommerce_Helpers::opfw_calculate_totals(100);
                                 ?>
                                 <p class="mb-0">
-                                    <span class="text-success fw-bold"><?php echo esc_html(Obydullah_POS_For_WooCommerce_Helpers::format_currency($totals['total'])); ?></span>
-                                    <small class="text-muted">(<?php echo esc_html(Obydullah_POS_For_WooCommerce_Helpers::format_currency($totals['subtotal'])); ?> + <?php echo esc_html(Obydullah_POS_For_WooCommerce_Helpers::format_currency($totals['vat_amount'])); ?> VAT)</small>
+                                    <span class="text-success fw-bold"><?php echo esc_html(Obydullah_POS_For_WooCommerce_Helpers::opfw_format_currency($totals['total'])); ?></span>
+                                    <small class="text-muted">(<?php echo esc_html(Obydullah_POS_For_WooCommerce_Helpers::opfw_format_currency($totals['subtotal'])); ?> + <?php echo esc_html(Obydullah_POS_For_WooCommerce_Helpers::opfw_format_currency($totals['vat_amount'])); ?> VAT)</small>
                                 </p>
                             </div>
                         <?php endif; ?>
@@ -384,8 +384,8 @@ class Obydullah_POS_For_WooCommerce_Settings
                                 $total_with_tax = 100 + $tax_amount;
                                 ?>
                                 <p class="mb-0">
-                                    <span class="text-success fw-bold"><?php echo esc_html(Obydullah_POS_For_WooCommerce_Helpers::format_currency($total_with_tax)); ?></span>
-                                    <small class="text-muted">(<?php echo esc_html(Obydullah_POS_For_WooCommerce_Helpers::format_currency(100)); ?> + <?php echo esc_html(Obydullah_POS_For_WooCommerce_Helpers::format_currency($tax_amount)); ?> Tax)</small>
+                                    <span class="text-success fw-bold"><?php echo esc_html(Obydullah_POS_For_WooCommerce_Helpers::opfw_format_currency($total_with_tax)); ?></span>
+                                    <small class="text-muted">(<?php echo esc_html(Obydullah_POS_For_WooCommerce_Helpers::opfw_format_currency(100)); ?> + <?php echo esc_html(Obydullah_POS_For_WooCommerce_Helpers::opfw_format_currency($tax_amount)); ?> Tax)</small>
                                 </p>
                             </div>
                         <?php endif; ?>

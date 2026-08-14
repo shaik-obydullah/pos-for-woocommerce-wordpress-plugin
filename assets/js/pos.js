@@ -256,7 +256,7 @@
             type: "POST",
             data: {
               action: "opfw_delete_saved_sale",
-              nonce: self.config.nonces.delete_saved,
+              _wpnonce: self.config.nonces.delete_saved,
               sale_id: saleId,
             },
             success: function (response) {
@@ -335,7 +335,7 @@
         type: "GET",
         data: {
           action: "opfw_get_categories_for_pos",
-          nonce: self.config.nonces.categories,
+          _wpnonce: self.config.nonces.categories,
         },
         success: function (response) {
           if (response.success) {
@@ -367,7 +367,7 @@
         type: "GET",
         data: {
           action: "opfw_get_products_by_category",
-          nonce: self.config.nonces.stocks,
+          _wpnonce: self.config.nonces.stocks,
           category_id: categoryId,
         },
         success: function (response) {
@@ -407,7 +407,7 @@
         type: "GET",
         data: {
           action: "opfw_get_customers_for_pos",
-          nonce: self.config.nonces.customers,
+          _wpnonce: self.config.nonces.customers,
         },
         success: function (response) {
           if (response.success) {
@@ -447,7 +447,7 @@
         type: "GET",
         data: {
           action: "opfw_get_saved_sales",
-          nonce: self.config.nonces.saved,
+          _wpnonce: self.config.nonces.saved,
         },
         success: function (response) {
           if (response.success) {
@@ -514,7 +514,7 @@
         type: "GET",
         data: {
           action: "opfw_load_saved_sale",
-          nonce: self.config.nonces.load,
+          _wpnonce: self.config.nonces.load,
           sale_id: saleId,
         },
         success: function (response) {
@@ -745,7 +745,7 @@
         type: "POST",
         data: {
           action: "opfw_process_sale",
-          nonce: this.config.nonces.process,
+          _wpnonce: this.config.nonces.process,
           sale_data: JSON.stringify(saleData),
         },
         success: function (response) {

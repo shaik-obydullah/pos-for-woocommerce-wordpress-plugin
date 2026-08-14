@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 
 class Obydullah_POS_For_WooCommerce_Activator
 {
-    public static function activate()
+    public static function opfw_activate()
     {
         global $wpdb;
 

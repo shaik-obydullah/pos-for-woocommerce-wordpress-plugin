@@ -206,7 +206,7 @@
           per_page: self.config.perPage,
           date_from: self.config.dateFrom,
           date_to: self.config.dateTo,
-          nonce: self.config.getNonce,
+          _wpnonce: self.config.getNonce,
         },
         success: function (response) {
           tbody.empty();
@@ -347,7 +347,7 @@
           out_amount: outAmount,
           description: description,
           entry_date: entryDate,
-          nonce: self.config.addNonce,
+          _wpnonce: self.config.addNonce,
         },
         function (res) {
           if (res.success) {
@@ -397,7 +397,7 @@
           $.post(self.config.ajaxUrl, {
             action: "opfw_delete_accounting_entry",
             id: id,
-            nonce: self.config.deleteNonce,
+            _wpnonce: self.config.deleteNonce,
           })
             .done(function (res) {
               if (res.success) {

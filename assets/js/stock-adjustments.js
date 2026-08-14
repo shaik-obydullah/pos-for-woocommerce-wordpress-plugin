@@ -142,7 +142,7 @@
         type: "GET",
         data: {
           action: "opfw_get_products_for_adjustments",
-          nonce: self.config.getProductsNonce,
+          _wpnonce: self.config.getProductsNonce,
         },
         success: function (response) {
           if (response.success) {
@@ -170,7 +170,7 @@
         data: {
           action: "opfw_get_current_stock",
           product_id: productId,
-          nonce: self.config.getStockNonce,
+          _wpnonce: self.config.getStockNonce,
         },
         success: function (response) {
           if (response.success) {
@@ -198,7 +198,7 @@
           search: self.config.searchTerm,
           type: self.config.typeFilter,
           date: self.config.dateFilter,
-          nonce: self.config.getNonce,
+          _wpnonce: self.config.getNonce,
         },
         success: function (response) {
           tbody.empty();
@@ -334,7 +334,7 @@
         adjustment_type: adjustmentType,
         quantity: quantity,
         note: note,
-        nonce: self.config.addNonce,
+        _wpnonce: self.config.addNonce,
       })
         .done(function (response) {
           if (response.success) {
@@ -370,7 +370,7 @@
           $.post(self.config.ajaxUrl, {
             action: "opfw_delete_stock_adjustment",
             id: id,
-            nonce: self.config.deleteNonce,
+            _wpnonce: self.config.deleteNonce,
           })
             .done(function (response) {
               if (response.success) {
