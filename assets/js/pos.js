@@ -734,8 +734,10 @@
 
       // Show loading on appropriate button
       var button = action === "save" ? this.elements.saveSaleBtn : this.elements.completeSaleBtn;
+      var otherButton = action === "save" ? this.elements.completeSaleBtn : this.elements.saveSaleBtn;
       var originalText = button.text();
-      button.prop("disabled", true).text("...");
+      button.prop("disabled", true).text(action === "save" ? (this.config.strings.saving || "Saving...") : (this.config.strings.processing || "Processing..."));
+      otherButton.prop("disabled", true);
 
       // Send AJAX request
       $.ajax({
@@ -747,8 +749,9 @@
           sale_data: JSON.stringify(saleData),
         },
         success: function (response) {
-          // Reset button
+          // Reset buttons
           button.prop("disabled", false).text(originalText);
+          otherButton.prop("disabled", false);
 
           if (response.success) {
             showLimeModal(response.data.message || "Sale processed successfully!", "Success");
@@ -771,8 +774,9 @@
           }
         },
         error: function () {
-          // Reset button
+          // Reset buttons
           button.prop("disabled", false).text(originalText);
+          otherButton.prop("disabled", false);
           showLimeModal(self.config.strings.requestFailed || "Request failed. Please try again.", "Error");
         },
       });
