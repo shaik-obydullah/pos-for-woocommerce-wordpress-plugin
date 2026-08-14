@@ -36,7 +36,7 @@ class Obydullah_POS_For_WooCommerce_Woo_Products
             <div class="bg-light p-3 rounded shadow-sm border">
                 <p class="text-muted mb-3">
                     <?php esc_html_e('Products are managed in WooCommerce. Below is a POS-specific view to set buy prices (cost of goods).', 'obydullah-pos-for-woocommerce'); ?>
-                    <a href="<?php echo esc_url(admin_url('post-new.php?post_type=product')); ?>" class="btn btn-sm btn-primary ml-2">
+                    <a href="<?php echo esc_url(admin_url('post-new.php?post_type=product')); ?>" class="btn btn-sm btn-primary ml-2 opfw-add-product-btn">
                         <?php esc_html_e('Add New Product in WooCommerce', 'obydullah-pos-for-woocommerce'); ?>
                     </a>
                 </p>
@@ -121,15 +121,15 @@ class Obydullah_POS_For_WooCommerce_Woo_Products
 <!-- Buy Price Edit Modal -->
 <div id="opfw-buy-price-modal" class="opfw-modal d-none">
     <div class="opfw-modal-overlay"></div>
-    <div class="opfw-modal-content bg-white p-4 rounded shadow">
-        <h3 class="mb-3"><?php esc_html_e('Edit Buy Price', 'obydullah-pos-for-woocommerce'); ?></h3>
+    <div class="opfw-modal-content bg-white p-3 rounded shadow">
+        <h3 class="mb-2 opfw-modal-title"><?php esc_html_e('Edit Buy Price', 'obydullah-pos-for-woocommerce'); ?></h3>
         <form id="buy-price-form">
             <input type="hidden" id="buy-price-product-id" value="">
-            <div class="mb-3">
+            <div class="mb-2">
                 <label class="form-label"><?php esc_html_e('Product', 'obydullah-pos-for-woocommerce'); ?></label>
                 <p id="buy-price-product-name" class="fw-bold"></p>
             </div>
-            <div class="mb-3">
+            <div class="mb-2">
                 <label for="buy-price-input" class="form-label">
                     <?php esc_html_e('Buy Price (Cost of Goods)', 'obydullah-pos-for-woocommerce'); ?>
                 </label>
@@ -168,8 +168,7 @@ class Obydullah_POS_For_WooCommerce_Woo_Products
         ];
 
         if (!empty($search)) {
-            $args['search'] = $search;
-            $args['search_orderby_title'] = true;
+            $args['s'] = $search;
         }
 
         $total_products = wc_get_products(array_merge($args, ['limit' => -1, 'return' => 'ids', 'offset' => 0]));

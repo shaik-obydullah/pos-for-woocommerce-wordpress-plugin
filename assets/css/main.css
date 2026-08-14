@@ -985,6 +985,50 @@ select {
   display: table-cell !important;
 }
 
+/* Flex layout utilities (Bootstrap aliases used by plugin markup) */
+.flex-wrap {
+  flex-wrap: wrap !important;
+}
+.align-items-center {
+  align-items: center !important;
+}
+.justify-content-between {
+  justify-content: space-between !important;
+}
+.flex-grow-1 {
+  flex-grow: 1 !important;
+}
+.gap-1 {
+  gap: 0.25rem !important;
+}
+.gap-2 {
+  gap: 0.5rem !important;
+}
+.ms-2 {
+  margin-left: 0.5rem !important;
+}
+.fw-normal {
+  font-weight: 400 !important;
+}
+.fw-semibold {
+  font-weight: 600 !important;
+}
+.fw-bold {
+  font-weight: 700 !important;
+}
+.h4 {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+.h5 {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+.form-label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
 /* ==========================================================================
    10. Text Utilities
    ========================================================================== */

@@ -838,3 +838,16 @@ tr:hover .pos-row-actions {
     transform: translateY(0);
   }
 }
+
+/* ==========================================================================
+   14. Add New Product button hover effect
+   ========================================================================== */
+.opfw-add-product-btn:hover {
+  color: #fff !important;
+  font-weight: 700;
+  text-decoration: none;
+}
+.opfw-modal-title {
+  margin-top: 1px;
+}
+

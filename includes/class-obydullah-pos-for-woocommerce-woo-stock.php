@@ -408,7 +408,7 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
         ];
 
         if (!empty($search)) {
-            $args['search'] = $search;
+            $args['s'] = $search;
         }
 
         $all_products = wc_get_products(array_merge($args, ['limit' => -1, 'return' => 'ids', 'offset' => 0]));

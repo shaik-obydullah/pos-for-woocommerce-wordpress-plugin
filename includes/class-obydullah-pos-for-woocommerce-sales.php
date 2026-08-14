@@ -139,14 +139,14 @@ class Obydullah_POS_For_WooCommerce_Sales
                             <div class="tablenav-pages">
                                 <span class="displaying-num" id="displaying-num">0 <?php esc_html_e('items', 'obydullah-pos-for-woocommerce'); ?></span>
                                 <span class="pagination-links ms-2">
-                                    <a class="first-page btn btn-sm btn-dark" href="#" title="<?php esc_attr_e('First page', 'obydullah-pos-for-woocommerce'); ?>>&laquo;</a>
-                                    <a class="prev-page btn btn-sm btn-dark" href="#" title="<?php esc_attr_e('Previous page', 'obydullah-pos-for-woocommerce'); ?>>&lsaquo;</a>
+                                    <a class="first-page btn btn-sm btn-dark" href="#" title="<?php esc_attr_e('First page', 'obydullah-pos-for-woocommerce'); ?>">&laquo;</a>
+                                    <a class="prev-page btn btn-sm btn-dark" href="#" title="<?php esc_attr_e('Previous page', 'obydullah-pos-for-woocommerce'); ?>">&lsaquo;</a>
                                     <span class="paging-input">
                                         <input class="current-page form-control form-control-sm" id="current-page-selector" type="text" name="paged" value="1">
                                         <span class="tablenav-paging-text"><?php esc_html_e('of', 'obydullah-pos-for-woocommerce'); ?> <span class="total-pages">1</span></span>
                                     </span>
-                                    <a class="next-page btn btn-sm btn-dark" href="#" title="<?php esc_attr_e('Next page', 'obydullah-pos-for-woocommerce'); ?>>&rsaquo;</a>
-                                    <a class="last-page btn btn-sm btn-dark" href="#" title="<?php esc_attr_e('Last page', 'obydullah-pos-for-woocommerce'); ?>>&raquo;</a>
+                                    <a class="next-page btn btn-sm btn-dark" href="#" title="<?php esc_attr_e('Next page', 'obydullah-pos-for-woocommerce'); ?>">&rsaquo;</a>
+                                    <a class="last-page btn btn-sm btn-dark" href="#" title="<?php esc_attr_e('Last page', 'obydullah-pos-for-woocommerce'); ?>">&raquo;</a>
                                 </span>
                             </div>
                             <div class="tablenav-pages">
