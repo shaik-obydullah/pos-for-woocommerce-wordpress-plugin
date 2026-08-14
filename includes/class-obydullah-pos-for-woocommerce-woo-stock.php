@@ -355,6 +355,9 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
 
     public function ajax_get_products_for_stocks()
     {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+        }
         $nonce = sanitize_text_field(wp_unslash($_REQUEST['nonce'] ?? ''));
         if (!wp_verify_nonce($nonce, 'opfw_get_products_for_stocks')) {
             wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'));
@@ -383,6 +386,9 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
 
     public function ajax_get_stocks()
     {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+        }
         $nonce = sanitize_text_field(wp_unslash($_REQUEST['nonce'] ?? ''));
         if (!wp_verify_nonce($nonce, 'opfw_get_stocks')) {
             wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'));
@@ -442,6 +448,9 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
 
     public function ajax_update_stock()
     {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+        }
         $nonce = sanitize_text_field(wp_unslash($_POST['nonce'] ?? ''));
         if (!wp_verify_nonce($nonce, 'opfw_update_stock')) {
             wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'));
@@ -452,6 +461,14 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
         $sale_price = floatval($_POST['sale_price'] ?? 0);
         $quantity = intval($_POST['quantity'] ?? 0);
         $stock_status = sanitize_text_field(wp_unslash($_POST['stock_status'] ?? 'instock'));
+
+        if ($quantity < 0) {
+            wp_send_json_error(__('Quantity cannot be negative', 'obydullah-pos-for-woocommerce'));
+        }
+
+        if ($buy_price < 0 || $sale_price < 0) {
+            wp_send_json_error(__('Prices cannot be negative', 'obydullah-pos-for-woocommerce'));
+        }
 
         if ($product_id <= 0) {
             wp_send_json_error(__('Invalid product', 'obydullah-pos-for-woocommerce'));
@@ -482,6 +499,9 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
 
     public function ajax_get_products_for_adjustments()
     {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+        }
         $nonce = sanitize_text_field(wp_unslash($_REQUEST['nonce'] ?? ''));
         if (!wp_verify_nonce($nonce, 'opfw_get_products_for_adjustments')) {
             wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'));
@@ -509,6 +529,9 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
 
     public function ajax_get_current_stock()
     {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+        }
         $nonce = sanitize_text_field(wp_unslash($_REQUEST['nonce'] ?? ''));
         if (!wp_verify_nonce($nonce, 'opfw_get_current_stock')) {
             wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'));
@@ -527,6 +550,9 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
 
     public function ajax_add_adjustment()
     {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+        }
         $nonce = sanitize_text_field(wp_unslash($_POST['nonce'] ?? ''));
         if (!wp_verify_nonce($nonce, 'opfw_add_stock_adjustment')) {
             wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'));
@@ -550,11 +576,15 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
         }
 
         $old_quantity = $product->get_stock_quantity() ?: 0;
-        $new_quantity = $adjustment_type === 'increase' ? $old_quantity + $quantity : $old_quantity - $quantity;
 
-        if ($new_quantity < 0) {
-            $new_quantity = 0;
+        if ($adjustment_type === 'decrease' && $quantity > $old_quantity) {
+            wp_send_json_error(sprintf(
+                __('Cannot decrease more than current stock. Available: %d', 'obydullah-pos-for-woocommerce'),
+                $old_quantity
+            ));
         }
+
+        $new_quantity = $adjustment_type === 'increase' ? $old_quantity + $quantity : $old_quantity - $quantity;
 
         $product->set_manage_stock(true);
         $product->set_stock_quantity($new_quantity);
@@ -574,6 +604,9 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
 
     public function ajax_get_adjustments()
     {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+        }
         $nonce = sanitize_text_field(wp_unslash($_REQUEST['nonce'] ?? ''));
         if (!wp_verify_nonce($nonce, 'opfw_get_stock_adjustments')) {
             wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'));
@@ -636,6 +669,9 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
 
     public function ajax_delete_adjustment()
     {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+        }
         $nonce = sanitize_text_field(wp_unslash($_POST['nonce'] ?? ''));
         if (!wp_verify_nonce($nonce, 'opfw_delete_stock_adjustment')) {
             wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'));

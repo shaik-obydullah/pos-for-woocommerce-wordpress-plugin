@@ -213,13 +213,13 @@ class Obydullah_POS_For_WooCommerce_Sales
                 : ($date_from ? $date_from . '...' : '...' . $date_to);
         }
 
-        $orders   = wc_get_orders($args);
-        $total    = 0;
-        $sales    = [];
+        $count_args        = $args;
+        $count_args['limit'] = -1;
+        $count_args['page']  = 1;
+        $all_orders         = wc_get_orders($count_args);
+        $sales              = [];
 
-        foreach ($orders as $order) {
-            $total++;
-
+        foreach ($all_orders as $order) {
             $invoice_id = $order->get_meta('_invoice_id');
             if ($search && stripos($invoice_id, $search) === false) {
                 continue;
@@ -246,10 +246,14 @@ class Obydullah_POS_For_WooCommerce_Sales
             ];
         }
 
+        $total       = count($sales);
+        $total_pages = max(1, ceil($total / $per_page));
+        $sales       = array_slice($sales, ($page - 1) * $per_page, $per_page);
+
         wp_send_json_success([
             'sales'        => $sales,
             'total'        => $total,
-            'total_pages'  => ceil($total / $per_page),
+            'total_pages'  => $total_pages,
             'showing_from' => $total > 0 ? (($page - 1) * $per_page) + 1 : 0,
             'showing_to'   => min($page * $per_page, $total),
             'current_page' => $page,
@@ -259,6 +263,9 @@ class Obydullah_POS_For_WooCommerce_Sales
 
     public function ajax_print_opfw_sale()
     {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+        }
         if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'] ?? '')), 'opfw_print_sale')) {
             wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'));
         }
@@ -303,6 +310,9 @@ class Obydullah_POS_For_WooCommerce_Sales
 
     public function ajax_delete_opfw_sale()
     {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+        }
         if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'] ?? '')), 'opfw_delete_sale')) {
             wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'));
         }

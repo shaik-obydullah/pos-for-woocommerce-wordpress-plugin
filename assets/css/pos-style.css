@@ -788,3 +788,53 @@ tr:hover .pos-row-actions {
     padding: 0;
   }
 }
+
+
+/* ==========================================================================
+   13. Modal Window (opfw-modal)
+   ========================================================================== */
+.opfw-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.opfw-modal.d-none {
+  display: none !important;
+}
+
+.opfw-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.opfw-modal-content {
+  position: relative;
+  z-index: 1;
+  max-width: 400px;
+  width: 100%;
+  margin: 0 !important;
+  animation: opfw-modal-in 0.2s ease;
+}
+
+@keyframes opfw-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

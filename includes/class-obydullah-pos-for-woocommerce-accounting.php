@@ -53,6 +53,23 @@ class Obydullah_POS_For_WooCommerce_Accounting
     }
 
     /**
+     * Convert a date from the configured date format to MySQL Y-m-d
+     */
+    private function normalize_date($date)
+    {
+        if (empty($date)) {
+            return '';
+        }
+        $date_format = Obydullah_POS_For_WooCommerce_Helpers::get_date_format();
+        $dt = DateTime::createFromFormat($date_format, $date);
+        if ($dt && $dt->format($date_format) === $date) {
+            return $dt->format('Y-m-d');
+        }
+        $ts = strtotime($date);
+        return $ts ? gmdate('Y-m-d', $ts) : '';
+    }
+
+    /**
      * Render the accounting page
      */
     public function render_page()
@@ -273,8 +290,8 @@ class Obydullah_POS_For_WooCommerce_Accounting
 
         $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
         $per_page = isset($_GET['per_page']) ? max(1, intval($_GET['per_page'])) : 10;
-        $date_from = isset($_GET['date_from']) ? sanitize_text_field(wp_unslash($_GET['date_from'])) : '';
-        $date_to = isset($_GET['date_to']) ? sanitize_text_field(wp_unslash($_GET['date_to'])) : '';
+        $date_from = isset($_GET['date_from']) ? $this->normalize_date(sanitize_text_field(wp_unslash($_GET['date_from']))) : '';
+        $date_to = isset($_GET['date_to']) ? $this->normalize_date(sanitize_text_field(wp_unslash($_GET['date_to']))) : '';
 
         $offset = ($page - 1) * $per_page;
 
@@ -377,8 +394,13 @@ class Obydullah_POS_For_WooCommerce_Accounting
         $description = sanitize_textarea_field(wp_unslash($_POST['description'] ?? ''));
         $entry_date = sanitize_text_field(wp_unslash($_POST['entry_date'] ?? ''));
 
+        // Validate that amounts are not negative
+        if ($in_amount < 0 || $out_amount < 0) {
+            wp_send_json_error(__('Amounts cannot be negative', 'obydullah-pos-for-woocommerce'));
+        }
+
         // Validate that at least one amount is entered
-        if ($in_amount === 0 && $out_amount === 0) {
+        if ($in_amount <= 0 && $out_amount <= 0) {
             wp_send_json_error(__('Please enter either income or expense amount', 'obydullah-pos-for-woocommerce'));
         }
 
@@ -391,10 +413,13 @@ class Obydullah_POS_For_WooCommerce_Accounting
 
         $format = array('%f', '%f', '%s');
 
-        // Set custom date if provided
+        // Set custom date if provided (converted to MySQL format)
         if (!empty($entry_date)) {
-            $data['created_at'] = $entry_date . ' ' . gmdate('H:i:s');
-            $format[] = '%s';
+            $normalized_date = $this->normalize_date($entry_date);
+            if ($normalized_date) {
+                $data['created_at'] = $normalized_date . ' ' . gmdate('H:i:s');
+                $format[] = '%s';
+            }
         }
 
         $result = $wpdb->insert($table, $data, $format);
@@ -431,6 +456,10 @@ class Obydullah_POS_For_WooCommerce_Accounting
 
         if (false === $result) {
             wp_send_json_error(__('Failed to delete accounting entry', 'obydullah-pos-for-woocommerce'));
+        }
+
+        if (0 === $result) {
+            wp_send_json_error(__('Accounting entry not found', 'obydullah-pos-for-woocommerce'));
         }
 
         wp_send_json_success(__('Accounting entry deleted successfully', 'obydullah-pos-for-woocommerce'));

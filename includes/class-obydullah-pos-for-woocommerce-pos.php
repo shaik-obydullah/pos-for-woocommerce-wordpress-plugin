@@ -239,12 +239,15 @@ class Obydullah_POS_For_WooCommerce_POS
 
     public function ajax_get_categories_for_pos()
     {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+        }
         check_ajax_referer('opfw_get_categories_for_pos', 'nonce');
 
         $terms = get_terms([
             'taxonomy' => 'product_cat',
             'hide_empty' => true,
-            'fields' => 'objects',
+            'fields' => 'all',
         ]);
 
         $categories = [];
@@ -262,6 +265,9 @@ class Obydullah_POS_For_WooCommerce_POS
 
     public function ajax_get_customers_for_pos()
     {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+        }
         check_ajax_referer('opfw_get_customers_for_pos', 'nonce');
 
         $customers = get_users(['role__in' => ['customer', 'subscriber'], 'fields' => 'all']);
@@ -321,6 +327,9 @@ class Obydullah_POS_For_WooCommerce_POS
 
     public function ajax_get_saved_sales()
     {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+        }
         check_ajax_referer('opfw_get_saved_sales', 'nonce');
 
         $orders = wc_get_orders([
@@ -353,6 +362,9 @@ class Obydullah_POS_For_WooCommerce_POS
 
     public function ajax_load_saved_sale()
     {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+        }
         check_ajax_referer('opfw_load_saved_sale', 'nonce');
 
         $order_id = intval($_GET['sale_id'] ?? 0);
@@ -391,6 +403,9 @@ class Obydullah_POS_For_WooCommerce_POS
 
     public function ajax_delete_saved_sale()
     {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+        }
         check_ajax_referer('opfw_delete_saved_sale', 'nonce');
 
         $order_id = intval($_POST['sale_id'] ?? 0);
@@ -415,6 +430,9 @@ class Obydullah_POS_For_WooCommerce_POS
 
     public function ajax_process_sale()
     {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+        }
         check_ajax_referer('opfw_process_sale', 'nonce');
 
         try {
@@ -437,6 +455,7 @@ class Obydullah_POS_For_WooCommerce_POS
                     throw new Exception(__('Saved sale not found', 'obydullah-pos-for-woocommerce'));
                 }
                 $order->remove_order_items();
+                $order->save();
             } else {
                 $order = wc_create_order();
                 if (is_wp_error($order)) {
@@ -495,13 +514,13 @@ class Obydullah_POS_For_WooCommerce_POS
             $vat_amount = $this->helpers->is_vat_enabled() ? ($taxable_amount * $this->helpers->get_vat_rate() / 100) : 0;
             $tax_amount = $this->helpers->is_tax_enabled() ? ($taxable_amount * $this->helpers->get_tax_rate() / 100) : 0;
 
-            if ($discount > 0) {
-                $order->set_discount_total($discount);
-            }
-
             if ($delivery_cost > 0) {
                 $order->set_shipping_total($delivery_cost);
-                $order->set_shipping_method('Delivery');
+                $shipping_item = new WC_Order_Item_Shipping();
+                $shipping_item->set_method_title(__('Delivery', 'obydullah-pos-for-woocommerce'));
+                $shipping_item->set_method_id('delivery');
+                $shipping_item->set_total($delivery_cost);
+                $order->add_item($shipping_item);
             }
 
             if ($vat_amount > 0) {
@@ -523,8 +542,14 @@ class Obydullah_POS_For_WooCommerce_POS
                 $order->set_customer_id($customer_id);
                 $user = get_user_by('ID', $customer_id);
                 if ($user) {
-                    $order->set_billing_first_name($user->display_name);
+                    $order->set_billing_first_name($user->first_name ? $user->first_name : $user->display_name);
+                    $order->set_billing_last_name($user->last_name);
                     $order->set_billing_email($user->user_email);
+                    $order->set_billing_phone(get_user_meta($customer_id, 'billing_phone', true));
+                    $order->set_billing_address_1(get_user_meta($customer_id, 'billing_address_1', true));
+                    $order->set_billing_address_2(get_user_meta($customer_id, 'billing_address_2', true));
+                    $order->set_billing_city(get_user_meta($customer_id, 'billing_city', true));
+                    $order->set_billing_postcode(get_user_meta($customer_id, 'billing_postcode', true));
                 }
             } else {
                 $order->set_billing_first_name('Walk-in Customer');
@@ -535,6 +560,12 @@ class Obydullah_POS_For_WooCommerce_POS
             }
 
             $order->calculate_totals();
+
+            if ($discount > 0) {
+                $order->set_discount_total($discount);
+                $order->set_total(max(0, $order->get_total() - $discount));
+            }
+
             $order->save();
 
             if ($action === 'complete') {

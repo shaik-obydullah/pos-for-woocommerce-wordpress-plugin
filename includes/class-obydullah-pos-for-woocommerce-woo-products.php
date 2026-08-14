@@ -121,7 +121,7 @@ class Obydullah_POS_For_WooCommerce_Woo_Products
 <!-- Buy Price Edit Modal -->
 <div id="opfw-buy-price-modal" class="opfw-modal d-none">
     <div class="opfw-modal-overlay"></div>
-    <div class="opfw-modal-content bg-white p-4 rounded shadow" style="max-width: 400px; margin: 10% auto;">
+    <div class="opfw-modal-content bg-white p-4 rounded shadow">
         <h3 class="mb-3"><?php esc_html_e('Edit Buy Price', 'obydullah-pos-for-woocommerce'); ?></h3>
         <form id="buy-price-form">
             <input type="hidden" id="buy-price-product-id" value="">
@@ -147,6 +147,9 @@ class Obydullah_POS_For_WooCommerce_Woo_Products
 
     public function ajax_get_products()
     {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+        }
         $nonce = sanitize_text_field(wp_unslash($_REQUEST['nonce'] ?? ''));
         if (!wp_verify_nonce($nonce, 'opfw_get_products')) {
             wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'), 403);
@@ -208,6 +211,9 @@ class Obydullah_POS_For_WooCommerce_Woo_Products
 
     public function ajax_get_categories()
     {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+        }
         $nonce = sanitize_text_field(wp_unslash($_REQUEST['nonce'] ?? ''));
         if (!wp_verify_nonce($nonce, 'opfw_get_categories_for_products')) {
             wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'), 403);
@@ -216,7 +222,7 @@ class Obydullah_POS_For_WooCommerce_Woo_Products
         $terms = get_terms([
             'taxonomy' => 'product_cat',
             'hide_empty' => false,
-            'fields' => 'objects',
+            'fields' => 'all',
         ]);
 
         $categories = [];
@@ -234,6 +240,9 @@ class Obydullah_POS_For_WooCommerce_Woo_Products
 
     public function ajax_update_buy_price()
     {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+        }
         if (!check_ajax_referer('opfw_update_buy_price', 'nonce', false)) {
             wp_send_json_error(__('Security verification failed', 'obydullah-pos-for-woocommerce'), 403);
         }

@@ -154,10 +154,9 @@ class Obydullah_POS_For_WooCommerce_Dashboard
     {
         $count = 0;
         $products = wc_get_products([
-            'limit'        => -1,
-            'status'       => 'publish',
-            'return'       => 'objects',
-            'stock_status' => 'instock',
+            'limit'  => -1,
+            'status' => 'publish',
+            'return' => 'objects',
         ]);
 
         foreach ($products as $product) {
@@ -175,7 +174,7 @@ class Obydullah_POS_For_WooCommerce_Dashboard
 
         $results = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT oi_meta._product_id AS product_id,
+                "SELECT oi_meta.meta_value AS product_id,
                         SUM(oi_meta_qty.meta_value) AS total_quantity_sold,
                         COUNT(DISTINCT o.ID) AS total_orders
                  FROM {$wpdb->prefix}woocommerce_order_items oi
@@ -187,9 +186,9 @@ class Obydullah_POS_For_WooCommerce_Dashboard
                       AND oi_meta_qty.meta_key = '_qty'
                  JOIN {$wpdb->posts} o
                       ON o.ID = oi.order_id
-                      AND o.post_status = 'wc_completed'
+                      AND o.post_status = 'wc-completed'
                  WHERE oi.order_item_type = 'line_item'
-                 GROUP BY oi_meta._product_id
+                 GROUP BY oi_meta.meta_value
                  ORDER BY total_quantity_sold DESC
                  LIMIT %d",
                 $limit

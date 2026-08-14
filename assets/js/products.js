@@ -98,6 +98,12 @@
         self.closeBuyPriceModal();
       });
 
+      $(document).on("keydown", function (e) {
+        if (e.key === "Escape") {
+          self.closeBuyPriceModal();
+        }
+      });
+
       $("#buy-price-form").on("submit", function (e) {
         e.preventDefault();
         self.handleBuyPriceSubmit();
@@ -190,7 +196,7 @@
       this.config.totalPages = pagination.total_pages || 1;
       this.config.totalItems = pagination.total_items || 0;
 
-      $("#displaying-num").text(pagination.total_items + " " + (self.config.strings.items || "items"));
+      $("#displaying-num").text(pagination.total_items + " " + (this.config.strings.items || "items"));
       $("#current-page-selector").val(this.config.currentPage);
       $(".total-pages").text(this.config.totalPages);
       $(".first-page, .prev-page").prop("disabled", this.config.currentPage === 1);
