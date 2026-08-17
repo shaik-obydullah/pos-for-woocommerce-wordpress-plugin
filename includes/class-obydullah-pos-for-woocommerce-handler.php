@@ -61,8 +61,8 @@ if (!class_exists('Obydullah_POS_For_WooCommerce_Handler')) {
         public function opfw_register_admin_menu()
         {
             add_menu_page(
-                __('Restaurant POS', 'obydullah-pos-for-woocommerce'),
-                __('Restaurant POS', 'obydullah-pos-for-woocommerce'),
+                __('WooPOS', 'obydullah-pos-for-woocommerce'),
+                __('WooPOS', 'obydullah-pos-for-woocommerce'),
                 'manage_options',
                 'obydullah-pos-for-woocommerce',
                 [$this->dashboard, 'opfw_render_page'],

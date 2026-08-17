@@ -125,17 +125,17 @@ Watch the full tutorial and demo of Obydullah POS for WooCommerce here: [Video T
 
 ### Setup
 
-1. After activation, go to **OBY Restaurant POS** in your WordPress admin menu
-2. Start by configuring your shop settings in **OBY Restaurant POS → Settings**
-3. Add your product categories in **OBY Restaurant POS → Categories**
-4. Add your menu items in **OBY Restaurant POS → Products**
-5. Set up your initial stock in **OBY Restaurant POS → Stocks**
-6. You're ready to start taking orders in **OBY Restaurant POS → POS**
+1. After activation, go to **WooPOS** in your WordPress admin menu
+2. Start by configuring your shop settings in **WooPOS → Settings**
+3. Add your product categories in **WooPOS → Categories**
+4. Add your menu items in **WooPOS → Products**
+5. Set up your initial stock in **WooPOS → Stocks**
+6. You're ready to start taking orders in **WooPOS → POS**
 
 ## Frequently Asked Questions
 
 ### How do I add menu items?
-Go to **OBY Restaurant POS → Products** in your WordPress admin to add menu items and organize them by categories.
+Go to **WooPOS → Products** in your WordPress admin to add menu items and organize them by categories.
 
 ### Can I track inventory?
 Yes! The plugin includes complete inventory management with stock tracking and automatic low stock alerts. It automatically updates stock levels when sales are completed.
@@ -150,7 +150,7 @@ Yes, the plugin includes professional receipt and invoice printing for completed
 Yes, customer information can be stored in the Customer Management section for repeat orders and better service. Customer emails must be unique to avoid duplicates.
 
 ### How do I set up taxes and VAT?
-Go to **OBY Restaurant POS → Settings** to configure tax rates, VAT rates, currency, and other shop settings. You can enable/disable these features as needed.
+Go to **WooPOS → Settings** to configure tax rates, VAT rates, currency, and other shop settings. You can enable/disable these features as needed.
 
 ### Can I save orders for later completion?
 Yes, you can save orders in the POS and complete them later. Saved orders appear in the "Saved Sales" section and can be loaded, edited, or deleted.
@@ -159,7 +159,7 @@ Yes, you can save orders in the POS and complete them later. Saved orders appear
 Yes, the plugin automatically tracks sales income and creates accounting entries. You can also manually add income/expense entries for other transactions.
 
 ### How do I view sales reports?
-Go to **OBY Restaurant POS → Dashboard** for an overview of today's and monthly sales, income, expenses, and profits. The Sales section provides detailed transaction history.
+Go to **WooPOS → Dashboard** for an overview of today's and monthly sales, income, expenses, and profits. The Sales section provides detailed transaction history.
 
 ### Can multiple users access the POS?
 Yes, any WordPress user with the `manage_options` capability (typically Administrators) can access and use the POS system.
