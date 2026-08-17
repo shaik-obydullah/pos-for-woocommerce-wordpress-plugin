@@ -3,9 +3,9 @@
 Contributors: obydullah
 Donate link: https://obydullah.com
 Tags: point of sale, orders, sales, inventory, takeaway
-Requires at least: 5.0
+Requires at least: 6.0
 Tested up to: 7.0
-Stable tag: 2.0.6
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: obydullah-pos-for-woocommerce
@@ -15,14 +15,14 @@ Complete restaurant Point of Sale (POS) with inventory, order management, and sa
 
 ## Description
 
-[![WordPress](https://img.shields.io/badge/WordPress-5.8%2B-21759B?logo=wordpress&logoColor=white&style=flat-square)](https://wordpress.org/)
-[![PHP](https://img.shields.io/badge/PHP-7.4%2B-777BB4?logo=php&logoColor=white&style=flat-square)](https://www.php.net/)
+[![WordPress](https://img.shields.io/badge/WordPress-6.0%2B-21759B?logo=wordpress&logoColor=white&style=flat-square)](https://wordpress.org/)
+[![PHP](https://img.shields.io/badge/PHP-8.0%2B-777BB4?logo=php&logoColor=white&style=flat-square)](https://www.php.net/)
 [![WooCommerce](https://img.shields.io/badge/WooCommerce-6.0%2B-96588A?logo=woocommerce&logoColor=white&style=flat-square)](https://woocommerce.com/)
 [![License](https://img.shields.io/badge/License-GPLv2%2F%20later-333333?logo=gnu&logoColor=white&style=flat-square)](https://www.gnu.org/licenses/gpl-2.0.html)
-[![Version](https://img.shields.io/badge/Version-2.0.6-00a32a?style=flat-square)](https://wordpress.org/plugins/obydullah-pos-for-woocommerce/)
+[![Version](https://img.shields.io/badge/Version-1.0.0-00a32a?style=flat-square)](https://wordpress.org/plugins/obydullah-pos-for-woocommerce/)
 [![PHP 8.0 Compatible](https://img.shields.io/badge/PHP-8.0%2B%20Compatible-8892BF?logo=php&logoColor=white&style=flat-square)](https://www.php.net/)
 [![WC Tested](https://img.shields.io/badge/WC%20Tested%20up%20to-8.0-96588A?logo=woocommerce&logoColor=white&style=flat-square)](https://woocommerce.com/)
-[![Requires PHP](https://img.shields.io/badge/Requires%20PHP-7.4-777BB4?logo=php&logoColor=white&style=flat-square)](https://www.php.net/)
+[![Requires PHP](https://img.shields.io/badge/Requires%20PHP-8.0-777BB4?logo=php&logoColor=white&style=flat-square)](https://www.php.net/)
 [![Stars](https://img.shields.io/wordpress/plugin/stars/obydullah-pos-for-woocommerce?style=flat-square)](https://wordpress.org/plugins/obydullah-pos-for-woocommerce/)
 [![Active Installs](https://img.shields.io/wordpress/plugin/installs/obydullah-pos-for-woocommerce?style=flat-square)](https://wordpress.org/plugins/obydullah-pos-for-woocommerce/)
 [![Last Updated](https://img.shields.io/wordpress/plugin/last-updated/obydullah-pos-for-woocommerce?style=flat-square)](https://wordpress.org/plugins/obydullah-pos-for-woocommerce/)
@@ -96,8 +96,8 @@ Watch the full tutorial and demo of Obydullah POS for WooCommerce here: [Video T
 
 ### Requirements
 
-- WordPress 5.0 or higher
-- PHP 7.4 or higher (recommended PHP 8.0+)
+- WordPress 6.0 or higher
+- PHP 8.0 or higher
 - MySQL 5.6 or higher / MariaDB 10.0 or higher
 - WordPress Administrator access for setup
 
@@ -105,8 +105,8 @@ Watch the full tutorial and demo of Obydullah POS for WooCommerce here: [Video T
 
 ### Minimum Requirements
 
-- WordPress 5.0 or higher
-- PHP 7.4 or higher
+- WordPress 6.0 or higher
+- PHP 8.0 or higher
 - MySQL 5.6 or higher
 
 ### Automatic Installation
@@ -180,73 +180,10 @@ Yes, the plugin is fully translation-ready and includes .pot file for translator
 9. Accounting Module – Track income, expenses, and overall financial summaries.
 10. Settings Panel – Configure taxes, receipts, and system preferences.
 
-## Changelog
-
-### 2.0.6
-- Complete architectural rewrite — migrated from standalone DB to WooCommerce integration
-- Products now managed via WooCommerce (WC_Product objects)
-- Orders created as WC_Order with POS meta fields
-- Stock managed through WooCommerce stock system
-- Customers use WooCommerce customer/user system
-- Added buy price (COGS) management for profit calculations
-- Dashboard now shows real profit (revenue minus cost of goods)
-- Stock adjustments with full audit logging
-- Improved security with per-endpoint nonce verification
-- Optimized asset loading (per-page JS with defer strategy)
-- Added stock adjustment history with delete capability
-- Added saved sales with load/delete functionality
-- Improved invoice generation (INV-YYYYMMDD-XXXX format)
-- Enhanced receipt printing with shop info
-- Multiple currency support with position options
-- Date format customization
-- Full i18n translation support with .pot file
-- WooCommerce 8.0 compatibility
-
-### 1.0.5
-- Enhanced pagination UI for a smoother user experience.
-- Simplified the dashboard top-selling products display.
-- Refined net income calculation from sales.
-
-### 1.0.4
-- Items with zero quantity are now hidden in the POS.
-- Improved and simplified the accounting workflow.
-
-### 1.0.3
-- Updated admin menu name for improved clarity
-- Improved Stock In functionality to only increase stock quantity
-- Fixed accounting table description display issue
-
-### 1.0.2
-- Dashboard UI improvements
-- Simplified accounting workflow
-- Performance improvements
-- No database changes
-
-### 1.0.1
-- Fixed: UI layout improvements for better responsiveness
-- Fixed: Improved form validation and error messages
-- Fixed: Enhanced pagination and table display
-- Fixed: Minor bug fixes and performance optimizations
-- Fixed: Better mobile compatibility for POS interface
-- Fixed: Improved caching mechanisms for better performance
-
-### 1.0.0
-- Initial release with complete POS system
-- Menu and category management
-- Inventory tracking with stock alerts
-- Customer management system
-- Sales processing and reporting
-- Accounting and financial tracking
-- Receipt and invoice printing
-- Shop configuration and settings
-
 ## Upgrade Notice
 
-### 2.0.6
-Major rewrite — now fully integrated with WooCommerce. Products, orders, stock, and customers all use WooCommerce data. Requires WooCommerce 6.0+.
-
-### 1.0.5
-Enhanced pagination and simplified dashboard.
+### 1.0.0
+Initial release with complete POS system.
 
 ## Additional Notes
 
