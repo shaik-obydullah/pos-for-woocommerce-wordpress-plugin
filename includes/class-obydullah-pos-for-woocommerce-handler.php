@@ -62,7 +62,7 @@ if (!class_exists('Obydullah_POS_For_WooCommerce_Handler')) {
         {
             add_menu_page(
                 __('WooPOS', 'obydullah-pos-for-woocommerce'),
-                __('WooPOS', 'obydullah-pos-for-woocommerce'),
+                __('Restro POS', 'obydullah-pos-for-woocommerce'),
                 'manage_options',
                 'obydullah-pos-for-woocommerce',
                 [$this->dashboard, 'opfw_render_page'],

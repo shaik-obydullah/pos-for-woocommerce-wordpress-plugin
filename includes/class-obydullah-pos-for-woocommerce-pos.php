@@ -510,11 +510,13 @@ class Obydullah_POS_For_WooCommerce_POS
 
                 $product = wc_get_product($product_id);
                 if (!$product) {
-                    throw new Exception(sprintf(__('Product not found: %d', 'obydullah-pos-for-woocommerce'), $product_id));
+                    throw new Exception(sprintf(/* translators: %d: product ID */
+                        __('Product not found: %d', 'obydullah-pos-for-woocommerce'), $product_id));
                 }
 
                 if ($action === 'complete' && $product->get_manage_stock() && $product->get_stock_quantity() < $quantity) {
                     throw new Exception(sprintf(
+                        /* translators: 1: product name, 2: available stock quantity */
                         __('Insufficient stock for: %1$s. Available: %2$d', 'obydullah-pos-for-woocommerce'),
                         $product->get_name(),
                         $product->get_stock_quantity()
@@ -580,7 +582,7 @@ class Obydullah_POS_For_WooCommerce_POS
                 $order->set_customer_note(sanitize_textarea_field($data['note']));
             }
 
-            $order->opfw_calculate_totals();
+            $order->calculate_totals();
 
             if ($discount > 0) {
                 $order->set_discount_total($discount);

@@ -11,8 +11,10 @@
  * Text Domain: obydullah-pos-for-woocommerce
  * Requires at least: 6.0
  * Requires PHP: 8.0
- * WC requires at least: 6.0
- * WC tested up to: 8.0
+ * Requires Plugins: woocommerce
+ * Tested up to: 7.1
+ * WC requires at least: 8.0
+ * WC tested up to: 11.0
  */
 
 if (!defined('ABSPATH')) {

@@ -272,106 +272,100 @@ class Obydullah_POS_For_WooCommerce_Accounting
 <?php
     }
 
-    /** Get accounting entries with pagination and date filter */
-    public function opfw_ajax_get_opfw_accounting_entries()
+   public function opfw_ajax_get_opfw_accounting_entries()
     {
-        // Check nonce
-        $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
-        if (!wp_verify_nonce($opfw_nonce, 'opfw_get_accounting_entries')) {
-            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
+        $nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
+        if (!wp_verify_nonce($nonce, 'opfw_get_accounting_entries')) {
+            wp_send_json_error(__('Security check failed.', 'obydullah-pos-for-woocommerce'));
         }
 
-        // Check capabilities
-        if (!current_user_can('manage_options')) {
+        if (!current_user_can('manage_woocommerce')) {
             wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
         }
 
         global $wpdb;
-        $accounting_table = $this->opfw_get_table_name();
 
-        $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
-        $per_page = isset($_GET['per_page']) ? max(1, intval($_GET['per_page'])) : 10;
-        $date_from = isset($_GET['date_from']) ? $this->opfw_normalize_date(sanitize_text_field(wp_unslash($_GET['date_from']))) : '';
-        $date_to = isset($_GET['date_to']) ? $this->opfw_normalize_date(sanitize_text_field(wp_unslash($_GET['date_to']))) : '';
+        $get = wp_unslash($_GET);
+
+        $page     = isset($get['page']) ? max(1, (int) $get['page']) : 1;
+        $per_page = isset($get['per_page']) ? max(1, (int) $get['per_page']) : 10;
+
+        $date_from = isset($get['date_from'])
+            ? $this->opfw_normalize_date(sanitize_text_field($get['date_from']))
+            : '';
+
+        $date_to = isset($get['date_to'])
+            ? $this->opfw_normalize_date(sanitize_text_field($get['date_to']))
+            : '';
 
         $offset = ($page - 1) * $per_page;
 
-        // Build WHERE clause
-        $where_clause = '1=1';
-        $prepare_args = array();
+        $table_name = $this->opfw_get_table_name();
+
+        $where = [];
+        $args  = [];
 
         if (!empty($date_from)) {
-            $where_clause .= ' AND DATE(created_at) >= %s';
-            $prepare_args[] = $date_from;
+            $where[] = 'created_at >= %s';
+            $args[]  = $date_from . ' 00:00:00';
         }
 
         if (!empty($date_to)) {
-            $where_clause .= ' AND DATE(created_at) <= %s';
-            $prepare_args[] = $date_to;
+            $where[] = 'created_at <= %s';
+            $args[]  = $date_to . ' 23:59:59';
         }
 
-        // Get total count
-        $count_query = "SELECT COUNT(*) FROM " . esc_sql($accounting_table) . " WHERE $where_clause";
-        if (!empty($prepare_args)) {
-            $count_query = $wpdb->prepare($count_query, $prepare_args);
-        }
-        $total = $wpdb->get_var($count_query);
+        $where_sql = $where ? 'WHERE ' . implode(' AND ', $where) : '';
 
-        // Get entries data
-        $query = "SELECT * FROM " . esc_sql($accounting_table) . " WHERE $where_clause ORDER BY created_at DESC LIMIT %d OFFSET %d";
+        $summary = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT 
+                    COUNT(*) as total,
+                    COALESCE(SUM(in_amount), 0) as total_income,
+                    COALESCE(SUM(out_amount), 0) as total_expense
+                FROM {$table_name} {$where_sql}",
+                $args
+            )
+        );
 
-        // Always add pagination parameters
-        $pagination_args = array($per_page, $offset);
+        $total = (int) ($summary->total ?? 0);
 
-        if (!empty($prepare_args)) {
-            $query = $wpdb->prepare($query, array_merge($prepare_args, $pagination_args));
-        } else {
-            $query = $wpdb->prepare($query, $pagination_args);
-        }
+        $entries = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT id, created_at, in_amount, out_amount
+                FROM {$table_name}
+                {$where_sql}
+                ORDER BY created_at DESC
+                LIMIT %d OFFSET %d",
+                array_merge($args, [$per_page, $offset])
+            )
+        );
 
-        $entries = $wpdb->get_results($query);
-
-        // Format entries with helper functions
-        if ($entries) {
+        if (!empty($entries)) {
             foreach ($entries as $entry) {
-                $entry->formatted_date = $this->opfw_format_date($entry->created_at);
-                $entry->formatted_in_amount = $this->opfw_format_currency($entry->in_amount);
+                $entry->formatted_date       = $this->opfw_format_date($entry->created_at);
+                $entry->formatted_in_amount  = $this->opfw_format_currency($entry->in_amount);
                 $entry->formatted_out_amount = $this->opfw_format_currency($entry->out_amount);
             }
         }
 
-        // Calculate totals
-        $totals_query = "SELECT 
-            COALESCE(SUM(in_amount), 0) as total_income,
-            COALESCE(SUM(out_amount), 0) as total_expense
-            FROM " . esc_sql($accounting_table) . " WHERE $where_clause";
+        $formatted_totals = [
+            'total_income'  => $this->opfw_format_currency($summary->total_income ?? 0),
+            'total_expense' => $this->opfw_format_currency($summary->total_expense ?? 0),
+        ];
 
-        if (!empty($prepare_args)) {
-            $totals_query = $wpdb->prepare($totals_query, $prepare_args);
-        }
-        $totals = $wpdb->get_row($totals_query);
-
-        // Format totals
-        $formatted_totals = array(
-            'total_income' => $this->opfw_format_currency($totals->total_income),
-            'total_expense' => $this->opfw_format_currency($totals->total_expense)
-        );
-
-        // Calculate showing range
         $showing_from = $total > 0 ? $offset + 1 : 0;
-        $showing_to = min($offset + $per_page, $total);
+        $showing_to   = min($offset + $per_page, $total);
 
-        wp_send_json_success(
-            array(
-                'entries' => $entries,
-                'total' => $total,
-                'showing_from' => $showing_from,
-                'showing_to' => $showing_to,
-                'current_page' => $page,
-                'per_page' => $per_page,
-                'totals' => $formatted_totals,
-            )
-        );
+        wp_send_json_success([
+            'entries'       => $entries,
+            'total'         => $total,
+            'showing_from'  => $showing_from,
+            'showing_to'    => $showing_to,
+            'current_page'  => $page,
+            'per_page'      => $per_page,
+            'totals'        => $formatted_totals,
+        ]);
     }
 
     /** Add accounting entry */
