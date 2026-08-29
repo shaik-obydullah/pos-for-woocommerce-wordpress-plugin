@@ -3,7 +3,8 @@
  * Obydullah POS for WooCommerce Settings Class
  *
  * @package Obydullah_POS_For_WooCommerce
- * @since 1.0.0
+ * @since   1.0.0
+ * @version 1.0.0
  */
 
 if (!defined('ABSPATH')) {
@@ -128,6 +129,9 @@ class Obydullah_POS_For_WooCommerce_Settings
         update_option('opfw_shop_name', $sanitized['shop_name']);
         update_option('opfw_shop_address', $sanitized['shop_address']);
         update_option('opfw_shop_phone', $sanitized['shop_phone']);
+
+        // Flush cached data that depends on settings (currency, rates, shop info)
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_all();
 
         // Add settings updated notice
         add_settings_error(

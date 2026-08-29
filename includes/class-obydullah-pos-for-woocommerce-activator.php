@@ -3,7 +3,8 @@
  * Fired during plugin activation
  *
  * @package Obydullah_POS_For_WooCommerce
- * @since   2.0.0
+ * @since   1.0.0
+ * @version 1.0.0
  */
 if (!defined('ABSPATH')) {
     exit;

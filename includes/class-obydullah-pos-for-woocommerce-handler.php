@@ -3,7 +3,8 @@
  * Plugin Handler
  *
  * @package Obydullah_POS_For_WooCommerce
- * @since   2.0.0
+ * @since   1.0.0
+ * @version 1.0.0
  */
 
 if (!defined('ABSPATH')) {
@@ -21,10 +22,10 @@ $opfw_files = [
     'class-obydullah-pos-for-woocommerce-accounting.php',
 ];
 
-foreach ($opfw_files as $file) {
-    $path = OPFW_PATH . 'includes/' . $file;
-    if (file_exists($path)) {
-        require_once $path;
+foreach ($opfw_files as $opfw_file) {
+    $opfw_path = OPFW_PATH . 'includes/' . $opfw_file;
+    if (file_exists($opfw_path)) {
+        require_once $opfw_path;
     }
 }
 
@@ -96,8 +97,8 @@ if (!class_exists('Obydullah_POS_For_WooCommerce_Handler')) {
 
         public function opfw_enqueue_admin_scripts($hook)
         {
-            $current_page = isset($_GET['page'])
-                ? sanitize_text_field(wp_unslash($_GET['page']))
+            $current_page = isset($_GET['page']) // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+                ? sanitize_text_field(wp_unslash($_GET['page'])) // phpcs:ignore WordPress.Security.NonceVerification.Recommended
                 : '';
 
             if (

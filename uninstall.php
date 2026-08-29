@@ -4,7 +4,7 @@
  *
  * @package Obydullah_POS_For_WooCommerce
  * @since   1.0.0
- * @version 2.0.0
+ * @version 1.0.0
  */
 
 if (!defined('WP_UNINSTALL_PLUGIN')) {
@@ -38,7 +38,8 @@ $opfw_tables = [
 ];
 
 foreach ($opfw_tables as $opfw_table) {
-    $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}{$opfw_table}");
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange -- intentional table removal on uninstall
+    $wpdb->query("DROP TABLE IF EXISTS " . esc_sql($wpdb->prefix . $opfw_table));
 }
 
 // Clear any cached data

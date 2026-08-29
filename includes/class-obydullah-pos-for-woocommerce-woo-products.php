@@ -6,7 +6,8 @@
  * Reads product data from WooCommerce.
  *
  * @package Obydullah_POS_For_WooCommerce
- * @since   2.0.0
+ * @since   1.0.0
+ * @version 1.0.0
  */
 
 if (!defined('ABSPATH')) {
@@ -15,6 +16,14 @@ if (!defined('ABSPATH')) {
 
 class Obydullah_POS_For_WooCommerce_Woo_Products
 {
+    /**
+     * Object cache group used for product data.
+     *
+     * @since 1.0.0
+     * @var string
+     */
+    const CACHE_GROUP = 'opfw_products';
+
     public function __construct()
     {
         add_action('wp_ajax_opfw_get_products', [$this, 'opfw_ajax_get_products']);
@@ -157,54 +166,61 @@ class Obydullah_POS_For_WooCommerce_Woo_Products
         $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
         $per_page = isset($_GET['per_page']) ? intval($_GET['per_page']) : 10;
         $search = isset($_GET['search']) ? sanitize_text_field(wp_unslash($_GET['search'])) : '';
-        $offset = ($page - 1) * $per_page;
 
-        $args = [
-            'status' => 'publish',
-            'limit' => $per_page,
-            'offset' => $offset,
-            'return' => 'objects',
-        ];
+        $cache_key = 'products_' . implode('_', [$page, $per_page, md5($search)]);
 
-        if (!empty($search)) {
-            $args['s'] = $search;
-        }
+        $response = Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_get_or_set($cache_key, function () use ($page, $per_page, $search) {
+            $offset = ($page - 1) * $per_page;
 
-        $total_products = wc_get_products(array_merge($args, ['limit' => -1, 'return' => 'ids', 'offset' => 0]));
-        $total_items = is_array($total_products) ? count($total_products) : 0;
-        $total_pages = max(1, ceil($total_items / $per_page));
-
-        $products = wc_get_products($args);
-        $formatted = [];
-
-        foreach ($products as $product) {
-            $categories = wp_get_post_terms($product->get_id(), 'product_cat', ['fields' => 'names']);
-            $category_name = !is_wp_error($categories) && !empty($categories) ? implode(', ', $categories) : '—';
-
-            $formatted[] = [
-                'id' => $product->get_id(),
-                'name' => $product->get_name(),
-                'image' => $product->get_image('thumbnail'),
-                'category_name' => $category_name,
-                'regular_price' => $product->get_regular_price(),
-                'sale_price' => $product->get_sale_price(),
-                'buy_price' => get_post_meta($product->get_id(), '_opfw_buy_price', true),
-                'stock_quantity' => $product->get_stock_quantity(),
-                'stock_status' => $product->get_stock_status(),
-                'manage_stock' => $product->get_manage_stock(),
-                'status' => $product->get_status(),
+            $args = [
+                'status' => 'publish',
+                'limit' => $per_page,
+                'offset' => $offset,
+                'return' => 'objects',
             ];
-        }
 
-        wp_send_json_success([
-            'products' => $formatted,
-            'pagination' => [
-                'current_page' => $page,
-                'per_page' => $per_page,
-                'total_items' => $total_items,
-                'total_pages' => $total_pages,
-            ],
-        ]);
+            if (!empty($search)) {
+                $args['s'] = $search;
+            }
+
+            $total_products = wc_get_products(array_merge($args, ['limit' => -1, 'return' => 'ids', 'offset' => 0]));
+            $total_items = is_array($total_products) ? count($total_products) : 0;
+            $total_pages = max(1, ceil($total_items / $per_page));
+
+            $products = wc_get_products($args);
+            $formatted = [];
+
+            foreach ($products as $product) {
+                $categories = wp_get_post_terms($product->get_id(), 'product_cat', ['fields' => 'names']);
+                $category_name = !is_wp_error($categories) && !empty($categories) ? implode(', ', $categories) : '—';
+
+                $formatted[] = [
+                    'id' => $product->get_id(),
+                    'name' => $product->get_name(),
+                    'image' => $product->get_image('thumbnail'),
+                    'category_name' => $category_name,
+                    'regular_price' => $product->get_regular_price(),
+                    'sale_price' => $product->get_sale_price(),
+                    'buy_price' => get_post_meta($product->get_id(), '_opfw_buy_price', true),
+                    'stock_quantity' => $product->get_stock_quantity(),
+                    'stock_status' => $product->get_stock_status(),
+                    'manage_stock' => $product->get_manage_stock(),
+                    'status' => $product->get_status(),
+                ];
+            }
+
+            return [
+                'products' => $formatted,
+                'pagination' => [
+                    'current_page' => $page,
+                    'per_page' => $per_page,
+                    'total_items' => $total_items,
+                    'total_pages' => $total_pages,
+                ],
+            ];
+        }, self::CACHE_GROUP);
+
+        wp_send_json_success($response);
     }
 
     public function opfw_ajax_get_categories()
@@ -217,21 +233,25 @@ class Obydullah_POS_For_WooCommerce_Woo_Products
             wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
         }
 
-        $terms = get_terms([
-            'taxonomy' => 'product_cat',
-            'hide_empty' => false,
-            'fields' => 'all',
-        ]);
+        $categories = Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_get_or_set('categories', function () {
+            $terms = get_terms([
+                'taxonomy' => 'product_cat',
+                'hide_empty' => false,
+                'fields' => 'all',
+            ]);
 
-        $categories = [];
-        if (!is_wp_error($terms)) {
-            foreach ($terms as $term) {
-                $categories[] = [
-                    'id' => $term->term_id,
-                    'name' => $term->name,
-                ];
+            $categories = [];
+            if (!is_wp_error($terms)) {
+                foreach ($terms as $term) {
+                    $categories[] = [
+                        'id' => $term->term_id,
+                        'name' => $term->name,
+                    ];
+                }
             }
-        }
+
+            return $categories;
+        }, self::CACHE_GROUP);
 
         wp_send_json_success($categories);
     }
@@ -259,6 +279,11 @@ class Obydullah_POS_For_WooCommerce_Woo_Products
         }
 
         update_post_meta($product_id, '_opfw_buy_price', $buy_price);
+
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_products');
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_stocks');
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_dashboard');
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_pos');
 
         wp_send_json_success(__('Buy price updated successfully', 'obydullah-pos-for-woocommerce'));
     }

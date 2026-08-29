@@ -3,7 +3,8 @@
  * Helper functions for Obydullah POS for WooCommerce
  *
  * @package Obydullah_POS_For_WooCommerce
- * @since 1.0.0
+ * @since   1.0.0
+ * @version 1.0.0
  */
 
 if (!defined('ABSPATH')) {
@@ -16,6 +17,23 @@ if (!defined('ABSPATH')) {
 class Obydullah_POS_For_WooCommerce_Helpers
 {
     /**
+     * Object cache group used for plugin settings.
+     *
+     * @since 1.0.0
+     * @var string
+     */
+    const CACHE_GROUP = 'opfw_settings';
+
+    /**
+     * Registry key that tracks every cache key stored in a group so whole
+     * groups can be flushed without hardcoding each dynamic cache key.
+     *
+     * @since 1.0.0
+     * @var string
+     */
+    const CACHE_REGISTRY_KEY = '__opfw_cache_keys';
+
+    /**
      * Get all POS settings
      *
      * @since 1.0.0
@@ -23,7 +41,12 @@ class Obydullah_POS_For_WooCommerce_Helpers
      */
     public static function opfw_get_settings()
     {
-        return array(
+        $cached = self::opfw_cache_get('settings', self::CACHE_GROUP);
+        if (false !== $cached) {
+            return $cached;
+        }
+
+        $settings = array(
             'currency' => get_option('opfw_currency', '$'),
             'vat_rate' => get_option('opfw_vat_rate', '0'),
             'tax_rate' => get_option('opfw_tax_rate', '0'),
@@ -33,6 +56,145 @@ class Obydullah_POS_For_WooCommerce_Helpers
             'currency_position' => get_option('opfw_currency_position', 'left'),
             'date_format' => get_option('opfw_date_format', 'Y-m-d'),
         );
+
+        self::opfw_cache_set('settings', $settings, self::CACHE_GROUP);
+
+        return $settings;
+    }
+
+    /**
+     * Get an item from the WordPress object cache.
+     *
+     * @since 1.0.0
+     * @param string $key   Cache key.
+     * @param string $group Cache group.
+     * @return mixed Cached value or false on a miss.
+     */
+    public static function opfw_cache_get($key, $group = self::CACHE_GROUP)
+    {
+        return wp_cache_get($key, $group);
+    }
+
+    /**
+     * Store an item in the WordPress object cache.
+     *
+     * @since 1.0.0
+     * @param string $key   Cache key.
+     * @param mixed  $data  Value to cache.
+     * @param string $group Cache group.
+     * @return bool
+     */
+    public static function opfw_cache_set($key, $data, $group = self::CACHE_GROUP)
+    {
+        self::opfw_cache_register($key, $group);
+
+        return wp_cache_set($key, $data, $group);
+    }
+
+    /**
+     * Track a cache key inside a group's registry so it can be flushed
+     * together with the rest of the group.
+     *
+     * @since 1.0.0
+     * @param string $key   Cache key.
+     * @param string $group Cache group.
+     * @return void
+     */
+    public static function opfw_cache_register($key, $group = self::CACHE_GROUP)
+    {
+        $keys = wp_cache_get(self::CACHE_REGISTRY_KEY, $group);
+        if (!is_array($keys)) {
+            $keys = array();
+        }
+        $keys[$key] = time();
+        wp_cache_set(self::CACHE_REGISTRY_KEY, $keys, $group);
+    }
+
+    /**
+     * Delete an item from the WordPress object cache.
+     *
+     * @since 1.0.0
+     * @param string $key   Cache key.
+     * @param string $group Cache group.
+     * @return bool
+     */
+    public static function opfw_cache_delete($key, $group = self::CACHE_GROUP)
+    {
+        $keys = wp_cache_get(self::CACHE_REGISTRY_KEY, $group);
+        if (is_array($keys)) {
+            unset($keys[$key]);
+            wp_cache_set(self::CACHE_REGISTRY_KEY, $keys, $group);
+        }
+
+        return wp_cache_delete($key, $group);
+    }
+
+    /**
+     * Flush every key in a cache group.
+     *
+     * @since 1.0.0
+     * @param string $group Cache group.
+     * @return void
+     */
+    public static function opfw_cache_flush_group($group)
+    {
+        $keys = wp_cache_get(self::CACHE_REGISTRY_KEY, $group);
+        if (is_array($keys)) {
+            foreach (array_keys($keys) as $key) {
+                wp_cache_delete($key, $group);
+            }
+            wp_cache_delete(self::CACHE_REGISTRY_KEY, $group);
+        }
+
+        if (function_exists('wp_cache_flush_group')) {
+            wp_cache_flush_group($group);
+        }
+    }
+
+    /**
+     * Flush every cache group used by the plugin.
+     *
+     * @since 1.0.0
+     * @return void
+     */
+    public static function opfw_cache_flush_all()
+    {
+        $groups = array(
+            'opfw_settings',
+            'opfw_dashboard',
+            'opfw_products',
+            'opfw_stocks',
+            'opfw_adjustments',
+            'opfw_pos',
+            'opfw_accounting',
+            'opfw_sales',
+        );
+
+        foreach ($groups as $group) {
+            self::opfw_cache_flush_group($group);
+        }
+    }
+
+    /**
+     * Get a cached value or compute and store it on a cache miss.
+     *
+     * @since 1.0.0
+     * @param string   $key      Cache key.
+     * @param callable $callback Callback that produces the value.
+     * @param string   $group    Cache group.
+     * @return mixed
+     */
+    public static function opfw_cache_get_or_set($key, $callback, $group = self::CACHE_GROUP)
+    {
+        $cached = self::opfw_cache_get($key, $group);
+        if (false !== $cached) {
+            return $cached;
+        }
+
+        $data = call_user_func($callback);
+        self::opfw_cache_set($key, $data, $group);
+
+        return $data;
     }
 
     /**

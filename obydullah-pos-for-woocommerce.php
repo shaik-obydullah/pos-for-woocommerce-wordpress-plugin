@@ -15,6 +15,8 @@
  * Tested up to: 7.1
  * WC requires at least: 8.0
  * WC tested up to: 11.0
+ * @since   1.0.0
+ * @version 1.0.0
  */
 
 if (!defined('ABSPATH')) {

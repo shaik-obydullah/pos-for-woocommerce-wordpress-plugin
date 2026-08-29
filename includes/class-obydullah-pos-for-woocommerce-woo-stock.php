@@ -6,7 +6,8 @@
  * Logs adjustments in a custom table.
  *
  * @package Obydullah_POS_For_WooCommerce
- * @since   2.0.0
+ * @since   1.0.0
+ * @version 1.0.0
  */
 
 if (!defined('ABSPATH')) {
@@ -15,6 +16,22 @@ if (!defined('ABSPATH')) {
 
 class Obydullah_POS_For_WooCommerce_Woo_Stock
 {
+    /**
+     * Object cache group used for stock data.
+     *
+     * @since 1.0.0
+     * @var string
+     */
+    const CACHE_GROUP = 'opfw_stocks';
+
+    /**
+     * Object cache group used for stock adjustment logs.
+     *
+     * @since 1.0.0
+     * @var string
+     */
+    const ADJUSTMENTS_CACHE_GROUP = 'opfw_adjustments';
+
     private $adjustment_log_table;
 
     public function __construct()
@@ -363,23 +380,27 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
             wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
         }
 
-        $products = wc_get_products([
-            'status' => 'publish',
-            'limit' => -1,
-            'return' => 'objects',
-        ]);
+        $formatted = Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_get_or_set('products_all', function () {
+            $products = wc_get_products([
+                'status' => 'publish',
+                'limit' => -1,
+                'return' => 'objects',
+            ]);
 
-        $formatted = [];
-        foreach ($products as $product) {
-            $formatted[] = [
-                'id' => $product->get_id(),
-                'name' => $product->get_name(),
-                'manage_stock' => $product->get_manage_stock(),
-                'buy_price' => get_post_meta($product->get_id(), '_opfw_buy_price', true) ?: '0.00',
-                'sale_price' => $product->get_regular_price() ?: '0.00',
-                'stock_quantity' => $product->get_stock_quantity() ?: 0,
-            ];
-        }
+            $formatted = [];
+            foreach ($products as $product) {
+                $formatted[] = [
+                    'id' => $product->get_id(),
+                    'name' => $product->get_name(),
+                    'manage_stock' => $product->get_manage_stock(),
+                    'buy_price' => get_post_meta($product->get_id(), '_opfw_buy_price', true) ?: '0.00',
+                    'sale_price' => $product->get_regular_price() ?: '0.00',
+                    'stock_quantity' => $product->get_stock_quantity() ?: 0,
+                ];
+            }
+
+            return $formatted;
+        }, self::CACHE_GROUP);
 
         wp_send_json_success($formatted);
     }
@@ -398,52 +419,59 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
         $per_page = isset($_GET['per_page']) ? intval($_GET['per_page']) : 20;
         $search = isset($_GET['search']) ? sanitize_text_field(wp_unslash($_GET['search'])) : '';
         $status_filter = isset($_GET['status']) ? sanitize_text_field(wp_unslash($_GET['status'])) : '';
-        $offset = ($page - 1) * $per_page;
 
-        $args = [
-            'status' => 'publish',
-            'limit' => $per_page,
-            'offset' => $offset,
-            'return' => 'objects',
-        ];
+        $cache_key = 'stocks_' . implode('_', [$page, $per_page, md5($search), md5($status_filter)]);
 
-        if (!empty($search)) {
-            $args['s'] = $search;
-        }
+        $response = Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_get_or_set($cache_key, function () use ($page, $per_page, $search, $status_filter) {
+            $offset = ($page - 1) * $per_page;
 
-        $all_products = wc_get_products(array_merge($args, ['limit' => -1, 'return' => 'ids', 'offset' => 0]));
-        $total_items = is_array($all_products) ? count($all_products) : 0;
-        $total_pages = max(1, ceil($total_items / $per_page));
+            $args = [
+                'status' => 'publish',
+                'limit' => $per_page,
+                'offset' => $offset,
+                'return' => 'objects',
+            ];
 
-        $products = wc_get_products($args);
-        $stocks = [];
-
-        foreach ($products as $product) {
-            $stock_status = $product->get_stock_status();
-            if (!empty($status_filter) && $stock_status !== $status_filter) {
-                continue;
+            if (!empty($search)) {
+                $args['s'] = $search;
             }
 
-            $stocks[] = [
-                'id' => $product->get_id(),
-                'product_name' => $product->get_name(),
-                'buy_price' => get_post_meta($product->get_id(), '_opfw_buy_price', true) ?: '0.00',
-                'sale_price' => $product->get_regular_price() ?: '0.00',
-                'quantity' => $product->get_stock_quantity() ?: 0,
-                'status' => $stock_status,
-                'manage_stock' => $product->get_manage_stock(),
-            ];
-        }
+            $all_products = wc_get_products(array_merge($args, ['limit' => -1, 'return' => 'ids', 'offset' => 0]));
+            $total_items = is_array($all_products) ? count($all_products) : 0;
+            $total_pages = max(1, ceil($total_items / $per_page));
 
-        wp_send_json_success([
-            'stocks' => $stocks,
-            'pagination' => [
-                'current_page' => $page,
-                'per_page' => $per_page,
-                'total_items' => $total_items,
-                'total_pages' => $total_pages,
-            ],
-        ]);
+            $products = wc_get_products($args);
+            $stocks = [];
+
+            foreach ($products as $product) {
+                $stock_status = $product->get_stock_status();
+                if (!empty($status_filter) && $stock_status !== $status_filter) {
+                    continue;
+                }
+
+                $stocks[] = [
+                    'id' => $product->get_id(),
+                    'product_name' => $product->get_name(),
+                    'buy_price' => get_post_meta($product->get_id(), '_opfw_buy_price', true) ?: '0.00',
+                    'sale_price' => $product->get_regular_price() ?: '0.00',
+                    'quantity' => $product->get_stock_quantity() ?: 0,
+                    'status' => $stock_status,
+                    'manage_stock' => $product->get_manage_stock(),
+                ];
+            }
+
+            return [
+                'stocks' => $stocks,
+                'pagination' => [
+                    'current_page' => $page,
+                    'per_page' => $per_page,
+                    'total_items' => $total_items,
+                    'total_pages' => $total_pages,
+                ],
+            ];
+        }, self::CACHE_GROUP);
+
+        wp_send_json_success($response);
     }
 
     public function opfw_ajax_update_stock()
@@ -495,6 +523,12 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
                 abs($quantity - $old_quantity), $old_quantity, $quantity, __('Stock update', 'obydullah-pos-for-woocommerce'));
         }
 
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_stocks');
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_adjustments');
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_products');
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_dashboard');
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_pos');
+
         wp_send_json_success(__('Stock updated successfully', 'obydullah-pos-for-woocommerce'));
     }
 
@@ -508,22 +542,26 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
             wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
         }
 
-        $products = wc_get_products([
-            'status' => 'publish',
-            'limit' => -1,
-            'return' => 'objects',
-        ]);
+        $formatted = Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_get_or_set('products_for_adjustments', function () {
+            $products = wc_get_products([
+                'status' => 'publish',
+                'limit' => -1,
+                'return' => 'objects',
+            ]);
 
-        $formatted = [];
-        foreach ($products as $product) {
-            $formatted[] = [
-                'product_id' => $product->get_id(),
-                'name' => $product->get_name(),
-                'quantity' => $product->get_stock_quantity() ?: 0,
-                'buy_price' => get_post_meta($product->get_id(), '_opfw_buy_price', true) ?: '0.00',
-                'stock_status' => $product->get_stock_status(),
-            ];
-        }
+            $formatted = [];
+            foreach ($products as $product) {
+                $formatted[] = [
+                    'product_id' => $product->get_id(),
+                    'name' => $product->get_name(),
+                    'quantity' => $product->get_stock_quantity() ?: 0,
+                    'buy_price' => get_post_meta($product->get_id(), '_opfw_buy_price', true) ?: '0.00',
+                    'stock_status' => $product->get_stock_status(),
+                ];
+            }
+
+            return $formatted;
+        }, self::CACHE_GROUP);
 
         wp_send_json_success($formatted);
     }
@@ -543,8 +581,11 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
             wp_send_json_error(__('Invalid product ID', 'obydullah-pos-for-woocommerce'));
         }
 
-        $product = wc_get_product($product_id);
-        $quantity = $product ? ($product->get_stock_quantity() ?: 0) : 0;
+        $cache_key = 'current_stock_' . $product_id;
+        $quantity = Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_get_or_set($cache_key, function () use ($product_id) {
+            $product = wc_get_product($product_id);
+            return $product ? ($product->get_stock_quantity() ?: 0) : 0;
+        }, self::CACHE_GROUP);
 
         wp_send_json_success(['current_stock' => $quantity]);
     }
@@ -602,6 +643,12 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
 
         $this->opfw_log_adjustment($product_id, $adjustment_type, $quantity, $old_quantity, $new_quantity, $note);
 
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_adjustments');
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_stocks');
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_products');
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_dashboard');
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_pos');
+
         wp_send_json_success(__('Stock adjustment applied successfully', 'obydullah-pos-for-woocommerce'));
     }
 
@@ -615,51 +662,59 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
             wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
         }
 
-        global $wpdb;
-
         $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
         $per_page = isset($_GET['per_page']) ? intval($_GET['per_page']) : 10;
-        $offset = ($page - 1) * $per_page;
         $search = isset($_GET['search']) ? sanitize_text_field(wp_unslash($_GET['search'])) : '';
         $type = isset($_GET['type']) ? sanitize_text_field(wp_unslash($_GET['type'])) : '';
         $date = isset($_GET['date']) ? sanitize_text_field(wp_unslash($_GET['date'])) : '';
 
-        $where = '1=1';
-        $prepare_args = [];
+        $cache_key = 'adjustments_' . implode('_', [$page, $per_page, md5($search), md5($type), md5($date)]);
 
-        if (!empty($search)) {
-            $where .= ' AND p.post_title LIKE %s';
-            $prepare_args[] = '%' . $wpdb->esc_like($search) . '%';
+        $response = wp_cache_get($cache_key, self::ADJUSTMENTS_CACHE_GROUP);
+        if (false !== $response) {
+            wp_send_json_success($response);
         }
 
-        if (!empty($type) && in_array($type, ['increase', 'decrease'], true)) {
-            $where .= ' AND a.adjustment_type = %s';
-            $prepare_args[] = $type;
-        }
-
-        if (!empty($date)) {
-            $where .= ' AND DATE(a.created_at) = %s';
-            $prepare_args[] = $date;
-        }
+        global $wpdb;
 
         $table_name = esc_sql($this->adjustment_log_table);
 
-        // Always use prepare with dummy placeholder for static analysis
-        $dummy = 1;
-        $total = (int) $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM {$table_name} a LEFT JOIN {$wpdb->posts} p ON a.product_id = p.ID WHERE {$where} AND 1=%d", array_merge($prepare_args, [$dummy])));
+        $where = ['1=1'];
+
+        if (!empty($search)) {
+            $where[] = $wpdb->prepare('p.post_title LIKE %s', '%' . $wpdb->esc_like($search) . '%');
+        }
+
+        if (!empty($type) && in_array($type, ['increase', 'decrease'], true)) {
+            $where[] = $wpdb->prepare('a.adjustment_type = %s', $type);
+        }
+
+        if (!empty($date)) {
+            $where[] = $wpdb->prepare('DATE(a.created_at) = %s', $date);
+        }
+
+        $where_sql = implode(' AND ', $where);
+
+        // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter -- WHERE fragments above are individually escaped with $wpdb->prepare()
+        $total = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$table_name} a LEFT JOIN {$wpdb->posts} p ON a.product_id = p.ID WHERE {$where_sql}"
+        );
         $total_pages = max(1, ceil(intval($total) / $per_page));
 
-        $results = $wpdb->get_results($wpdb->prepare(
-            "SELECT a.*, p.post_title as product_name 
-             FROM {$table_name} a 
-             LEFT JOIN {$wpdb->posts} p ON a.product_id = p.ID 
-             WHERE {$where} AND 1=%d
-             ORDER BY a.created_at DESC 
-             LIMIT %d OFFSET %d",
-            array_merge($prepare_args, [$dummy, $per_page, $offset])
-        ));
+        $results = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT a.*, p.post_title as product_name 
+                 FROM {$table_name} a 
+                 LEFT JOIN {$wpdb->posts} p ON a.product_id = p.ID 
+                 WHERE {$where_sql}
+                 ORDER BY a.created_at DESC 
+                 LIMIT %d OFFSET %d",
+                array($per_page, ($page - 1) * $per_page)
+            )
+        );
+        // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
-        wp_send_json_success([
+        $response = [
             'adjustments' => $results ?: [],
             'pagination' => [
                 'current_page' => $page,
@@ -667,7 +722,12 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
                 'total_items' => intval($total),
                 'total_pages' => $total_pages,
             ],
-        ]);
+        ];
+
+        wp_cache_set($cache_key, $response, self::ADJUSTMENTS_CACHE_GROUP);
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_register($cache_key, self::ADJUSTMENTS_CACHE_GROUP);
+
+        wp_send_json_success($response);
     }
 
     public function opfw_ajax_delete_adjustment()
@@ -688,10 +748,12 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
             wp_send_json_error(__('Invalid adjustment ID', 'obydullah-pos-for-woocommerce'));
         }
 
-        $result = $wpdb->delete($this->adjustment_log_table, ['id' => $id], ['%d']);
+        $result = $wpdb->delete($this->adjustment_log_table, ['id' => $id], ['%d']); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         if ($result === false) {
             wp_send_json_error(__('Failed to delete adjustment', 'obydullah-pos-for-woocommerce'));
         }
+
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_adjustments');
 
         wp_send_json_success(__('Adjustment deleted successfully', 'obydullah-pos-for-woocommerce'));
     }
@@ -700,6 +762,7 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
     {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- plugin log table write, cache flushed after
         $wpdb->insert($this->adjustment_log_table, [
             'product_id' => $product_id,
             'adjustment_type' => $type,

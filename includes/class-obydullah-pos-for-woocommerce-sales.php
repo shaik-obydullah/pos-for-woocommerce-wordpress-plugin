@@ -3,7 +3,8 @@
  * Sales Management — WooCommerce Orders
  *
  * @package Obydullah_POS_For_WooCommerce
- * @since   2.0.0
+ * @since   1.0.0
+ * @version 1.0.0
  */
 
 if (!defined('ABSPATH')) {
@@ -12,6 +13,14 @@ if (!defined('ABSPATH')) {
 
 class Obydullah_POS_For_WooCommerce_Sales
 {
+    /**
+     * Object cache group used for sales data.
+     *
+     * @since 1.0.0
+     * @var string
+     */
+    const CACHE_GROUP = 'opfw_sales';
+
     public function __construct()
     {
         add_action('wp_ajax_opfw_get_sales', [$this, 'opfw_ajax_get_opfw_sales']);
@@ -175,8 +184,8 @@ class Obydullah_POS_For_WooCommerce_Sales
             wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
         }
 
-        $page     = max(1, intval($_GET['page'] ?? 1));
-        $per_page = max(1, intval($_GET['per_page'] ?? 10));
+        $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+        $per_page = isset($_GET['per_page']) ? intval($_GET['per_page']) : 10;
         $search   = sanitize_text_field(wp_unslash($_GET['search'] ?? ''));
         $date_from = sanitize_text_field(wp_unslash($_GET['date_from'] ?? ''));
         $date_to   = sanitize_text_field(wp_unslash($_GET['date_to'] ?? ''));
@@ -189,7 +198,7 @@ class Obydullah_POS_For_WooCommerce_Sales
             'orderby'  => 'date',
             'order'    => 'DESC',
             'return'   => 'objects',
-            'meta_query' => [
+            'meta_query' => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
                 [
                     'key'     => '_pos_order',
                     'value'   => 'yes',
@@ -213,42 +222,48 @@ class Obydullah_POS_For_WooCommerce_Sales
                 : ($date_from ? $date_from . '...' : '...' . $date_to);
         }
 
-        $count_args        = $args;
-        $count_args['limit'] = -1;
-        $count_args['page']  = 1;
-        $all_orders         = wc_get_orders($count_args);
-        $sales              = [];
+        $cache_key = 'sales_' . implode('_', [$page, $per_page, md5($search), md5($date_from), md5($date_to), md5($sale_type), md5($status)]);
 
-        foreach ($all_orders as $order) {
-            $invoice_id = $order->get_meta('_invoice_id');
-            if ($search && stripos($invoice_id, $search) === false) {
-                continue;
+        $all_sales = Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_get_or_set($cache_key, function () use ($search, $sale_type, $args) {
+            $count_args        = $args;
+            $count_args['limit'] = -1;
+            $count_args['page']  = 1;
+            $all_orders         = wc_get_orders($count_args);
+            $all_sales          = [];
+
+            foreach ($all_orders as $order) {
+                $invoice_id = $order->get_meta('_invoice_id');
+                if ($search && stripos($invoice_id, $search) === false) {
+                    continue;
+                }
+
+                $order_type = $order->get_meta('_order_type');
+                if ($sale_type && $order_type !== $sale_type) {
+                    continue;
+                }
+
+                $customer_name = trim($order->get_billing_first_name() . ' ' . $order->get_billing_last_name());
+                if (empty($customer_name)) {
+                    $customer_name = __('Walk-in Customer', 'obydullah-pos-for-woocommerce');
+                }
+
+                $all_sales[] = [
+                    'id'            => $order->get_id(),
+                    'invoice_id'    => $invoice_id,
+                    'customer_name' => $customer_name,
+                    'sale_type'     => $order_type,
+                    'grand_total'   => $order->get_total(),
+                    'status'        => $order->get_status(),
+                    'created_at'    => $order->get_date_created() ? $order->get_date_created()->date('Y-m-d H:i:s') : '',
+                ];
             }
 
-            $order_type = $order->get_meta('_order_type');
-            if ($sale_type && $order_type !== $sale_type) {
-                continue;
-            }
+            return $all_sales;
+        }, self::CACHE_GROUP);
 
-            $customer_name = trim($order->get_billing_first_name() . ' ' . $order->get_billing_last_name());
-            if (empty($customer_name)) {
-                $customer_name = __('Walk-in Customer', 'obydullah-pos-for-woocommerce');
-            }
-
-            $sales[] = [
-                'id'            => $order->get_id(),
-                'invoice_id'    => $invoice_id,
-                'customer_name' => $customer_name,
-                'sale_type'     => $order_type,
-                'grand_total'   => $order->get_total(),
-                'status'        => $order->get_status(),
-                'created_at'    => $order->get_date_created() ? $order->get_date_created()->date('Y-m-d H:i:s') : '',
-            ];
-        }
-
-        $total       = count($sales);
+        $sales       = array_slice($all_sales, ($page - 1) * $per_page, $per_page);
+        $total       = count($all_sales);
         $total_pages = max(1, ceil($total / $per_page));
-        $sales       = array_slice($sales, ($page - 1) * $per_page, $per_page);
 
         wp_send_json_success([
             'sales'        => $sales,
@@ -330,6 +345,10 @@ class Obydullah_POS_For_WooCommerce_Sales
         }
 
         $order->delete(true);
+
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_sales');
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_dashboard');
+
         wp_send_json_success(__('Sale deleted successfully', 'obydullah-pos-for-woocommerce'));
     }
 }

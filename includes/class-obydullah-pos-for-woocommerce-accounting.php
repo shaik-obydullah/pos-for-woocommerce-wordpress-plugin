@@ -4,7 +4,7 @@
  *
  * @package Obydullah_POS_For_WooCommerce
  * @since   1.0.0
- * @version 1.0.4
+ * @version 1.0.0
  */
 if (!defined('ABSPATH')) {
     exit;
@@ -12,6 +12,14 @@ if (!defined('ABSPATH')) {
 
 class Obydullah_POS_For_WooCommerce_Accounting
 {
+    /**
+     * Object cache group used for accounting data.
+     *
+     * @since 1.0.0
+     * @var string
+     */
+    const CACHE_GROUP = 'opfw_accounting';
+
     public function __construct()
     {
         add_action('wp_ajax_opfw_add_accounting_entry', array($this, 'opfw_ajax_add_opfw_accounting_entry'));
@@ -283,12 +291,10 @@ class Obydullah_POS_For_WooCommerce_Accounting
             wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
         }
 
-        global $wpdb;
-
         $get = wp_unslash($_GET);
 
-        $page     = isset($get['page']) ? max(1, (int) $get['page']) : 1;
-        $per_page = isset($get['per_page']) ? max(1, (int) $get['per_page']) : 10;
+        $page     = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+        $per_page = isset($_GET['per_page']) ? intval($_GET['per_page']) : 10;
 
         $date_from = isset($get['date_from'])
             ? $this->opfw_normalize_date(sanitize_text_field($get['date_from']))
@@ -298,48 +304,53 @@ class Obydullah_POS_For_WooCommerce_Accounting
             ? $this->opfw_normalize_date(sanitize_text_field($get['date_to']))
             : '';
 
+        $cache_key = 'entries_' . implode('_', [$page, $per_page, md5($date_from), md5($date_to)]);
+
+        $response = wp_cache_get($cache_key, self::CACHE_GROUP);
+        if (false !== $response) {
+            wp_send_json_success($response);
+        }
+
+        global $wpdb;
+
         $offset = ($page - 1) * $per_page;
 
-        $table_name = $this->opfw_get_table_name();
+        $table_name = esc_sql($this->opfw_get_table_name());
 
         $where = [];
-        $args  = [];
 
         if (!empty($date_from)) {
-            $where[] = 'created_at >= %s';
-            $args[]  = $date_from . ' 00:00:00';
+            $where[] = $wpdb->prepare('created_at >= %s', $date_from . ' 00:00:00');
         }
 
         if (!empty($date_to)) {
-            $where[] = 'created_at <= %s';
-            $args[]  = $date_to . ' 23:59:59';
+            $where[] = $wpdb->prepare('created_at <= %s', $date_to . ' 23:59:59');
         }
 
-        $where_sql = $where ? 'WHERE ' . implode(' AND ', $where) : '';
+        $where_sql = $where ? ' WHERE ' . implode(' AND ', $where) : '';
 
+        // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.DirectDatabaseQuery.DirectQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter -- WHERE fragments above are individually escaped with $wpdb->prepare()
         $summary = $wpdb->get_row(
-            $wpdb->prepare(
-                "SELECT 
-                    COUNT(*) as total,
+            "SELECT COUNT(*) as total,
                     COALESCE(SUM(in_amount), 0) as total_income,
                     COALESCE(SUM(out_amount), 0) as total_expense
-                FROM {$table_name} {$where_sql}",
-                $args
-            )
+             FROM {$table_name}{$where_sql}"
         );
+        // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.DirectDatabaseQuery.DirectQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
         $total = (int) ($summary->total ?? 0);
 
+        // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.DirectDatabaseQuery.DirectQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter -- WHERE fragments above are individually escaped with $wpdb->prepare()
         $entries = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT id, created_at, in_amount, out_amount
-                FROM {$table_name}
-                {$where_sql}
-                ORDER BY created_at DESC
-                LIMIT %d OFFSET %d",
-                array_merge($args, [$per_page, $offset])
+                    "SELECT id, created_at, in_amount, out_amount, description
+                     FROM {$table_name}{$where_sql}
+                     ORDER BY created_at DESC
+                     LIMIT %d OFFSET %d",
+                array($per_page, $offset)
             )
         );
+        // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.DirectDatabaseQuery.DirectQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
         if (!empty($entries)) {
             foreach ($entries as $entry) {
@@ -357,7 +368,7 @@ class Obydullah_POS_For_WooCommerce_Accounting
         $showing_from = $total > 0 ? $offset + 1 : 0;
         $showing_to   = min($offset + $per_page, $total);
 
-        wp_send_json_success([
+        $response = [
             'entries'       => $entries,
             'total'         => $total,
             'showing_from'  => $showing_from,
@@ -365,7 +376,12 @@ class Obydullah_POS_For_WooCommerce_Accounting
             'current_page'  => $page,
             'per_page'      => $per_page,
             'totals'        => $formatted_totals,
-        ]);
+        ];
+
+        wp_cache_set($cache_key, $response, self::CACHE_GROUP);
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_register($cache_key, self::CACHE_GROUP);
+
+        wp_send_json_success($response);
     }
 
     /** Add accounting entry */
@@ -418,11 +434,14 @@ class Obydullah_POS_For_WooCommerce_Accounting
             }
         }
 
-        $result = $wpdb->insert($table, $data, $format);
+        $result = $wpdb->insert($table, $data, $format); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
         if (false === $result) {
             wp_send_json_error(__('Failed to add accounting entry', 'obydullah-pos-for-woocommerce'));
         }
+
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_accounting');
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_dashboard');
 
         wp_send_json_success(__('Accounting entry added successfully', 'obydullah-pos-for-woocommerce'));
     }
@@ -449,7 +468,7 @@ class Obydullah_POS_For_WooCommerce_Accounting
             wp_send_json_error(__('Invalid accounting entry ID', 'obydullah-pos-for-woocommerce'));
         }
 
-        $result = $wpdb->delete($table, array('id' => $id), array('%d'));
+        $result = $wpdb->delete($table, array('id' => $id), array('%d')); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 
         if (false === $result) {
             wp_send_json_error(__('Failed to delete accounting entry', 'obydullah-pos-for-woocommerce'));
@@ -458,6 +477,9 @@ class Obydullah_POS_For_WooCommerce_Accounting
         if (0 === $result) {
             wp_send_json_error(__('Accounting entry not found', 'obydullah-pos-for-woocommerce'));
         }
+
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_accounting');
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_dashboard');
 
         wp_send_json_success(__('Accounting entry deleted successfully', 'obydullah-pos-for-woocommerce'));
     }

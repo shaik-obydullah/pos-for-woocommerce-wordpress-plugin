@@ -3,7 +3,8 @@
  * Dashboard — WooCommerce Data Queries
  *
  * @package Obydullah_POS_For_WooCommerce
- * @since   2.0.0
+ * @since   1.0.0
+ * @version 1.0.0
  */
 
 if (!defined('ABSPATH')) {
@@ -12,6 +13,14 @@ if (!defined('ABSPATH')) {
 
 class Obydullah_POS_For_WooCommerce_Dashboard
 {
+    /**
+     * Object cache group used for dashboard statistics.
+     *
+     * @since 1.0.0
+     * @var string
+     */
+    const CACHE_GROUP = 'opfw_dashboard';
+
     private $helpers;
 
     public function __construct()
@@ -31,92 +40,102 @@ class Obydullah_POS_For_WooCommerce_Dashboard
 
     private function opfw_get_stock_value()
     {
-        $total = 0;
-        $products = wc_get_products([
-            'limit'  => -1,
-            'status' => 'publish',
-            'return' => 'objects',
-        ]);
+        return Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_get_or_set('stock_value', function () {
+            $total = 0;
+            $products = wc_get_products([
+                'limit'  => -1,
+                'status' => 'publish',
+                'return' => 'objects',
+            ]);
 
-        foreach ($products as $product) {
-            $qty = $product->get_manage_stock() ? $product->get_stock_quantity() : 0;
-            $cost = floatval(get_post_meta($product->get_id(), '_opfw_buy_price', true));
-            $total += $qty * $cost;
-        }
+            foreach ($products as $product) {
+                $qty = $product->get_manage_stock() ? $product->get_stock_quantity() : 0;
+                $cost = floatval(get_post_meta($product->get_id(), '_opfw_buy_price', true));
+                $total += $qty * $cost;
+            }
 
-        return $total;
+            return $total;
+        }, self::CACHE_GROUP);
     }
 
     private function opfw_get_today_sales_count()
     {
-        $orders = wc_get_orders([
-            'date_created' => current_time('Y-m-d'),
-            'status'       => 'completed',
-            'limit'        => -1,
-            'return'       => 'ids',
-        ]);
-        return count($orders);
+        return Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_get_or_set('today_sales', function () {
+            $orders = wc_get_orders([
+                'date_created' => current_time('Y-m-d'),
+                'status'       => 'completed',
+                'limit'        => -1,
+                'return'       => 'ids',
+            ]);
+            return count($orders);
+        }, self::CACHE_GROUP);
     }
 
     private function opfw_get_month_sales_count()
     {
-        $first_day = current_time('Y-m-01');
-        $last_day  = current_time('Y-m-t');
+        return Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_get_or_set('month_sales', function () {
+            $first_day = current_time('Y-m-01');
+            $last_day  = current_time('Y-m-t');
 
-        $orders = wc_get_orders([
-            'date_created' => $first_day . '...' . $last_day,
-            'status'       => 'completed',
-            'limit'        => -1,
-            'return'       => 'ids',
-        ]);
-        return count($orders);
+            $orders = wc_get_orders([
+                'date_created' => $first_day . '...' . $last_day,
+                'status'       => 'completed',
+                'limit'        => -1,
+                'return'       => 'ids',
+            ]);
+            return count($orders);
+        }, self::CACHE_GROUP);
     }
 
     private function opfw_get_today_income()
     {
-        $total = 0;
-        $orders = wc_get_orders([
-            'date_created' => current_time('Y-m-d'),
-            'status'       => 'completed',
-            'limit'        => -1,
-        ]);
+        return Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_get_or_set('today_income', function () {
+            $total = 0;
+            $orders = wc_get_orders([
+                'date_created' => current_time('Y-m-d'),
+                'status'       => 'completed',
+                'limit'        => -1,
+            ]);
 
-        foreach ($orders as $order) {
-            $revenue = floatval($order->get_total());
-            foreach ($order->get_items() as $item) {
-                $pid  = $item->get_product_id();
-                $cost = floatval(get_post_meta($pid, '_opfw_buy_price', true));
-                $revenue -= $cost * $item->get_quantity();
+            foreach ($orders as $order) {
+                $revenue = floatval($order->get_total());
+                foreach ($order->get_items() as $item) {
+                    $pid  = $item->get_product_id();
+                    $cost = floatval(get_post_meta($pid, '_opfw_buy_price', true));
+                    $revenue -= $cost * $item->get_quantity();
+                }
+                $total += $revenue;
             }
-            $total += $revenue;
-        }
 
-        return $total;
+            return $total;
+        }, self::CACHE_GROUP);
     }
 
     private function opfw_get_month_income()
     {
-        $first_day = current_time('Y-m-01');
-        $last_day  = current_time('Y-m-t');
-        $total = 0;
+        return Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_get_or_set('month_income', function () {
+            $first_day = current_time('Y-m-01');
+            $last_day  = current_time('Y-m-t');
+            $total = 0;
 
-        $orders = wc_get_orders([
-            'date_created' => $first_day . '...' . $last_day,
-            'status'       => 'completed',
-            'limit'        => -1,
-        ]);
+            $orders = wc_get_orders([
+                'date_created' => $first_day . '...' . $last_day,
+                'status'       => 'completed',
+                'limit'        => -1,
+            ]);
 
-        foreach ($orders as $order) {
-            $revenue = floatval($order->get_total());
-            foreach ($order->get_items() as $item) {
-                $pid  = $item->get_product_id();
-                $cost = floatval(get_post_meta($pid, '_opfw_buy_price', true));
-                $revenue -= $cost * $item->get_quantity();
+            foreach ($orders as $order) {
+                $revenue = floatval($order->get_total());
+                foreach ($order->get_items() as $item) {
+                    $pid  = $item->get_product_id();
+                    $cost = floatval(get_post_meta($pid, '_opfw_buy_price', true));
+                    $revenue -= $cost * $item->get_quantity();
+                }
+                $total += $revenue;
             }
-            $total += $revenue;
-        }
 
-        return $total;
+            return $total;
+        }, self::CACHE_GROUP);
     }
 
     private function opfw_get_today_expense()
@@ -124,14 +143,24 @@ class Obydullah_POS_For_WooCommerce_Dashboard
         global $wpdb;
         $table = $wpdb->prefix . 'opfw_accounting';
 
-        $result = $wpdb->get_var(
+        $cache_key = 'today_expense';
+        $cached = wp_cache_get($cache_key, self::CACHE_GROUP);
+        if (false !== $cached) {
+            return $cached;
+        }
+
+        $result = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
             $wpdb->prepare(
                 "SELECT SUM(out_amount) FROM " . esc_sql($table) . " WHERE DATE(created_at) = %s",
                 current_time('Y-m-d')
             )
         );
 
-        return $result ? floatval($result) : 0;
+        $expense = $result ? floatval($result) : 0;
+        wp_cache_set($cache_key, $expense, self::CACHE_GROUP);
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_register($cache_key, self::CACHE_GROUP);
+
+        return $expense;
     }
 
     private function opfw_get_month_expense()
@@ -139,7 +168,13 @@ class Obydullah_POS_For_WooCommerce_Dashboard
         global $wpdb;
         $table = $wpdb->prefix . 'opfw_accounting';
 
-        $result = $wpdb->get_var(
+        $cache_key = 'month_expense';
+        $cached = wp_cache_get($cache_key, self::CACHE_GROUP);
+        if (false !== $cached) {
+            return $cached;
+        }
+
+        $result = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
             $wpdb->prepare(
                 "SELECT SUM(out_amount) FROM " . esc_sql($table) . " WHERE DATE(created_at) BETWEEN %s AND %s",
                 current_time('Y-m-01'),
@@ -147,50 +182,62 @@ class Obydullah_POS_For_WooCommerce_Dashboard
             )
         );
 
-        return $result ? floatval($result) : 0;
+        $expense = $result ? floatval($result) : 0;
+        wp_cache_set($cache_key, $expense, self::CACHE_GROUP);
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_register($cache_key, self::CACHE_GROUP);
+
+        return $expense;
     }
 
     private function opfw_get_low_stock_count()
     {
-        $count = 0;
-        $products = wc_get_products([
-            'limit'  => -1,
-            'status' => 'publish',
-            'return' => 'objects',
-        ]);
+        return Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_get_or_set('low_stock_count', function () {
+            $count = 0;
+            $products = wc_get_products([
+                'limit'  => -1,
+                'status' => 'publish',
+                'return' => 'objects',
+            ]);
 
-        foreach ($products as $product) {
-            if ($product->get_manage_stock() && $product->get_stock_quantity() <= $product->get_low_stock_amount()) {
-                $count++;
+            foreach ($products as $product) {
+                if ($product->get_manage_stock() && $product->get_stock_quantity() <= $product->get_low_stock_amount()) {
+                    $count++;
+                }
             }
-        }
 
-        return $count;
+            return $count;
+        }, self::CACHE_GROUP);
     }
 
     private function opfw_get_top_products($limit = 5)
     {
+        $cache_key = 'top_products_' . intval($limit);
+        $cached = wp_cache_get($cache_key, self::CACHE_GROUP);
+        if (false !== $cached) {
+            return $cached;
+        }
+
         global $wpdb;
 
-        $results = $wpdb->get_results(
+        $results = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
             $wpdb->prepare(
-                "SELECT oi_meta.meta_value AS product_id,
-                        SUM(oi_meta_qty.meta_value) AS total_quantity_sold,
-                        COUNT(DISTINCT o.ID) AS total_orders
-                 FROM {$wpdb->prefix}woocommerce_order_items oi
-                 JOIN {$wpdb->prefix}woocommerce_order_itemmeta oi_meta
-                      ON oi.order_item_id = oi_meta.order_item_id
-                      AND oi_meta.meta_key = '_product_id'
-                 JOIN {$wpdb->prefix}woocommerce_order_itemmeta oi_meta_qty
-                      ON oi.order_item_id = oi_meta_qty.order_item_id
-                      AND oi_meta_qty.meta_key = '_qty'
-                 JOIN {$wpdb->posts} o
-                      ON o.ID = oi.order_id
-                      AND o.post_status = 'wc-completed'
-                 WHERE oi.order_item_type = 'line_item'
-                 GROUP BY oi_meta.meta_value
-                 ORDER BY total_quantity_sold DESC
-                 LIMIT %d",
+                    "SELECT oi_meta.meta_value AS product_id,
+                            SUM(oi_meta_qty.meta_value) AS total_quantity_sold,
+                            COUNT(DISTINCT o.ID) AS total_orders
+                     FROM {$wpdb->prefix}woocommerce_order_items oi
+                     JOIN {$wpdb->prefix}woocommerce_order_itemmeta oi_meta
+                          ON oi.order_item_id = oi_meta.order_item_id
+                          AND oi_meta.meta_key = '_product_id'
+                     JOIN {$wpdb->prefix}woocommerce_order_itemmeta oi_meta_qty
+                          ON oi.order_item_id = oi_meta_qty.order_item_id
+                          AND oi_meta_qty.meta_key = '_qty'
+                     JOIN {$wpdb->posts} o
+                          ON o.ID = oi.order_id
+                          AND o.post_status = 'wc-completed'
+                     WHERE oi.order_item_type = 'line_item'
+                     GROUP BY oi_meta.meta_value
+                     ORDER BY total_quantity_sold DESC
+                     LIMIT %d",
                 $limit
             )
         );
@@ -211,6 +258,9 @@ class Obydullah_POS_For_WooCommerce_Dashboard
                 ];
             }
         }
+
+        wp_cache_set($cache_key, $top, self::CACHE_GROUP);
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_register($cache_key, self::CACHE_GROUP);
 
         return $top;
     }

@@ -3,7 +3,8 @@
  * Point of Sales (POS) - WooCommerce Integrated
  *
  * @package Obydullah_POS_For_WooCommerce
- * @since   2.0.0
+ * @since   1.0.0
+ * @version 1.0.0
  */
 
 if (!defined('ABSPATH')) {
@@ -12,6 +13,14 @@ if (!defined('ABSPATH')) {
 
 class Obydullah_POS_For_WooCommerce_POS
 {
+    /**
+     * Object cache group used for POS data.
+     *
+     * @since 1.0.0
+     * @var string
+     */
+    const CACHE_GROUP = 'opfw_pos';
+
     private $helpers;
 
     public function __construct()
@@ -247,21 +256,25 @@ class Obydullah_POS_For_WooCommerce_POS
             wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
         }
 
-        $terms = get_terms([
-            'taxonomy' => 'product_cat',
-            'hide_empty' => true,
-            'fields' => 'all',
-        ]);
+        $categories = Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_get_or_set('categories', function () {
+            $terms = get_terms([
+                'taxonomy' => 'product_cat',
+                'hide_empty' => true,
+                'fields' => 'all',
+            ]);
 
-        $categories = [];
-        if (!is_wp_error($terms)) {
-            foreach ($terms as $term) {
-                $categories[] = [
-                    'id' => $term->term_id,
-                    'name' => $term->name,
-                ];
+            $categories = [];
+            if (!is_wp_error($terms)) {
+                foreach ($terms as $term) {
+                    $categories[] = [
+                        'id' => $term->term_id,
+                        'name' => $term->name,
+                    ];
+                }
             }
-        }
+
+            return $categories;
+        }, self::CACHE_GROUP);
 
         wp_send_json_success($categories);
     }
@@ -276,18 +289,22 @@ class Obydullah_POS_For_WooCommerce_POS
             wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
         }
 
-        $customers = get_users(['role__in' => ['customer', 'subscriber'], 'fields' => 'all']);
-        $formatted = [];
+        $formatted = Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_get_or_set('customers', function () {
+            $customers = get_users(['role__in' => ['customer', 'subscriber'], 'fields' => 'all']);
+            $formatted = [];
 
-        foreach ($customers as $customer) {
-            $formatted[] = [
-                'id' => $customer->ID,
-                'name' => $customer->display_name,
-                'email' => $customer->user_email,
-                'mobile' => get_user_meta($customer->ID, 'billing_phone', true),
-                'address' => get_user_meta($customer->ID, 'billing_address_1', true),
-            ];
-        }
+            foreach ($customers as $customer) {
+                $formatted[] = [
+                    'id' => $customer->ID,
+                    'name' => $customer->display_name,
+                    'email' => $customer->user_email,
+                    'mobile' => get_user_meta($customer->ID, 'billing_phone', true),
+                    'address' => get_user_meta($customer->ID, 'billing_address_1', true),
+                ];
+            }
+
+            return $formatted;
+        }, self::CACHE_GROUP);
 
         wp_send_json_success($formatted);
     }
@@ -305,31 +322,37 @@ class Obydullah_POS_For_WooCommerce_POS
 
         $category_id = sanitize_text_field(wp_unslash($_GET['category_id'] ?? 'all'));
 
-        $args = [
-            'status' => 'publish',
-            'limit' => 50,
-            'return' => 'objects',
-            'stock_status' => 'instock',
-        ];
+        $cache_key = 'products_category_' . $category_id;
 
-        if ($category_id !== 'all') {
-            $args['category'] = [get_term(absint($category_id), 'product_cat')->slug ?? ''];
-        }
-
-        $products = wc_get_products($args);
-        $formatted = [];
-
-        foreach ($products as $product) {
-            $price = $product->get_price();
-            $formatted[] = [
-                'id' => $product->get_id(),
-                'name' => $product->get_name(),
-                'image' => $product->get_image('woocommerce_thumbnail'),
-                'sale_cost' => $price,
-                'quantity' => $product->get_stock_quantity() ?: 0,
-                'stock_status' => $product->get_stock_status(),
+        $formatted = Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_get_or_set($cache_key, function () use ($category_id) {
+            $args = [
+                'status' => 'publish',
+                'limit' => 50,
+                'return' => 'objects',
+                'stock_status' => 'instock',
             ];
-        }
+
+            if ($category_id !== 'all') {
+                $args['category'] = [get_term(absint($category_id), 'product_cat')->slug ?? ''];
+            }
+
+            $products = wc_get_products($args);
+            $formatted = [];
+
+            foreach ($products as $product) {
+                $price = $product->get_price();
+                $formatted[] = [
+                    'id' => $product->get_id(),
+                    'name' => $product->get_name(),
+                    'image' => $product->get_image('woocommerce_thumbnail'),
+                    'sale_cost' => $price,
+                    'quantity' => $product->get_stock_quantity() ?: 0,
+                    'stock_status' => $product->get_stock_status(),
+                ];
+            }
+
+            return $formatted;
+        }, self::CACHE_GROUP);
 
         wp_send_json_success($formatted);
     }
@@ -344,30 +367,34 @@ class Obydullah_POS_For_WooCommerce_POS
             wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
         }
 
-        $orders = wc_get_orders([
-            'status' => ['draft', 'pending'],
-            'limit' => 20,
-            'orderby' => 'date',
-            'order' => 'DESC',
-            'meta_query' => [
-                [
-                    'key' => '_pos_order',
-                    'value' => 'yes',
-                    'compare' => '=',
+        $formatted = Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_get_or_set('saved_sales', function () {
+            $orders = wc_get_orders([
+                'status' => ['draft', 'pending'],
+                'limit' => 20,
+                'orderby' => 'date',
+                'order' => 'DESC',
+                'meta_query' => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+                    [
+                        'key' => '_pos_order',
+                        'value' => 'yes',
+                        'compare' => '=',
+                    ],
                 ],
-            ],
-        ]);
+            ]);
 
-        $formatted = [];
-        foreach ($orders as $order) {
-            $formatted[] = [
-                'id' => $order->get_id(),
-                'invoice_id' => $order->get_meta('_invoice_id'),
-                'grand_total' => $order->get_total(),
-                'created_at' => $order->get_date_created() ? $order->get_date_created()->date('Y-m-d H:i:s') : '',
-                'customer_name' => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
-            ];
-        }
+            $formatted = [];
+            foreach ($orders as $order) {
+                $formatted[] = [
+                    'id' => $order->get_id(),
+                    'invoice_id' => $order->get_meta('_invoice_id'),
+                    'grand_total' => $order->get_total(),
+                    'created_at' => $order->get_date_created() ? $order->get_date_created()->date('Y-m-d H:i:s') : '',
+                    'customer_name' => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
+                ];
+            }
+
+            return $formatted;
+        }, self::CACHE_GROUP);
 
         wp_send_json_success($formatted);
     }
@@ -438,6 +465,9 @@ class Obydullah_POS_For_WooCommerce_POS
 
         $invoice_id = $order->get_meta('_invoice_id');
         $order->delete(true);
+
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_pos');
+        Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_sales');
 
         wp_send_json_success([
             'message' => __('Saved sale deleted successfully', 'obydullah-pos-for-woocommerce'),
@@ -606,6 +636,7 @@ class Obydullah_POS_For_WooCommerce_POS
 
                 global $wpdb;
                 $accounting_table = $wpdb->prefix . 'opfw_accounting';
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- POS income record, flushed after via cache groups
                 $wpdb->insert($accounting_table, [
                     'in_amount' => floatval($order->get_total()),
                     'description' => $invoice_id,
@@ -616,6 +647,15 @@ class Obydullah_POS_For_WooCommerce_POS
             }
 
             $order->save();
+
+            if ($action === 'complete') {
+                Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_dashboard');
+                Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_accounting');
+                Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_stocks');
+                Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_products');
+            }
+            Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_pos');
+            Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_sales');
 
             wp_send_json_success([
                 'sale_id' => $order_id,
