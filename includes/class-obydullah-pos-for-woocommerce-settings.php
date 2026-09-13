@@ -110,7 +110,7 @@ class Obydullah_POS_For_WooCommerce_Settings
 
         // General Settings
         $sanitized['date_format'] = sanitize_text_field($input['date_format'] ?? 'Y-m-d');
-        $sanitized['currency'] = sanitize_text_field($input['currency'] ?? '$');
+        $sanitized['currency'] = sanitize_text_field(html_entity_decode((string) ($input['currency'] ?? '$'), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
         $sanitized['currency_position'] = sanitize_text_field($input['currency_position'] ?? 'left');
         $sanitized['vat_rate'] = floatval($input['vat_rate'] ?? '0');
         $sanitized['tax_rate'] = floatval($input['tax_rate'] ?? '0');
@@ -181,7 +181,7 @@ class Obydullah_POS_For_WooCommerce_Settings
 
     public function opfw_currency_callback()
     {
-        $currency = get_option('opfw_currency', '$');
+        $currency = html_entity_decode((string) get_option('opfw_currency', '$'), ENT_QUOTES | ENT_HTML5, 'UTF-8');
 
         $currencies = array(
             '$' => 'US Dollar ($)',

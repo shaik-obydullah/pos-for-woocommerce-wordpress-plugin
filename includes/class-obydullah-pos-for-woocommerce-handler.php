@@ -296,7 +296,7 @@ if (!class_exists('Obydullah_POS_For_WooCommerce_Handler')) {
                     break;
 
                 case 'obydullah-pos-for-woocommerce-accounting':
-                    $currency = get_option('opfw_currency', '$');
+                    $currency = html_entity_decode(get_option('opfw_currency', '$'), ENT_QUOTES | ENT_HTML5, 'UTF-8');
                     $position = get_option('opfw_currency_position', 'left');
                     $formatted_amount = number_format(0, 2, '.', ',');
                     switch ($position) {

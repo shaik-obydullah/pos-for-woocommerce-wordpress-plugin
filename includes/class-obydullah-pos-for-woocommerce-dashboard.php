@@ -219,11 +219,22 @@ class Obydullah_POS_For_WooCommerce_Dashboard
 
         global $wpdb;
 
-        $results = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+        if (class_exists('\Automattic\WooCommerce\Utilities\OrderUtil') && \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled()) {
+            $orders_join = "JOIN {$wpdb->prefix}wc_orders o
+                          ON o.id = oi.order_id
+                          AND o.status = 'wc-completed'";
+        } else {
+            $orders_join = "JOIN {$wpdb->posts} o
+                          ON o.ID = oi.order_id
+                          AND o.post_status = 'wc-completed'";
+        }
+
+        // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery -- $orders_join is a fixed fragment chosen above.
+        $results = $wpdb->get_results(
             $wpdb->prepare(
                     "SELECT oi_meta.meta_value AS product_id,
                             SUM(oi_meta_qty.meta_value) AS total_quantity_sold,
-                            COUNT(DISTINCT o.ID) AS total_orders
+                            COUNT(DISTINCT o.id) AS total_orders
                      FROM {$wpdb->prefix}woocommerce_order_items oi
                      JOIN {$wpdb->prefix}woocommerce_order_itemmeta oi_meta
                           ON oi.order_item_id = oi_meta.order_item_id
@@ -231,9 +242,7 @@ class Obydullah_POS_For_WooCommerce_Dashboard
                      JOIN {$wpdb->prefix}woocommerce_order_itemmeta oi_meta_qty
                           ON oi.order_item_id = oi_meta_qty.order_item_id
                           AND oi_meta_qty.meta_key = '_qty'
-                     JOIN {$wpdb->posts} o
-                          ON o.ID = oi.order_id
-                          AND o.post_status = 'wc-completed'
+                     {$orders_join}
                      WHERE oi.order_item_type = 'line_item'
                      GROUP BY oi_meta.meta_value
                      ORDER BY total_quantity_sold DESC
@@ -241,6 +250,7 @@ class Obydullah_POS_For_WooCommerce_Dashboard
                 $limit
             )
         );
+        // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery
 
         $top = [];
         if ($results) {

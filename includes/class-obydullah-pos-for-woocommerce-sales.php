@@ -50,17 +50,9 @@ class Obydullah_POS_For_WooCommerce_Sales
                                     <label for="search-invoice" class="form-label mb-1">
                                         <?php esc_html_e('Search Invoice', 'obydullah-pos-for-woocommerce'); ?>
                                     </label>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="position-relative flex-grow-1">
-                                            <input type="text" id="search-invoice"
-                                                class="form-control form-control-sm"
-                                                placeholder="<?php esc_attr_e('Invoice number...', 'obydullah-pos-for-woocommerce'); ?>">
-                                            <button type="button" id="clear-invoice-search"
-                                                class="btn btn-sm btn-link text-decoration-none position-absolute end-0 top-50 translate-middle-y" opfw-hidden">
-                                                <span class="text-muted fs-5">&times;</span>
-                                            </button>
-                                        </div>
-                                    </div>
+                                    <input type="text" id="search-invoice"
+                                        class="form-control form-control-sm"
+                                        placeholder="<?php esc_attr_e('Invoice number...', 'obydullah-pos-for-woocommerce'); ?>">
                                     <div class="form-text">
                                         <?php esc_html_e('Search by invoice number', 'obydullah-pos-for-woocommerce'); ?>
                                     </div>

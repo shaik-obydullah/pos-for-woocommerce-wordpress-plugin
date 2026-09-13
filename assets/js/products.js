@@ -46,12 +46,6 @@
         }, 500);
       });
 
-      $("#clear-search").on("click", function () {
-        $("#product-search").val("");
-        self.config.searchTerm = "";
-        self.loadProducts(1);
-      });
-
       $("#per-page-select").on("change", function () {
         self.config.perPage = parseInt($(this).val());
         self.loadProducts(1);

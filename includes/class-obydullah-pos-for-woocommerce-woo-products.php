@@ -43,12 +43,14 @@ class Obydullah_POS_For_WooCommerce_Woo_Products
     <div class="row mt-3">
         <div class="col-lg-12">
             <div class="bg-light p-3 rounded shadow-sm border">
-                <p class="text-muted mb-3">
-                    <?php esc_html_e('Products are managed in WooCommerce. Below is a POS-specific view to set buy prices (cost of goods).', 'obydullah-pos-for-woocommerce'); ?>
-                    <a href="<?php echo esc_url(admin_url('post-new.php?post_type=product')); ?>" class="btn btn-sm btn-primary ml-2 opfw-add-product-btn">
+                <div class="mb-4">
+                    <a href="<?php echo esc_url(admin_url('post-new.php?post_type=product')); ?>" class="btn btn-sm btn-primary opfw-add-product-btn">
                         <?php esc_html_e('Add New Product in WooCommerce', 'obydullah-pos-for-woocommerce'); ?>
                     </a>
-                </p>
+                    <p class="text-muted mb-0 mt-2">
+                        <?php esc_html_e('Products are managed in WooCommerce. Below is a POS-specific view to set buy prices (cost of goods).', 'obydullah-pos-for-woocommerce'); ?>
+                    </p>
+                </div>
 
                 <div class="search-section mb-3">
                     <div class="d-flex flex-wrap align-items-center gap-2">
@@ -56,16 +58,8 @@ class Obydullah_POS_For_WooCommerce_Woo_Products
                             <label for="product-search" class="form-label mb-1">
                                 <?php esc_html_e('Search Products', 'obydullah-pos-for-woocommerce'); ?>
                             </label>
-                            <div class="d-flex align-items-center gap-2">
-                                <div class="position-relative flex-grow-1">
-                                    <input type="text" id="product-search" class="form-control form-control-sm"
-                                        placeholder="<?php esc_attr_e('Product name', 'obydullah-pos-for-woocommerce'); ?>">
-                                    <button type="button" id="clear-search"
-                                        class="btn btn-sm btn-link text-decoration-none position-absolute end-0 top-50 translate-middle-y" opfw-hidden">
-                                        <span class="text-muted fs-5">&times;</span>
-                                    </button>
-                                </div>
-                            </div>
+                            <input type="text" id="product-search" class="form-control form-control-sm"
+                                placeholder="<?php esc_attr_e('Product name', 'obydullah-pos-for-woocommerce'); ?>">
                         </div>
                     </div>
                 </div>
@@ -129,23 +123,27 @@ class Obydullah_POS_For_WooCommerce_Woo_Products
 <!-- Buy Price Edit Modal -->
 <div id="opfw-buy-price-modal" class="opfw-modal d-none">
     <div class="opfw-modal-overlay"></div>
-    <div class="opfw-modal-content bg-white p-3 rounded shadow">
+    <div class="opfw-modal-content bg-white p-4 rounded shadow">
         <h3 class="mb-2 opfw-modal-title"><?php esc_html_e('Edit Buy Price', 'obydullah-pos-for-woocommerce'); ?></h3>
+        <hr class="mt-0 mb-3">
         <form id="buy-price-form">
             <input type="hidden" id="buy-price-product-id" value="">
-            <div class="mb-2">
-                <label class="form-label"><?php esc_html_e('Product', 'obydullah-pos-for-woocommerce'); ?></label>
-                <p id="buy-price-product-name" class="fw-bold"></p>
+            <div class="mb-3">
+                <label class="form-label fw-semibold text-muted small"><?php esc_html_e('Product', 'obydullah-pos-for-woocommerce'); ?></label>
+                <div class="opfw-product-name-display p-2 bg-light border rounded d-flex align-items-center">
+                    <span class="opfw-product-name-icon dashicons dashicons-products"></span>
+                    <span id="buy-price-product-name" class="ms-2 fw-semibold text-dark"></span>
+                </div>
             </div>
-            <div class="mb-2">
-                <label for="buy-price-input" class="form-label">
+            <div class="mb-4">
+                <label for="buy-price-input" class="form-label fw-semibold text-muted small">
                     <?php esc_html_e('Buy Price (Cost of Goods)', 'obydullah-pos-for-woocommerce'); ?>
                 </label>
-                <input type="number" id="buy-price-input" class="form-control" step="0.01" min="0" value="0.00">
+                <input type="number" id="buy-price-input" class="form-control form-control-lg" step="0.01" min="0" value="0.00">
             </div>
             <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary"><?php esc_html_e('Save', 'obydullah-pos-for-woocommerce'); ?></button>
-                <button type="button" class="btn btn-secondary opfw-modal-close"><?php esc_html_e('Cancel', 'obydullah-pos-for-woocommerce'); ?></button>
+                <button type="submit" class="btn btn-primary btn-sm px-4"><?php esc_html_e('Save', 'obydullah-pos-for-woocommerce'); ?></button>
+                <button type="button" class="btn btn-outline-secondary btn-sm px-3 opfw-modal-close"><?php esc_html_e('Cancel', 'obydullah-pos-for-woocommerce'); ?></button>
             </div>
         </form>
     </div>

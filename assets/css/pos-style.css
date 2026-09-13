@@ -142,6 +142,17 @@ tr:hover .pos-row-actions {
   min-height: 22px;
 }
 
+.pos-row-actions .pos-action.edit-buy-price {
+  background: #2271b1;
+  border-color: #2271b1;
+  color: #fff;
+}
+
+.pos-row-actions .pos-action.edit-buy-price:hover {
+  background: #135e96;
+  border-color: #135e96;
+}
+
 .pos-row-actions .edit {
   color: #2271b1;
 }
@@ -252,6 +263,14 @@ tr:hover .pos-row-actions {
   font-weight: 700;
   border-radius: 8px;
   text-transform: uppercase;
+}
+
+#product-list td.compact-status,
+#stock-list td.compact-status,
+#sales-list td.compact-status,
+#adjustment-list td.compact-status {
+  text-align: center;
+  vertical-align: middle;
 }
 
 .table .status-active {
@@ -539,6 +558,20 @@ tr:hover .pos-row-actions {
   outline: none;
 }
 
+.wp-admin select.form-control {
+  height: 30px;
+  min-height: 30px;
+  line-height: 28px;
+  padding: 0 26px 0 10px;
+}
+
+.wp-admin textarea.form-control {
+  padding: 6px 8px;
+  min-height: auto;
+  line-height: 1.5;
+  resize: vertical;
+}
+
 /* ==========================================================================
    10. Search & Pagination Components
    ========================================================================== */
@@ -584,21 +617,6 @@ tr:hover .pos-row-actions {
   font-size: 0.85rem;
   border-radius: 0.25rem;
   white-space: nowrap;
-}
-
-/* Clear button */
-#clear-search {
-  right: 5px !important;
-  padding: 0.2rem;
-  background: transparent;
-  border: none;
-  font-size: 1.2rem;
-  line-height: 1;
-  transform: translateY(-50%);
-}
-
-#clear-search:hover {
-  color: #dc3545 !important;
 }
 
 /* Helper text */
@@ -840,7 +858,7 @@ tr:hover .pos-row-actions {
 }
 
 /* ==========================================================================
-   14. Add New Product button hover effect
+    14. Add New Product button hover effect
    ========================================================================== */
 .opfw-add-product-btn:hover {
   color: #fff !important;
@@ -849,6 +867,26 @@ tr:hover .pos-row-actions {
 }
 .opfw-modal-title {
   margin-top: 1px;
+}
+
+/* Buy Price modal — product name display */
+.opfw-product-name-display {
+  background: #f8f9fa;
+  border: 1px solid #dcdcde;
+  min-height: 40px;
+}
+
+.opfw-product-name-display .dashicons {
+  color: #2271b1;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+}
+
+#buy-price-product-name {
+  font-size: 0.95rem;
+  word-break: break-word;
 }
 
 
@@ -872,11 +910,6 @@ tr:hover .pos-row-actions {
 #opfw-discount,
 #opfw-delivery {
   width: 90px;
-}
-
-#clear-invoice-search,
-#clear-search {
-  padding: 0;
 }
 
 #search-sales .spinner,

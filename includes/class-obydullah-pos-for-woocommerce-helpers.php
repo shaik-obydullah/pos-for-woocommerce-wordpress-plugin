@@ -300,7 +300,7 @@ class Obydullah_POS_For_WooCommerce_Helpers
     public static function opfw_format_currency($amount)
     {
         $settings = self::opfw_get_settings();
-        $currency = $settings['currency'];
+        $currency = html_entity_decode($settings['currency'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $position = $settings['currency_position'];
 
         $amount_formatted = number_format(floatval($amount), 2);
