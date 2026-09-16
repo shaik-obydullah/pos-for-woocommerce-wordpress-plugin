@@ -2,7 +2,7 @@
 /**
  * Fired during plugin deactivation
  *
- * @package Obydullah_POS_For_WooCommerce
+ * @package Obydullah_Restaurant_POS_For_WooCommerce
  * @since   1.0.0
  * @version 1.0.0
  */

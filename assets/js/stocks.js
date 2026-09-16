@@ -32,6 +32,7 @@
         this.config.strings = opfwStocks.strings || {};
       }
 
+      this.productsList = [];
       this.bindEvents();
       this.loadProducts();
       this.loadStocks();
@@ -97,16 +98,117 @@
         self.calculateProfit();
       });
 
-      $("#stock-product").on("change", function () {
-        var selectedOption = $(this).find("option:selected");
-        var buyPrice = selectedOption.data("buy-price") || 0;
-        var salePrice = selectedOption.data("sale-price") || 0;
-        var qty = selectedOption.data("qty") || 0;
+      $("#stock-product-input").on("input", function () {
+        self.handleProductSearch($(this).val());
+      });
 
-        $("#buy-price").val(parseFloat(buyPrice).toFixed(2));
-        $("#sale-price").val(parseFloat(salePrice).toFixed(2));
-        $("#stock-quantity").val(qty);
-        self.calculateProfit();
+      $("#stock-product-input").on("focus", function () {
+        self.handleProductSearch($(this).val());
+      });
+
+      $("#stock-product-input").on("keydown", function (e) {
+        if (e.which === 13) {
+          e.preventDefault();
+          self.handleProductEnter();
+        }
+      });
+
+      $(document).on("click", function (e) {
+        if (!$(e.target).closest("#stock-product-input, #stock-product-results").length) {
+          self.closeProductResults();
+        }
+      });
+
+      $(document).on("click", ".opfw-product-option", function () {
+        self.selectProduct($(this).data());
+      });
+    },
+
+    handleProductSearch: function (term) {
+      var self = this;
+      var results = self.filterProducts(term);
+      var container = $("#stock-product-results");
+
+      container.empty();
+
+      if (results.length === 0) {
+        container.addClass("opfw-hidden");
+        return;
+      }
+
+      $.each(results.slice(0, 10), function (_, product) {
+        container.append(
+          $("<div>")
+            .addClass("opfw-product-option")
+            .data({
+              id: product.id,
+              buyPrice: product.buy_price,
+              salePrice: product.sale_price,
+              qty: product.stock_quantity,
+            })
+            .text(product.name)
+        );
+      });
+
+      container.removeClass("opfw-hidden");
+    },
+
+    handleProductEnter: function () {
+      var self = this;
+      var active = $("#stock-product-results .opfw-product-option.active");
+
+      if (!active.length) {
+        active = $("#stock-product-results .opfw-product-option").first();
+      }
+
+      if (active.length) {
+        self.selectProduct(active.data());
+      }
+    },
+
+    selectProduct: function (data) {
+      if (!data || !data.id) return;
+
+      var self = this;
+      var name = "";
+
+      if (self.productsList) {
+        var product = $.grep(self.productsList, function (p) {
+          return p.id === data.id;
+        })[0];
+        name = product ? product.name : "";
+      }
+
+      if (!name) {
+        var activeEl = $(".opfw-product-option").filter(function () {
+          return $(this).data("id") === data.id;
+        });
+        name = activeEl.text() || "";
+      }
+
+      $("#stock-product-id").val(data.id);
+      $("#stock-product-input").val(name);
+      $("#buy-price").val(parseFloat(data.buyPrice).toFixed(2));
+      $("#sale-price").val(parseFloat(data.salePrice).toFixed(2));
+      $("#stock-quantity").val(data.qty);
+      self.closeProductResults();
+      self.calculateProfit();
+    },
+
+    closeProductResults: function () {
+      $("#stock-product-results").empty().addClass("opfw-hidden");
+    },
+
+    filterProducts: function (term) {
+      var self = this;
+      var query = (term || "").trim().toLowerCase();
+
+      if (!self.productsList) return [];
+
+      if (!query) return self.productsList.slice();
+
+      return $.grep(self.productsList, function (product) {
+        return product.name.toLowerCase().indexOf(query) !== -1;
       });
     },
 
@@ -122,19 +224,11 @@
         },
         success: function (response) {
           if (response.success) {
-            var select = $("#stock-product");
-            select.empty().append('<option value="">' + (self.config.strings.selectProduct || "Select Product") + "</option>");
+            self.productsList = response.data || [];
 
-            $.each(response.data, function (_, product) {
-              select.append(
-                $("<option>")
-                  .val(product.id)
-                  .text(product.name)
-                  .data("manage_stock", product.manage_stock)
-                  .data("buy-price", product.buy_price)
-                  .data("sale-price", product.sale_price)
-                  .data("qty", product.stock_quantity)
-              );
+            $.each(self.productsList, function (_, product) {
+              product.buy_price = parseFloat(product.buy_price || 0).toFixed(2);
+              product.sale_price = parseFloat(product.sale_price || 0).toFixed(2);
             });
           }
         },
@@ -255,7 +349,7 @@
 
       if (self.config.isSubmitting) return false;
 
-      var productId = $("#stock-product").val();
+      var productId = $("#stock-product-id").val();
       var buyPrice = $("#buy-price").val();
       var salePrice = $("#sale-price").val();
       var quantity = $("#stock-quantity").val();
@@ -283,6 +377,9 @@
             showLimeModal(self.config.strings.successMessage || "Stock updated!", "Success");
             var modal = $("#lime-alert-modal");
             modal.find("#lime-alert-close").off("click").on("click", function () {
+              $('#update-stock-form')[0].reset();
+              $("#stock-product-id").val("");
+              self.closeProductResults();
               self.loadStocks(self.config.currentPage);
               self.loadProducts();
               modal.addClass("d-none");

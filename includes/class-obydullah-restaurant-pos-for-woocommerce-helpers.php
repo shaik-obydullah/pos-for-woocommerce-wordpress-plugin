@@ -1,8 +1,8 @@
 <?php
 /**
- * Helper functions for Obydullah POS for WooCommerce
+ * Helper functions for Obydullah Restaurant POS for WooCommerce
  *
- * @package Obydullah_POS_For_WooCommerce
+ * @package Obydullah_Restaurant_POS_For_WooCommerce
  * @since   1.0.0
  * @version 1.0.0
  */
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Helper functions for Obydullah POS for WooCommerce
+ * Helper functions for Obydullah Restaurant POS for WooCommerce
  */
 class Obydullah_POS_For_WooCommerce_Helpers
 {
@@ -370,7 +370,7 @@ class Obydullah_POS_For_WooCommerce_Helpers
         $settings = self::opfw_get_settings();
         return !empty($settings['shop_name'])
             ? $settings['shop_name']
-            : __('Restaurant POS', 'obydullah-pos-for-woocommerce');
+            : __('Restaurant POS', 'obydullah-restaurant-pos-for-woocommerce');
     }
 
     /**

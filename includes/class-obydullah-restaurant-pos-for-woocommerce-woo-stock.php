@@ -5,7 +5,7 @@
  * Manages stock through WooCommerce's built-in stock system.
  * Logs adjustments in a custom table.
  *
- * @package Obydullah_POS_For_WooCommerce
+ * @package Obydullah_Restaurant_POS_For_WooCommerce
  * @since   1.0.0
  * @version 1.0.0
  */
@@ -54,32 +54,32 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
         ?>
 <div class="wrap opfw-stocks-page">
     <h1 class="wp-heading-inline mb-3">
-        <?php esc_html_e('Stock Management', 'obydullah-pos-for-woocommerce'); ?>
+        <?php esc_html_e('Stock Management', 'obydullah-restaurant-pos-for-woocommerce'); ?>
     </h1>
     <hr class="wp-header-end">
 
     <div class="row mb-4">
         <div class="col-sm-6 col-lg-3 mb-3">
             <div class="stock-summary-card text-center">
-                <h3 class="text-muted"><?php esc_html_e('In Stock', 'obydullah-pos-for-woocommerce'); ?></h3>
+                <h3 class="text-muted"><?php esc_html_e('In Stock', 'obydullah-restaurant-pos-for-woocommerce'); ?></h3>
                 <p id="in-stock-count" class="summary-number text-primary">0</p>
             </div>
         </div>
         <div class="col-sm-6 col-lg-3 mb-3">
             <div class="stock-summary-card text-center">
-                <h3 class="text-muted"><?php esc_html_e('Out of Stock', 'obydullah-pos-for-woocommerce'); ?></h3>
+                <h3 class="text-muted"><?php esc_html_e('Out of Stock', 'obydullah-restaurant-pos-for-woocommerce'); ?></h3>
                 <p id="out-stock-count" class="summary-number text-danger">0</p>
             </div>
         </div>
         <div class="col-sm-6 col-lg-3 mb-3">
             <div class="stock-summary-card text-center">
-                <h3 class="text-muted"><?php esc_html_e('Low Stock', 'obydullah-pos-for-woocommerce'); ?></h3>
+                <h3 class="text-muted"><?php esc_html_e('Low Stock', 'obydullah-restaurant-pos-for-woocommerce'); ?></h3>
                 <p id="low-stock-count" class="summary-number text-warning">0</p>
             </div>
         </div>
         <div class="col-sm-6 col-lg-3 mb-3">
             <div class="stock-summary-card text-center">
-                <h3 class="text-muted"><?php esc_html_e('Total Products', 'obydullah-pos-for-woocommerce'); ?></h3>
+                <h3 class="text-muted"><?php esc_html_e('Total Products', 'obydullah-restaurant-pos-for-woocommerce'); ?></h3>
                 <p id="total-stocks-count" class="summary-number text-info">0</p>
             </div>
         </div>
@@ -88,23 +88,26 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
     <div class="row mt-3">
         <div class="col-lg-4">
             <div class="bg-light p-4 rounded shadow-sm">
-                <h2 class="mb-3 mt-1"><?php esc_html_e('Update Stock', 'obydullah-pos-for-woocommerce'); ?></h2>
+                <h2 class="mb-3 mt-1"><?php esc_html_e('Update Stock', 'obydullah-restaurant-pos-for-woocommerce'); ?></h2>
                 <form id="update-stock-form" method="post">
                     <?php wp_nonce_field('opfw_update_stock'); ?>
 
                     <div class="mb-3">
-                        <label for="stock-product" class="form-label d-block mb-1">
-                            <?php esc_html_e('Product', 'obydullah-pos-for-woocommerce'); ?> <span class="text-danger">*</span>
+                        <label for="stock-product-input" class="form-label d-block mb-1">
+                            <?php esc_html_e('Product', 'obydullah-restaurant-pos-for-woocommerce'); ?> <span class="text-danger">*</span>
                         </label>
-                        <select name="product_id" id="stock-product" class="form-control" required>
-                            <option value=""><?php esc_html_e('Select Product', 'obydullah-pos-for-woocommerce'); ?></option>
-                        </select>
+                        <div id="stock-product-input-wrap" class="position-relative">
+                            <input type="hidden" name="product_id" id="stock-product-id" value="">
+                            <input type="text" id="stock-product-input" class="form-control" autocomplete="off"
+                                placeholder="<?php esc_attr_e('Search and select a product...', 'obydullah-restaurant-pos-for-woocommerce'); ?>" required>
+                            <div id="stock-product-results" class="opfw-autocomplete-list opfw-hidden"></div>
+                        </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="buy-price" class="form-label d-block mb-1">
-                                <?php esc_html_e('Buy Price', 'obydullah-pos-for-woocommerce'); ?>
+                                <?php esc_html_e('Buy Price', 'obydullah-restaurant-pos-for-woocommerce'); ?>
                                 <span class="text-danger">*</span>
                             </label>
                             <input name="buy_price" id="buy-price" type="number" step="0.01" min="0" value="0.00"
@@ -112,7 +115,7 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
                         </div>
                         <div class="col-md-6">
                             <label for="sale-price" class="form-label d-block mb-1">
-                                <?php esc_html_e('Sale Price', 'obydullah-pos-for-woocommerce'); ?>
+                                <?php esc_html_e('Sale Price', 'obydullah-restaurant-pos-for-woocommerce'); ?>
                                 <span class="text-danger">*</span>
                             </label>
                             <input name="sale_price" id="sale-price" type="number" step="0.01" min="0" value="0.00"
@@ -123,36 +126,36 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="stock-quantity" class="form-label d-block mb-1">
-                                <?php esc_html_e('Quantity', 'obydullah-pos-for-woocommerce'); ?> <span class="text-danger">*</span>
+                                <?php esc_html_e('Quantity', 'obydullah-restaurant-pos-for-woocommerce'); ?> <span class="text-danger">*</span>
                             </label>
                             <input name="quantity" id="stock-quantity" type="number" min="0" value="0" class="form-control" required>
                         </div>
                         <div class="col-md-6">
                             <label for="stock-status" class="form-label d-block mb-1">
-                                <?php esc_html_e('Stock Status', 'obydullah-pos-for-woocommerce'); ?>
+                                <?php esc_html_e('Stock Status', 'obydullah-restaurant-pos-for-woocommerce'); ?>
                             </label>
                             <select name="stock_status" id="stock-status" class="form-control">
-                                <option value="instock"><?php esc_html_e('In Stock', 'obydullah-pos-for-woocommerce'); ?></option>
-                                <option value="outofstock"><?php esc_html_e('Out of Stock', 'obydullah-pos-for-woocommerce'); ?></option>
-                                <option value="onbackorder"><?php esc_html_e('On Backorder', 'obydullah-pos-for-woocommerce'); ?></option>
+                                <option value="instock"><?php esc_html_e('In Stock', 'obydullah-restaurant-pos-for-woocommerce'); ?></option>
+                                <option value="outofstock"><?php esc_html_e('Out of Stock', 'obydullah-restaurant-pos-for-woocommerce'); ?></option>
+                                <option value="onbackorder"><?php esc_html_e('On Backorder', 'obydullah-restaurant-pos-for-woocommerce'); ?></option>
                             </select>
                         </div>
                     </div>
 
                     <div class="bg-white p-3 border rounded mb-4">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="font-weight-bold"><?php esc_html_e('Profit Margin:', 'obydullah-pos-for-woocommerce'); ?></span>
+                            <span class="font-weight-bold"><?php esc_html_e('Profit Margin:', 'obydullah-restaurant-pos-for-woocommerce'); ?></span>
                             <span id="profit-margin" class="profit-value font-weight-bold">0.00%</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="font-weight-bold"><?php esc_html_e('Total Profit:', 'obydullah-pos-for-woocommerce'); ?></span>
+                            <span class="font-weight-bold"><?php esc_html_e('Total Profit:', 'obydullah-restaurant-pos-for-woocommerce'); ?></span>
                             <span id="total-profit" class="profit-value font-weight-bold">0.00</span>
                         </div>
                     </div>
 
                     <div class="d-flex mt-4">
                         <button type="submit" id="submit-stock" class="btn-primary mr-2">
-                            <span class="btn-text"><?php esc_html_e('Update Stock', 'obydullah-pos-for-woocommerce'); ?></span>
+                            <span class="btn-text"><?php esc_html_e('Update Stock', 'obydullah-restaurant-pos-for-woocommerce'); ?></span>
                             <span class="spinner opfw-hidden"></span>
                         </button>
                     </div>
@@ -162,22 +165,22 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
 
         <div class="col-lg-8">
             <div class="bg-light p-3 rounded shadow-sm border">
-                <h2 class="h5 mb-3 fw-semibold"><?php esc_html_e('Stock Overview', 'obydullah-pos-for-woocommerce'); ?></h2>
+                <h2 class="h5 mb-3 fw-semibold"><?php esc_html_e('Stock Overview', 'obydullah-restaurant-pos-for-woocommerce'); ?></h2>
 
                 <div class="search-section mb-3">
                     <div class="d-flex flex-wrap align-items-center gap-2">
                         <div class="search-group flex-grow-1">
                             <div class="position-relative flex-grow-1">
                                 <input type="text" id="stock-search" class="form-control form-control-sm"
-                                    placeholder="<?php esc_attr_e('Search products...', 'obydullah-pos-for-woocommerce'); ?>">
+                                    placeholder="<?php esc_attr_e('Search products...', 'obydullah-restaurant-pos-for-woocommerce'); ?>">
                             </div>
                         </div>
                         <div>
                             <select id="status-filter" class="form-control form-control-sm">
-                                <option value=""><?php esc_html_e('All Status', 'obydullah-pos-for-woocommerce'); ?></option>
-                                <option value="instock"><?php esc_html_e('In Stock', 'obydullah-pos-for-woocommerce'); ?></option>
-                                <option value="outofstock"><?php esc_html_e('Out of Stock', 'obydullah-pos-for-woocommerce'); ?></option>
-                                <option value="onbackorder"><?php esc_html_e('On Backorder', 'obydullah-pos-for-woocommerce'); ?></option>
+                                <option value=""><?php esc_html_e('All Status', 'obydullah-restaurant-pos-for-woocommerce'); ?></option>
+                                <option value="instock"><?php esc_html_e('In Stock', 'obydullah-restaurant-pos-for-woocommerce'); ?></option>
+                                <option value="outofstock"><?php esc_html_e('Out of Stock', 'obydullah-restaurant-pos-for-woocommerce'); ?></option>
+                                <option value="onbackorder"><?php esc_html_e('On Backorder', 'obydullah-restaurant-pos-for-woocommerce'); ?></option>
                             </select>
                         </div>
                     </div>
@@ -187,18 +190,18 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
                     <table class="table table-striped table-hover table-bordered mb-2">
                         <thead>
                             <tr class="bg-primary text-white">
-                                <th><?php esc_html_e('Product', 'obydullah-pos-for-woocommerce'); ?></th>
-                                <th width="100"><?php esc_html_e('Buy Price', 'obydullah-pos-for-woocommerce'); ?></th>
-                                <th width="100"><?php esc_html_e('Sale Price', 'obydullah-pos-for-woocommerce'); ?></th>
-                                <th width="100"><?php esc_html_e('Quantity', 'obydullah-pos-for-woocommerce'); ?></th>
-                                <th width="100"><?php esc_html_e('Status', 'obydullah-pos-for-woocommerce'); ?></th>
+                                <th><?php esc_html_e('Product', 'obydullah-restaurant-pos-for-woocommerce'); ?></th>
+                                <th width="100"><?php esc_html_e('Buy Price', 'obydullah-restaurant-pos-for-woocommerce'); ?></th>
+                                <th width="100"><?php esc_html_e('Sale Price', 'obydullah-restaurant-pos-for-woocommerce'); ?></th>
+                                <th width="100"><?php esc_html_e('Quantity', 'obydullah-restaurant-pos-for-woocommerce'); ?></th>
+                                <th width="100"><?php esc_html_e('Status', 'obydullah-restaurant-pos-for-woocommerce'); ?></th>
                             </tr>
                         </thead>
                         <tbody id="stock-list" class="bg-white">
                             <tr>
                                 <td colspan="5" class="text-center p-4">
                                     <span class="spinner is-active"></span>
-                                    <?php esc_html_e('Loading...', 'obydullah-pos-for-woocommerce'); ?>
+                                    <?php esc_html_e('Loading...', 'obydullah-restaurant-pos-for-woocommerce'); ?>
                                 </td>
                             </tr>
                         </tbody>
@@ -207,13 +210,13 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
 
                 <div class="d-flex flex-wrap justify-content-between align-items-center mt-2">
                     <div class="tablenav-pages">
-                        <span class="displaying-num" id="displaying-num">0 <?php esc_html_e('items', 'obydullah-pos-for-woocommerce'); ?></span>
+                        <span class="displaying-num" id="displaying-num">0 <?php esc_html_e('items', 'obydullah-restaurant-pos-for-woocommerce'); ?></span>
                         <span class="pagination-links ms-2">
                             <a class="first-page btn btn-sm btn-dark" href="#">&laquo;</a>
                             <a class="prev-page btn btn-sm btn-dark" href="#">&lsaquo;</a>
                             <span class="paging-input">
                                 <input class="current-page form-control form-control-sm" id="current-page-selector" type="text" name="paged" value="1">
-                                <span class="tablenav-paging-text"><?php esc_html_e('of', 'obydullah-pos-for-woocommerce'); ?> <span class="total-pages">1</span></span>
+                                <span class="tablenav-paging-text"><?php esc_html_e('of', 'obydullah-restaurant-pos-for-woocommerce'); ?> <span class="total-pages">1</span></span>
                             </span>
                             <a class="next-page btn btn-sm btn-dark" href="#">&rsaquo;</a>
                             <a class="last-page btn btn-sm btn-dark" href="#">&raquo;</a>
@@ -240,39 +243,39 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
         ?>
 <div class="wrap">
     <h1 class="wp-heading-inline mb-4">
-        <?php esc_html_e('Stock Adjustments', 'obydullah-pos-for-woocommerce'); ?>
+        <?php esc_html_e('Stock Adjustments', 'obydullah-restaurant-pos-for-woocommerce'); ?>
     </h1>
     <hr class="wp-header-end">
 
     <div class="row">
         <div class="col-md-4">
             <div class="bg-light p-4 rounded shadow-sm mb-4">
-                <h2 class="h4 mb-3 mt-1"><?php esc_html_e('New Stock Adjustment', 'obydullah-pos-for-woocommerce'); ?></h2>
+                <h2 class="h4 mb-3 mt-1"><?php esc_html_e('New Stock Adjustment', 'obydullah-restaurant-pos-for-woocommerce'); ?></h2>
                 <form id="add-adjustment-form" method="post">
                     <?php wp_nonce_field('opfw_add_stock_adjustment'); ?>
 
                     <div class="form-group mb-3">
                         <label for="adjustment-product" class="form-label fw-semibold">
-                            <?php esc_html_e('Product', 'obydullah-pos-for-woocommerce'); ?> <span class="text-danger">*</span>
+                            <?php esc_html_e('Product', 'obydullah-restaurant-pos-for-woocommerce'); ?> <span class="text-danger">*</span>
                         </label>
                         <select name="product_id" id="adjustment-product" class="form-control" required>
-                            <option value=""><?php esc_html_e('Select Product', 'obydullah-pos-for-woocommerce'); ?></option>
+                            <option value=""><?php esc_html_e('Select Product', 'obydullah-restaurant-pos-for-woocommerce'); ?></option>
                         </select>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="adjustment-type" class="form-label fw-semibold">
-                                <?php esc_html_e('Type', 'obydullah-pos-for-woocommerce'); ?> <span class="text-danger">*</span>
+                                <?php esc_html_e('Type', 'obydullah-restaurant-pos-for-woocommerce'); ?> <span class="text-danger">*</span>
                             </label>
                             <select name="adjustment_type" id="adjustment-type" class="form-control" required>
-                                <option value="increase"><?php esc_html_e('Increase', 'obydullah-pos-for-woocommerce'); ?></option>
-                                <option value="decrease"><?php esc_html_e('Decrease', 'obydullah-pos-for-woocommerce'); ?></option>
+                                <option value="increase"><?php esc_html_e('Increase', 'obydullah-restaurant-pos-for-woocommerce'); ?></option>
+                                <option value="decrease"><?php esc_html_e('Decrease', 'obydullah-restaurant-pos-for-woocommerce'); ?></option>
                             </select>
                         </div>
                         <div class="col-md-6">
                             <label for="adjustment-quantity" class="form-label fw-semibold">
-                                <?php esc_html_e('Quantity', 'obydullah-pos-for-woocommerce'); ?> <span class="text-danger">*</span>
+                                <?php esc_html_e('Quantity', 'obydullah-restaurant-pos-for-woocommerce'); ?> <span class="text-danger">*</span>
                             </label>
                             <input name="quantity" id="adjustment-quantity" type="number" min="1" value="1" class="form-control" required>
                         </div>
@@ -280,30 +283,30 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
 
                     <div class="alert alert-light border mb-3">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="text-dark"><?php esc_html_e('Current Stock:', 'obydullah-pos-for-woocommerce'); ?></span>
+                            <span class="text-dark"><?php esc_html_e('Current Stock:', 'obydullah-restaurant-pos-for-woocommerce'); ?></span>
                             <span id="current-stock" class="fw-bold text-dark ml-1">0</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="text-dark"><?php esc_html_e('Adjustment:', 'obydullah-pos-for-woocommerce'); ?></span>
+                            <span class="text-dark"><?php esc_html_e('Adjustment:', 'obydullah-restaurant-pos-for-woocommerce'); ?></span>
                             <span id="adjustment-display" class="fw-bold text-success ml-1">+0</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-dark"><?php esc_html_e('New Stock:', 'obydullah-pos-for-woocommerce'); ?></span>
+                            <span class="text-dark"><?php esc_html_e('New Stock:', 'obydullah-restaurant-pos-for-woocommerce'); ?></span>
                             <span id="new-stock" class="fw-bold text-danger ml-1">0</span>
                         </div>
                     </div>
 
                     <div class="form-group mb-3">
                         <label for="adjustment-note" class="form-label fw-semibold">
-                            <?php esc_html_e('Note', 'obydullah-pos-for-woocommerce'); ?>
+                            <?php esc_html_e('Note', 'obydullah-restaurant-pos-for-woocommerce'); ?>
                         </label>
                         <textarea name="note" id="adjustment-note" rows="3" class="form-control"
-                            placeholder="<?php esc_attr_e('Reason for adjustment...', 'obydullah-pos-for-woocommerce'); ?>"></textarea>
+                            placeholder="<?php esc_attr_e('Reason for adjustment...', 'obydullah-restaurant-pos-for-woocommerce'); ?>"></textarea>
                     </div>
 
                     <div class="mt-4">
                         <button type="submit" id="submit-adjustment" class="btn btn-primary w-100">
-                            <span class="btn-text"><?php esc_html_e('Apply Adjustment', 'obydullah-pos-for-woocommerce'); ?></span>
+                            <span class="btn-text"><?php esc_html_e('Apply Adjustment', 'obydullah-restaurant-pos-for-woocommerce'); ?></span>
                             <span class="spinner opfw-hidden"></span>
                         </button>
                     </div>
@@ -313,27 +316,27 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
 
         <div class="col-md-8">
             <div class="bg-light p-3 rounded shadow-sm border">
-                <h2 class="h5 mb-3 fw-semibold"><?php esc_html_e('Adjustments History', 'obydullah-pos-for-woocommerce'); ?></h2>
+                <h2 class="h5 mb-3 fw-semibold"><?php esc_html_e('Adjustments History', 'obydullah-restaurant-pos-for-woocommerce'); ?></h2>
 
                 <div class="table-responsive">
                     <table class="table table-striped table-hover table-bordered mb-2">
                         <thead>
                             <tr class="bg-primary text-white">
-                                <th><?php esc_html_e('Date', 'obydullah-pos-for-woocommerce'); ?></th>
-                                <th><?php esc_html_e('Product', 'obydullah-pos-for-woocommerce'); ?></th>
-                                <th><?php esc_html_e('Type', 'obydullah-pos-for-woocommerce'); ?></th>
-                                <th><?php esc_html_e('Quantity', 'obydullah-pos-for-woocommerce'); ?></th>
-                                <th><?php esc_html_e('Old Qty', 'obydullah-pos-for-woocommerce'); ?></th>
-                                <th><?php esc_html_e('New Qty', 'obydullah-pos-for-woocommerce'); ?></th>
-                                <th><?php esc_html_e('Note', 'obydullah-pos-for-woocommerce'); ?></th>
-                                <th class="text-right"><?php esc_html_e('Actions', 'obydullah-pos-for-woocommerce'); ?></th>
+                                <th><?php esc_html_e('Date', 'obydullah-restaurant-pos-for-woocommerce'); ?></th>
+                                <th><?php esc_html_e('Product', 'obydullah-restaurant-pos-for-woocommerce'); ?></th>
+                                <th><?php esc_html_e('Type', 'obydullah-restaurant-pos-for-woocommerce'); ?></th>
+                                <th><?php esc_html_e('Quantity', 'obydullah-restaurant-pos-for-woocommerce'); ?></th>
+                                <th><?php esc_html_e('Old Qty', 'obydullah-restaurant-pos-for-woocommerce'); ?></th>
+                                <th><?php esc_html_e('New Qty', 'obydullah-restaurant-pos-for-woocommerce'); ?></th>
+                                <th><?php esc_html_e('Note', 'obydullah-restaurant-pos-for-woocommerce'); ?></th>
+                                <th class="text-right"><?php esc_html_e('Actions', 'obydullah-restaurant-pos-for-woocommerce'); ?></th>
                             </tr>
                         </thead>
                         <tbody id="adjustment-list" class="bg-white">
                             <tr>
                                 <td colspan="8" class="text-center p-4">
                                     <span class="spinner is-active"></span>
-                                    <?php esc_html_e('Loading...', 'obydullah-pos-for-woocommerce'); ?>
+                                    <?php esc_html_e('Loading...', 'obydullah-restaurant-pos-for-woocommerce'); ?>
                                 </td>
                             </tr>
                         </tbody>
@@ -342,13 +345,13 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
 
                 <div class="d-flex flex-wrap justify-content-between align-items-center mt-2">
                     <div class="tablenav-pages">
-                        <span class="displaying-num" id="displaying-num">0 <?php esc_html_e('items', 'obydullah-pos-for-woocommerce'); ?></span>
+                        <span class="displaying-num" id="displaying-num">0 <?php esc_html_e('items', 'obydullah-restaurant-pos-for-woocommerce'); ?></span>
                         <span class="pagination-links ms-2">
                             <a class="first-page btn btn-sm btn-dark" href="#">&laquo;</a>
                             <a class="prev-page btn btn-sm btn-dark" href="#">&lsaquo;</a>
                             <span class="paging-input">
                                 <input class="current-page form-control form-control-sm" id="current-page-selector" type="text" name="paged" value="1">
-                                <span class="tablenav-paging-text"><?php esc_html_e('of', 'obydullah-pos-for-woocommerce'); ?> <span class="total-pages">1</span></span>
+                                <span class="tablenav-paging-text"><?php esc_html_e('of', 'obydullah-restaurant-pos-for-woocommerce'); ?> <span class="total-pages">1</span></span>
                             </span>
                             <a class="next-page btn btn-sm btn-dark" href="#">&rsaquo;</a>
                             <a class="last-page btn btn-sm btn-dark" href="#">&raquo;</a>
@@ -373,11 +376,11 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
     public function opfw_ajax_get_products_for_stocks()
     {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-restaurant-pos-for-woocommerce'));
         }
         $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
         if (!wp_verify_nonce($opfw_nonce, 'opfw_get_products_for_stocks')) {
-            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
+            wp_die(esc_html__('Security check failed.', 'obydullah-restaurant-pos-for-woocommerce'));
         }
 
         $formatted = Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_get_or_set('products_all', function () {
@@ -408,15 +411,15 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
     public function opfw_ajax_get_stocks()
     {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-restaurant-pos-for-woocommerce'));
         }
         $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
         if (!wp_verify_nonce($opfw_nonce, 'opfw_get_stocks')) {
-            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
+            wp_die(esc_html__('Security check failed.', 'obydullah-restaurant-pos-for-woocommerce'));
         }
 
-        $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
-        $per_page = isset($_GET['per_page']) ? intval($_GET['per_page']) : 20;
+        $page = isset($_GET['page']) ? max(1, intval(sanitize_text_field(wp_unslash($_GET['page'])))) : 1;
+        $per_page = isset($_GET['per_page']) ? intval(sanitize_text_field(wp_unslash($_GET['per_page']))) : 20;
         $search = isset($_GET['search']) ? sanitize_text_field(wp_unslash($_GET['search'])) : '';
         $status_filter = isset($_GET['status']) ? sanitize_text_field(wp_unslash($_GET['status'])) : '';
 
@@ -477,35 +480,35 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
     public function opfw_ajax_update_stock()
     {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-restaurant-pos-for-woocommerce'));
         }
         $nonce = sanitize_text_field(wp_unslash($_POST['nonce'] ?? ''));
         $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
         if (!wp_verify_nonce($opfw_nonce, 'opfw_update_stock')) {
-            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
+            wp_die(esc_html__('Security check failed.', 'obydullah-restaurant-pos-for-woocommerce'));
         }
 
-        $product_id = intval($_POST['product_id'] ?? 0);
-        $buy_price = floatval($_POST['buy_price'] ?? 0);
-        $sale_price = floatval($_POST['sale_price'] ?? 0);
-        $quantity = intval($_POST['quantity'] ?? 0);
+        $product_id = intval(sanitize_text_field(wp_unslash($_POST['product_id'] ?? '')));
+        $buy_price = floatval(sanitize_text_field(wp_unslash($_POST['buy_price'] ?? '')));
+        $sale_price = floatval(sanitize_text_field(wp_unslash($_POST['sale_price'] ?? '')));
+        $quantity = intval(sanitize_text_field(wp_unslash($_POST['quantity'] ?? '')));
         $stock_status = sanitize_text_field(wp_unslash($_POST['stock_status'] ?? 'instock'));
 
         if ($quantity < 0) {
-            wp_send_json_error(__('Quantity cannot be negative', 'obydullah-pos-for-woocommerce'));
+            wp_send_json_error(__('Quantity cannot be negative', 'obydullah-restaurant-pos-for-woocommerce'));
         }
 
         if ($buy_price < 0 || $sale_price < 0) {
-            wp_send_json_error(__('Prices cannot be negative', 'obydullah-pos-for-woocommerce'));
+            wp_send_json_error(__('Prices cannot be negative', 'obydullah-restaurant-pos-for-woocommerce'));
         }
 
         if ($product_id <= 0) {
-            wp_send_json_error(__('Invalid product', 'obydullah-pos-for-woocommerce'));
+            wp_send_json_error(__('Invalid product', 'obydullah-restaurant-pos-for-woocommerce'));
         }
 
         $product = wc_get_product($product_id);
         if (!$product) {
-            wp_send_json_error(__('Product not found', 'obydullah-pos-for-woocommerce'));
+            wp_send_json_error(__('Product not found', 'obydullah-restaurant-pos-for-woocommerce'));
         }
 
         $old_quantity = $product->get_stock_quantity() ?: 0;
@@ -520,7 +523,7 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
 
         if ($quantity !== $old_quantity) {
             $this->opfw_log_adjustment($product_id, $quantity > $old_quantity ? 'increase' : 'decrease',
-                abs($quantity - $old_quantity), $old_quantity, $quantity, __('Stock update', 'obydullah-pos-for-woocommerce'));
+                abs($quantity - $old_quantity), $old_quantity, $quantity, __('Stock update', 'obydullah-restaurant-pos-for-woocommerce'));
         }
 
         Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_stocks');
@@ -529,17 +532,17 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
         Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_dashboard');
         Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_pos');
 
-        wp_send_json_success(__('Stock updated successfully', 'obydullah-pos-for-woocommerce'));
+        wp_send_json_success(__('Stock updated successfully', 'obydullah-restaurant-pos-for-woocommerce'));
     }
 
     public function opfw_ajax_get_products_for_adjustments()
     {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-restaurant-pos-for-woocommerce'));
         }
         $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
         if (!wp_verify_nonce($opfw_nonce, 'opfw_get_products_for_adjustments')) {
-            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
+            wp_die(esc_html__('Security check failed.', 'obydullah-restaurant-pos-for-woocommerce'));
         }
 
         $formatted = Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_get_or_set('products_for_adjustments', function () {
@@ -569,16 +572,16 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
     public function opfw_ajax_get_current_stock()
     {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-restaurant-pos-for-woocommerce'));
         }
         $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
         if (!wp_verify_nonce($opfw_nonce, 'opfw_get_current_stock')) {
-            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
+            wp_die(esc_html__('Security check failed.', 'obydullah-restaurant-pos-for-woocommerce'));
         }
 
-        $product_id = intval($_GET['product_id'] ?? 0);
+        $product_id = intval(sanitize_text_field(wp_unslash($_GET['product_id'] ?? '')));
         if ($product_id <= 0) {
-            wp_send_json_error(__('Invalid product ID', 'obydullah-pos-for-woocommerce'));
+            wp_send_json_error(__('Invalid product ID', 'obydullah-restaurant-pos-for-woocommerce'));
         }
 
         $cache_key = 'current_stock_' . $product_id;
@@ -593,29 +596,29 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
     public function opfw_ajax_add_adjustment()
     {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-restaurant-pos-for-woocommerce'));
         }
         $nonce = sanitize_text_field(wp_unslash($_POST['nonce'] ?? ''));
         $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
         if (!wp_verify_nonce($opfw_nonce, 'opfw_add_stock_adjustment')) {
-            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
+            wp_die(esc_html__('Security check failed.', 'obydullah-restaurant-pos-for-woocommerce'));
         }
 
-        $product_id = intval($_POST['product_id'] ?? 0);
+        $product_id = intval(sanitize_text_field(wp_unslash($_POST['product_id'] ?? '')));
         $adjustment_type = sanitize_text_field(wp_unslash($_POST['adjustment_type'] ?? 'increase'));
-        $quantity = intval($_POST['quantity'] ?? 0);
+        $quantity = intval(sanitize_text_field(wp_unslash($_POST['quantity'] ?? '')));
         $note = sanitize_textarea_field(wp_unslash($_POST['note'] ?? ''));
 
         if ($product_id <= 0) {
-            wp_send_json_error(__('Please select a valid product', 'obydullah-pos-for-woocommerce'));
+            wp_send_json_error(__('Please select a valid product', 'obydullah-restaurant-pos-for-woocommerce'));
         }
         if ($quantity <= 0) {
-            wp_send_json_error(__('Quantity must be greater than 0', 'obydullah-pos-for-woocommerce'));
+            wp_send_json_error(__('Quantity must be greater than 0', 'obydullah-restaurant-pos-for-woocommerce'));
         }
 
         $product = wc_get_product($product_id);
         if (!$product) {
-            wp_send_json_error(__('Product not found', 'obydullah-pos-for-woocommerce'));
+            wp_send_json_error(__('Product not found', 'obydullah-restaurant-pos-for-woocommerce'));
         }
 
         $old_quantity = $product->get_stock_quantity() ?: 0;
@@ -623,7 +626,7 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
         if ($adjustment_type === 'decrease' && $quantity > $old_quantity) {
             wp_send_json_error(sprintf(
                 /* translators: %d: available stock quantity */
-                __('Cannot decrease more than current stock. Available: %d', 'obydullah-pos-for-woocommerce'),
+                __('Cannot decrease more than current stock. Available: %d', 'obydullah-restaurant-pos-for-woocommerce'),
                 $old_quantity
             ));
         }
@@ -649,21 +652,21 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
         Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_dashboard');
         Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_pos');
 
-        wp_send_json_success(__('Stock adjustment applied successfully', 'obydullah-pos-for-woocommerce'));
+        wp_send_json_success(__('Stock adjustment applied successfully', 'obydullah-restaurant-pos-for-woocommerce'));
     }
 
     public function opfw_ajax_get_adjustments()
     {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-restaurant-pos-for-woocommerce'));
         }
         $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
         if (!wp_verify_nonce($opfw_nonce, 'opfw_get_stock_adjustments')) {
-            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
+            wp_die(esc_html__('Security check failed.', 'obydullah-restaurant-pos-for-woocommerce'));
         }
 
-        $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
-        $per_page = isset($_GET['per_page']) ? intval($_GET['per_page']) : 10;
+        $page = isset($_GET['page']) ? max(1, intval(sanitize_text_field(wp_unslash($_GET['page'])))) : 1;
+        $per_page = isset($_GET['per_page']) ? intval(sanitize_text_field(wp_unslash($_GET['per_page']))) : 10;
         $search = isset($_GET['search']) ? sanitize_text_field(wp_unslash($_GET['search'])) : '';
         $type = isset($_GET['type']) ? sanitize_text_field(wp_unslash($_GET['type'])) : '';
         $date = isset($_GET['date']) ? sanitize_text_field(wp_unslash($_GET['date'])) : '';
@@ -733,29 +736,33 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
     public function opfw_ajax_delete_adjustment()
     {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-restaurant-pos-for-woocommerce'));
         }
         $nonce = sanitize_text_field(wp_unslash($_POST['nonce'] ?? ''));
         $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
         if (!wp_verify_nonce($opfw_nonce, 'opfw_delete_stock_adjustment')) {
-            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
+            wp_die(esc_html__('Security check failed.', 'obydullah-restaurant-pos-for-woocommerce'));
         }
 
         global $wpdb;
-        $id = intval($_POST['id'] ?? 0);
+        $id = intval(sanitize_text_field(wp_unslash($_POST['id'] ?? '')));
 
         if (!$id) {
-            wp_send_json_error(__('Invalid adjustment ID', 'obydullah-pos-for-woocommerce'));
+            wp_send_json_error(__('Invalid adjustment ID', 'obydullah-restaurant-pos-for-woocommerce'));
         }
 
-        $result = $wpdb->delete($this->adjustment_log_table, ['id' => $id], ['%d']); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        $result = $wpdb->delete(
+            $this->adjustment_log_table,
+            ['id' => $id],
+            ['%d']
+        ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         if ($result === false) {
-            wp_send_json_error(__('Failed to delete adjustment', 'obydullah-pos-for-woocommerce'));
+            wp_send_json_error(__('Failed to delete adjustment', 'obydullah-restaurant-pos-for-woocommerce'));
         }
 
         Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_adjustments');
 
-        wp_send_json_success(__('Adjustment deleted successfully', 'obydullah-pos-for-woocommerce'));
+        wp_send_json_success(__('Adjustment deleted successfully', 'obydullah-restaurant-pos-for-woocommerce'));
     }
 
     private function opfw_log_adjustment($product_id, $type, $quantity, $old_qty, $new_qty, $note = '')
@@ -763,15 +770,19 @@ class Obydullah_POS_For_WooCommerce_Woo_Stock
         global $wpdb;
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- plugin log table write, cache flushed after
-        $wpdb->insert($this->adjustment_log_table, [
-            'product_id' => $product_id,
-            'adjustment_type' => $type,
-            'quantity' => $quantity,
-            'old_quantity' => $old_qty,
-            'new_quantity' => $new_qty,
-            'note' => $note,
-            'user_id' => get_current_user_id(),
-            'created_at' => current_time('mysql'),
-        ], ['%d', '%s', '%d', '%d', '%d', '%s', '%d', '%s']);
+        $wpdb->insert(
+            $this->adjustment_log_table,
+            [
+                'product_id' => $product_id,
+                'adjustment_type' => $type,
+                'quantity' => $quantity,
+                'old_quantity' => $old_qty,
+                'new_quantity' => $new_qty,
+                'note' => $note,
+                'user_id' => get_current_user_id(),
+                'created_at' => current_time('mysql'),
+            ],
+            ['%d', '%s', '%d', '%d', '%d', '%s', '%d', '%s']
+        );
     }
 }

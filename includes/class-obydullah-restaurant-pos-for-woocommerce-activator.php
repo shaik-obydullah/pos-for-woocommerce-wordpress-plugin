@@ -2,7 +2,7 @@
 /**
  * Fired during plugin activation
  *
- * @package Obydullah_POS_For_WooCommerce
+ * @package Obydullah_Restaurant_POS_For_WooCommerce
  * @since   1.0.0
  * @version 1.0.0
  */
@@ -22,6 +22,20 @@ class Obydullah_POS_For_WooCommerce_Activator
 
         $table_accounting = $wpdb->prefix . 'opfw_accounting';
         $table_adjustment_log = $wpdb->prefix . 'opfw_stock_adjustment_log';
+        $table_customers = $wpdb->prefix . 'opfw_customers';
+
+        $sql_customers = "CREATE TABLE {$table_customers} (
+            id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            name VARCHAR(255) NOT NULL,
+            email VARCHAR(100) NOT NULL,
+            mobile VARCHAR(20) NOT NULL,
+            address TEXT DEFAULT NULL,
+            status VARCHAR(20) NOT NULL DEFAULT 'active',
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY email (email)
+        ) {$charset_collate};";
 
         $sql_accounting = "CREATE TABLE {$table_accounting} (
             id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -48,6 +62,7 @@ class Obydullah_POS_For_WooCommerce_Activator
 
         dbDelta($sql_accounting);
         dbDelta($sql_adjustment_log);
+        dbDelta($sql_customers);
 
         update_option('opfw_version', OPFW_VERSION);
 

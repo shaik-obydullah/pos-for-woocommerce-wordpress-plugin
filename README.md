@@ -1,4 +1,4 @@
-# Obydullah POS for WooCommerce
+# Obydullah Restaurant POS for WooCommerce
 
 Contributors: obydullah
 Donate link: https://obydullah.com
@@ -8,7 +8,7 @@ Tested up to: 7.1
 Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Text Domain: obydullah-pos-for-woocommerce
+Text Domain: obydullah-restaurant-pos-for-woocommerce
 Domain Path: /languages
 
 Complete restaurant Point of Sale (POS) with inventory, order management, and sales tracking for food businesses.
@@ -19,19 +19,19 @@ Complete restaurant Point of Sale (POS) with inventory, order management, and sa
 [![PHP](https://img.shields.io/badge/PHP-8.0%2B-777BB4?logo=php&logoColor=white&style=flat-square)](https://www.php.net/)
 [![WooCommerce](https://img.shields.io/badge/WooCommerce-6.0%2B-96588A?logo=woocommerce&logoColor=white&style=flat-square)](https://woocommerce.com/)
 [![License](https://img.shields.io/badge/License-GPLv2%2F%20later-333333?logo=gnu&logoColor=white&style=flat-square)](https://www.gnu.org/licenses/gpl-2.0.html)
-[![Version](https://img.shields.io/badge/Version-1.0.0-00a32a?style=flat-square)](https://wordpress.org/plugins/obydullah-pos-for-woocommerce/)
+[![Version](https://img.shields.io/badge/Version-1.0.0-00a32a?style=flat-square)](https://wordpress.org/plugins/obydullah-restaurant-pos-for-woocommerce/)
 [![PHP 8.0 Compatible](https://img.shields.io/badge/PHP-8.0%2B%20Compatible-8892BF?logo=php&logoColor=white&style=flat-square)](https://www.php.net/)
 [![WC Tested](https://img.shields.io/badge/WC%20Tested%20up%20to-8.0-96588A?logo=woocommerce&logoColor=white&style=flat-square)](https://woocommerce.com/)
 [![Requires PHP](https://img.shields.io/badge/Requires%20PHP-8.0-777BB4?logo=php&logoColor=white&style=flat-square)](https://www.php.net/)
-[![Stars](https://img.shields.io/wordpress/plugin/stars/obydullah-pos-for-woocommerce?style=flat-square)](https://wordpress.org/plugins/obydullah-pos-for-woocommerce/)
-[![Active Installs](https://img.shields.io/wordpress/plugin/installs/obydullah-pos-for-woocommerce?style=flat-square)](https://wordpress.org/plugins/obydullah-pos-for-woocommerce/)
-[![Last Updated](https://img.shields.io/wordpress/plugin/last-updated/obydullah-pos-for-woocommerce?style=flat-square)](https://wordpress.org/plugins/obydullah-pos-for-woocommerce/)
+[![Stars](https://img.shields.io/wordpress/plugin/stars/obydullah-restaurant-pos-for-woocommerce?style=flat-square)](https://wordpress.org/plugins/obydullah-restaurant-pos-for-woocommerce/)
+[![Active Installs](https://img.shields.io/wordpress/plugin/installs/obydullah-restaurant-pos-for-woocommerce?style=flat-square)](https://wordpress.org/plugins/obydullah-restaurant-pos-for-woocommerce/)
+[![Last Updated](https://img.shields.io/wordpress/plugin/last-updated/obydullah-restaurant-pos-for-woocommerce?style=flat-square)](https://wordpress.org/plugins/obydullah-restaurant-pos-for-woocommerce/)
 
-**Obydullah POS for WooCommerce** is a complete restaurant management solution that helps you streamline your restaurant operations. Manage your menu, process orders, track inventory, handle customers, and generate sales reports — all from your WordPress admin area.
+**Obydullah Restaurant POS for WooCommerce** is a complete restaurant management solution that helps you streamline your restaurant operations. Manage your menu, process orders, track inventory, handle customers, and generate sales reports — all from your WordPress admin area.
 
 ## Video
 
-Watch the full tutorial and demo of Obydullah POS for WooCommerce here: [Video Tutorial](https://youtu.be/FlJ_RkWfsl0)
+Watch the full tutorial and demo of Obydullah Restaurant POS for WooCommerce here: [Video Tutorial](https://youtu.be/FlJ_RkWfsl0)
 
 ### Key Features
 
@@ -112,7 +112,7 @@ Watch the full tutorial and demo of Obydullah POS for WooCommerce here: [Video T
 ### Automatic Installation
 
 1. Navigate to **Plugins → Add New** in your WordPress admin
-2. Search for "Obydullah POS for WooCommerce"
+2. Search for "Obydullah Restaurant POS for WooCommerce"
 3. Click **Install Now**
 4. Click **Activate**
 
@@ -125,17 +125,17 @@ Watch the full tutorial and demo of Obydullah POS for WooCommerce here: [Video T
 
 ### Setup
 
-1. After activation, go to **WooPOS** in your WordPress admin menu
-2. Start by configuring your shop settings in **WooPOS → Settings**
-3. Add your product categories in **WooPOS → Categories**
-4. Add your menu items in **WooPOS → Products**
-5. Set up your initial stock in **WooPOS → Stocks**
-6. You're ready to start taking orders in **WooPOS → POS**
+1. After activation, go to **OBY Restaurant POS** in your WordPress admin menu
+2. Start by configuring your shop settings in **OBY Restaurant POS → Settings**
+3. Add your product categories in **OBY Restaurant POS → Categories**
+4. Add your menu items in **OBY Restaurant POS → Products**
+5. Set up your initial stock in **OBY Restaurant POS → Stocks**
+6. You're ready to start taking orders in **OBY Restaurant POS → POS**
 
 ## Frequently Asked Questions
 
 ### How do I add menu items?
-Go to **WooPOS → Products** in your WordPress admin to add menu items and organize them by categories.
+Go to **OBY Restaurant POS → Products** in your WordPress admin to add menu items and organize them by categories.
 
 ### Can I track inventory?
 Yes! The plugin includes complete inventory management with stock tracking and automatic low stock alerts. It automatically updates stock levels when sales are completed.
@@ -150,7 +150,7 @@ Yes, the plugin includes professional receipt and invoice printing for completed
 Yes, customer information can be stored in the Customer Management section for repeat orders and better service. Customer emails must be unique to avoid duplicates.
 
 ### How do I set up taxes and VAT?
-Go to **WooPOS → Settings** to configure tax rates, VAT rates, currency, and other shop settings. You can enable/disable these features as needed.
+Go to **OBY Restaurant POS → Settings** to configure tax rates, VAT rates, currency, and other shop settings. You can enable/disable these features as needed.
 
 ### Can I save orders for later completion?
 Yes, you can save orders in the POS and complete them later. Saved orders appear in the "Saved Sales" section and can be loaded, edited, or deleted.
@@ -159,13 +159,13 @@ Yes, you can save orders in the POS and complete them later. Saved orders appear
 Yes, the plugin automatically tracks sales income and creates accounting entries. You can also manually add income/expense entries for other transactions.
 
 ### How do I view sales reports?
-Go to **WooPOS → Dashboard** for an overview of today's and monthly sales, income, expenses, and profits. The Sales section provides detailed transaction history.
+Go to **OBY Restaurant POS → Dashboard** for an overview of today's and monthly sales, income, expenses, and profits. The Sales section provides detailed transaction history.
 
 ### Can multiple users access the POS?
 Yes, any WordPress user with the `manage_options` capability (typically Administrators) can access and use the POS system.
 
 ### Is the plugin translation-ready?
-Yes, the plugin is fully translation-ready and includes .pot file for translators. Text domain: `obydullah-pos-for-woocommerce`.
+Yes, the plugin is fully translation-ready and includes .pot file for translators. Text domain: `obydullah-restaurant-pos-for-woocommerce`.
 
 ## Screenshots
 
@@ -187,10 +187,10 @@ Initial release with complete POS system.
 
 ## Additional Notes
 
-- **Support**: For support requests, please visit the [support forum](https://wordpress.org/support/plugin/obydullah-pos-for-woocommerce/)
+- **Support**: For support requests, please visit the [support forum](https://wordpress.org/support/plugin/obydullah-restaurant-pos-for-woocommerce/)
 - **Contributions**: Found a bug or have a feature request? Please submit it on our [GitHub repository](https://github.com/shaik-obydullah/restaurant-pos-lite)
 - **Documentation**: Full user and setup documentation is available here: [Documentation](https://obydullah.com/documentation/wordpress-restaurant-pos-lite-plugin)
-- **Translations**: Help translate the plugin on our [translation platform](https://translate.wordpress.org/projects/wp-plugins/obydullah-pos-for-woocommerce/)
+- **Translations**: Help translate the plugin on our [translation platform](https://translate.wordpress.org/projects/wp-plugins/obydullah-restaurant-pos-for-woocommerce/)
 
 ## License
 

@@ -2,7 +2,7 @@
 /**
  * Dashboard — WooCommerce Data Queries
  *
- * @package Obydullah_POS_For_WooCommerce
+ * @package Obydullah_Restaurant_POS_For_WooCommerce
  * @since   1.0.0
  * @version 1.0.0
  */
@@ -289,71 +289,71 @@ class Obydullah_POS_For_WooCommerce_Dashboard
         ];
         ?>
 <div class="wrap">
-    <h1 class="wp-heading-inline mb-3"><?php esc_html_e('Restaurant POS Dashboard', 'obydullah-pos-for-woocommerce'); ?></h1>
+    <h1 class="wp-heading-inline mb-3"><?php esc_html_e('Restaurant POS Dashboard', 'obydullah-restaurant-pos-for-woocommerce'); ?></h1>
     <hr class="wp-header-end">
 
     <div class="row mb-4">
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="bg-light p-4 rounded shadow-sm stock-summary-card border-left border-info">
-                <h3 class="fs-6 fw-normal text-muted mb-2"><?php esc_html_e('Low Stock Items', 'obydullah-pos-for-woocommerce'); ?></h3>
+                <h3 class="fs-6 fw-normal text-muted mb-2"><?php esc_html_e('Low Stock Items', 'obydullah-restaurant-pos-for-woocommerce'); ?></h3>
                 <p class="summary-number text-info mb-0 fs-3 fw-bold"><?php echo esc_html($dashboard_data['low_stock_count']); ?></p>
-                <small class="text-muted mb-3"><?php esc_html_e('Items with low stock', 'obydullah-pos-for-woocommerce'); ?></small>
+                <small class="text-muted mb-3"><?php esc_html_e('Items with low stock', 'obydullah-restaurant-pos-for-woocommerce'); ?></small>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="bg-light p-4 rounded shadow-sm stock-summary-card border-left border-info">
-                <h3 class="fs-6 fw-normal text-muted mb-2"><?php esc_html_e('Stock Value', 'obydullah-pos-for-woocommerce'); ?></h3>
+                <h3 class="fs-6 fw-normal text-muted mb-2"><?php esc_html_e('Stock Value', 'obydullah-restaurant-pos-for-woocommerce'); ?></h3>
                 <p class="summary-number text-info mb-0 fs-3 fw-bold"><?php echo esc_html($this->opfw_format_currency($dashboard_data['stock_value'])); ?></p>
-                <small class="text-muted mb-3"><?php esc_html_e('Current inventory value', 'obydullah-pos-for-woocommerce'); ?></small>
+                <small class="text-muted mb-3"><?php esc_html_e('Current inventory value', 'obydullah-restaurant-pos-for-woocommerce'); ?></small>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="bg-light p-4 rounded shadow-sm stock-summary-card border-left border-success">
-                <h3 class="fs-6 fw-normal text-muted mb-2"><?php esc_html_e("Today's Sales", 'obydullah-pos-for-woocommerce'); ?></h3>
+                <h3 class="fs-6 fw-normal text-muted mb-2"><?php esc_html_e("Today's Sales", 'obydullah-restaurant-pos-for-woocommerce'); ?></h3>
                 <p class="summary-number text-success mb-0 fs-3 fw-bold"><?php echo esc_html($this->opfw_format_number($dashboard_data['today_sale'])); ?></p>
-                <small class="text-muted mb-3"><?php esc_html_e('Completed orders today', 'obydullah-pos-for-woocommerce'); ?></small>
+                <small class="text-muted mb-3"><?php esc_html_e('Completed orders today', 'obydullah-restaurant-pos-for-woocommerce'); ?></small>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="bg-light p-4 rounded shadow-sm stock-summary-card border-left border-primary">
-                <h3 class="fs-6 fw-normal text-muted mb-2"><?php esc_html_e('Monthly Sales', 'obydullah-pos-for-woocommerce'); ?></h3>
+                <h3 class="fs-6 fw-normal text-muted mb-2"><?php esc_html_e('Monthly Sales', 'obydullah-restaurant-pos-for-woocommerce'); ?></h3>
                 <p class="summary-number text-success mb-0 fs-3 fw-bold"><?php echo esc_html($this->opfw_format_number($dashboard_data['month_sale'])); ?></p>
-                <small class="text-muted mb-3"><?php esc_html_e('Total orders this month', 'obydullah-pos-for-woocommerce'); ?></small>
+                <small class="text-muted mb-3"><?php esc_html_e('Total orders this month', 'obydullah-restaurant-pos-for-woocommerce'); ?></small>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="bg-light p-4 rounded shadow-sm stock-summary-card border-left border-lime">
-                <h3 class="fs-6 fw-normal text-muted mb-2"><?php esc_html_e("Today's Income", 'obydullah-pos-for-woocommerce'); ?></h3>
+                <h3 class="fs-6 fw-normal text-muted mb-2"><?php esc_html_e("Today's Income", 'obydullah-restaurant-pos-for-woocommerce'); ?></h3>
                 <p class="summary-number text-lime mb-0 fs-3 fw-bold"><?php echo esc_html($this->opfw_format_currency($dashboard_data['today_income'])); ?></p>
-                <small class="text-muted mb-3"><?php esc_html_e('Revenue generated today', 'obydullah-pos-for-woocommerce'); ?></small>
+                <small class="text-muted mb-3"><?php esc_html_e('Revenue generated today', 'obydullah-restaurant-pos-for-woocommerce'); ?></small>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="bg-light p-4 rounded shadow-sm stock-summary-card border-left border-success">
-                <h3 class="fs-6 fw-normal text-muted mb-2"><?php esc_html_e('Monthly Income', 'obydullah-pos-for-woocommerce'); ?></h3>
+                <h3 class="fs-6 fw-normal text-muted mb-2"><?php esc_html_e('Monthly Income', 'obydullah-restaurant-pos-for-woocommerce'); ?></h3>
                 <p class="summary-number text-success mb-0 fs-3 fw-bold"><?php echo esc_html($this->opfw_format_currency($dashboard_data['month_income'])); ?></p>
-                <small class="text-muted mb-3"><?php esc_html_e('Total revenue this month', 'obydullah-pos-for-woocommerce'); ?></small>
+                <small class="text-muted mb-3"><?php esc_html_e('Total revenue this month', 'obydullah-restaurant-pos-for-woocommerce'); ?></small>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="bg-light p-4 rounded shadow-sm stock-summary-card border-left border-warning">
-                <h3 class="fs-6 fw-normal text-muted mb-2"><?php esc_html_e("Today's Expense", 'obydullah-pos-for-woocommerce'); ?></h3>
+                <h3 class="fs-6 fw-normal text-muted mb-2"><?php esc_html_e("Today's Expense", 'obydullah-restaurant-pos-for-woocommerce'); ?></h3>
                 <p class="summary-number text-warning mb-0 fs-3 fw-bold"><?php echo esc_html($this->opfw_format_currency($dashboard_data['today_expense'])); ?></p>
-                <small class="text-muted mb-3"><?php esc_html_e('Expenses incurred today', 'obydullah-pos-for-woocommerce'); ?></small>
+                <small class="text-muted mb-3"><?php esc_html_e('Expenses incurred today', 'obydullah-restaurant-pos-for-woocommerce'); ?></small>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="bg-light p-4 rounded shadow-sm stock-summary-card border-left border-danger">
-                <h3 class="fs-6 fw-normal text-muted mb-2"><?php esc_html_e('Monthly Expense', 'obydullah-pos-for-woocommerce'); ?></h3>
+                <h3 class="fs-6 fw-normal text-muted mb-2"><?php esc_html_e('Monthly Expense', 'obydullah-restaurant-pos-for-woocommerce'); ?></h3>
                 <p class="summary-number text-danger mb-0 fs-3 fw-bold"><?php echo esc_html($this->opfw_format_currency($dashboard_data['month_expense'])); ?></p>
-                <small class="text-muted mb-3"><?php esc_html_e('Total expenses this month', 'obydullah-pos-for-woocommerce'); ?></small>
+                <small class="text-muted mb-3"><?php esc_html_e('Total expenses this month', 'obydullah-restaurant-pos-for-woocommerce'); ?></small>
             </div>
         </div>
     </div>
@@ -362,7 +362,7 @@ class Obydullah_POS_For_WooCommerce_Dashboard
         <div class="col-lg-12">
             <div class="bg-light p-4 rounded shadow-sm">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h3 class="fs-6 fw-semibold mb-0"><?php esc_html_e('Top Selling Products', 'obydullah-pos-for-woocommerce'); ?></h3>
+                    <h3 class="fs-6 fw-semibold mb-0"><?php esc_html_e('Top Selling Products', 'obydullah-restaurant-pos-for-woocommerce'); ?></h3>
                 </div>
 
                 <?php $top_products = $this->opfw_get_top_products(5); ?>
@@ -372,9 +372,9 @@ class Obydullah_POS_For_WooCommerce_Dashboard
                     <table class="table table-hover mb-0">
                         <thead>
                             <tr class="bg-primary text-white">
-                                <th class="ps-4"><?php esc_html_e('Product', 'obydullah-pos-for-woocommerce'); ?></th>
-                                <th class="text-center"><?php esc_html_e('Orders', 'obydullah-pos-for-woocommerce'); ?></th>
-                                <th class="text-center"><?php esc_html_e('Qty Sold', 'obydullah-pos-for-woocommerce'); ?></th>
+                                <th class="ps-4"><?php esc_html_e('Product', 'obydullah-restaurant-pos-for-woocommerce'); ?></th>
+                                <th class="text-center"><?php esc_html_e('Orders', 'obydullah-restaurant-pos-for-woocommerce'); ?></th>
+                                <th class="text-center"><?php esc_html_e('Qty Sold', 'obydullah-restaurant-pos-for-woocommerce'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -400,7 +400,7 @@ class Obydullah_POS_For_WooCommerce_Dashboard
                         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-muted mb-3">
                             <path d="M3 3h18v18H3zM8 8v8m8-8v8m-4-4v4" />
                         </svg>
-                        <p class="mb-0 text-muted"><?php esc_html_e('No sales data available.', 'obydullah-pos-for-woocommerce'); ?></p>
+                        <p class="mb-0 text-muted"><?php esc_html_e('No sales data available.', 'obydullah-restaurant-pos-for-woocommerce'); ?></p>
                     </div>
                 </div>
                 <?php endif; ?>

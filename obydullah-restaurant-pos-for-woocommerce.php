@@ -1,12 +1,12 @@
 <?php
 /**
- * Plugin Name: Obydullah POS for WooCommerce
- * Plugin URI: https://obydullah.com/project/wordpress-restaurant-pos-lite-plugin
- * Description: Complete restaurant Point of Sale (POS) with inventory, order management, and sales tracking for food businesses.
+ * Plugin Name: Obydullah Restaurant POS for WooCommerce
+ * Plugin URI: https://obydullah.com/project/woocommerce-pos-plugin
+ * Description: Obydullah Restaurant POS for WooCommerce is a complete restaurant Point of Sale with order management, inventory, and sales tracking.
  * Version: 1.0.0
  * Author: Shaik Obydullah
  * Author URI: https://obydullah.com
- * Text Domain: obydullah-pos-for-woocommerce
+ * Text Domain: obydullah-restaurant-pos-for-woocommerce
  * Domain Path: /languages
  * Requires at least: 6.0
  * Tested up to: 7.1
@@ -16,8 +16,6 @@
  * Requires Plugins: woocommerce
  * License: GPL-2.0-or-later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * @since   1.0.0
- * @version 1.0.0
  */
 
 if (!defined('ABSPATH')) {
@@ -34,16 +32,16 @@ add_action('before_woocommerce_init', function () {
     }
 });
 
-require_once OPFW_PATH . 'includes/class-obydullah-pos-for-woocommerce-handler.php';
-require_once OPFW_PATH . 'includes/class-obydullah-pos-for-woocommerce-activator.php';
-require_once OPFW_PATH . 'includes/class-obydullah-pos-for-woocommerce-deactivator.php';
+require_once OPFW_PATH . 'includes/class-obydullah-restaurant-pos-for-woocommerce-handler.php';
+require_once OPFW_PATH . 'includes/class-obydullah-restaurant-pos-for-woocommerce-activator.php';
+require_once OPFW_PATH . 'includes/class-obydullah-restaurant-pos-for-woocommerce-deactivator.php';
 
 add_action('plugins_loaded', 'opfw_init');
 function opfw_init()
 {
     if (!class_exists('WooCommerce')) {
         add_action('admin_notices', function () {
-            echo '<div class="error"><p><strong>Obydullah POS for WooCommerce</strong> requires WooCommerce to be installed and active.</p></div>';
+            echo '<div class="error"><p><strong>Obydullah Restaurant POS for WooCommerce</strong> requires WooCommerce to be installed and active.</p></div>';
         });
         return;
     }

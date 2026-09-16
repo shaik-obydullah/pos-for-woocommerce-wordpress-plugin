@@ -2,7 +2,7 @@
 /**
  * Point of Sales (POS) - WooCommerce Integrated
  *
- * @package Obydullah_POS_For_WooCommerce
+ * @package Obydullah_Restaurant_POS_For_WooCommerce
  * @since   1.0.0
  * @version 1.0.0
  */
@@ -41,7 +41,7 @@ class Obydullah_POS_For_WooCommerce_POS
         $currency = $this->helpers->opfw_get_currency_symbol();
         ?>
 <div class="wrap">
-    <h1 class="wp-heading-inline"><?php esc_html_e('Point of Sale (POS)', 'obydullah-pos-for-woocommerce'); ?></h1>
+    <h1 class="wp-heading-inline"><?php esc_html_e('Point of Sale (POS)', 'obydullah-restaurant-pos-for-woocommerce'); ?></h1>
     <hr class="wp-header-end">
 
     <div class="row">
@@ -49,13 +49,13 @@ class Obydullah_POS_For_WooCommerce_POS
             <div class="row">
                 <div class="col-12 mb-4">
                     <div class="bg-light p-4 rounded shadow-sm">
-                        <h3 class="mb-3 mt-1"><?php esc_html_e('Categories', 'obydullah-pos-for-woocommerce'); ?></h3>
+                        <h3 class="mb-3 mt-1"><?php esc_html_e('Categories', 'obydullah-restaurant-pos-for-woocommerce'); ?></h3>
                         <div class="opfw-categories-list" id="opfw-categories-list">
                             <button class="btn btn-outline-primary active mr-2 mb-2" data-category="all">
-                                <?php esc_html_e('All Products', 'obydullah-pos-for-woocommerce'); ?>
+                                <?php esc_html_e('All Products', 'obydullah-restaurant-pos-for-woocommerce'); ?>
                             </button>
                             <span class="spinner-border spinner-border-sm text-primary" role="status">
-                                <span class="sr-only"><?php esc_html_e('Loading...', 'obydullah-pos-for-woocommerce'); ?></span>
+                                <span class="sr-only"><?php esc_html_e('Loading...', 'obydullah-restaurant-pos-for-woocommerce'); ?></span>
                             </span>
                         </div>
                     </div>
@@ -63,13 +63,13 @@ class Obydullah_POS_For_WooCommerce_POS
 
                 <div class="col-12">
                     <div class="bg-light p-4 rounded shadow-sm">
-                        <h3 class="mb-3"><?php esc_html_e('Products', 'obydullah-pos-for-woocommerce'); ?></h3>
+                        <h3 class="mb-3"><?php esc_html_e('Products', 'obydullah-restaurant-pos-for-woocommerce'); ?></h3>
                         <div class="opfw-stocks-grid" id="opfw-stocks-grid">
                             <div class="text-center py-5">
                                 <div class="spinner-border text-primary" role="status">
-                                    <span class="sr-only"><?php esc_html_e('Loading...', 'obydullah-pos-for-woocommerce'); ?></span>
+                                    <span class="sr-only"><?php esc_html_e('Loading...', 'obydullah-restaurant-pos-for-woocommerce'); ?></span>
                                 </div>
-                                <p class="mt-2"><?php esc_html_e('Loading products...', 'obydullah-pos-for-woocommerce'); ?></p>
+                                <p class="mt-2"><?php esc_html_e('Loading products...', 'obydullah-restaurant-pos-for-woocommerce'); ?></p>
                             </div>
                         </div>
                     </div>
@@ -80,9 +80,9 @@ class Obydullah_POS_For_WooCommerce_POS
         <div class="col-lg-4">
             <div class="bg-light p-4 rounded shadow-sm">
                 <div class="form-group mb-3">
-                    <label for="opfw-customer" class="form-label"><?php esc_html_e('Customer:', 'obydullah-pos-for-woocommerce'); ?></label>
+                    <label for="opfw-customer" class="form-label"><?php esc_html_e('Customer:', 'obydullah-restaurant-pos-for-woocommerce'); ?></label>
                     <select id="opfw-customer" class="form-control">
-                        <option value=""><?php esc_html_e('Walk-in Customer', 'obydullah-pos-for-woocommerce'); ?></option>
+                        <option value=""><?php esc_html_e('Walk-in Customer', 'obydullah-restaurant-pos-for-woocommerce'); ?></option>
                     </select>
                 </div>
 
@@ -90,83 +90,83 @@ class Obydullah_POS_For_WooCommerce_POS
                     <div class="pos-tab-buttons btn-group btn-group-toggle w-100 mb-3">
                         <label class="btn btn-outline-primary active">
                             <input type="radio" name="order-type" value="dineIn" checked>
-                            <?php esc_html_e('Dine In', 'obydullah-pos-for-woocommerce'); ?>
+                            <?php esc_html_e('Dine In', 'obydullah-restaurant-pos-for-woocommerce'); ?>
                         </label>
                         <label class="btn btn-outline-primary">
                             <input type="radio" name="order-type" value="takeAway">
-                            <?php esc_html_e('Take Away', 'obydullah-pos-for-woocommerce'); ?>
+                            <?php esc_html_e('Take Away', 'obydullah-restaurant-pos-for-woocommerce'); ?>
                         </label>
                         <label class="btn btn-outline-primary">
                             <input type="radio" name="order-type" value="pickup">
-                            <?php esc_html_e('Pickup', 'obydullah-pos-for-woocommerce'); ?>
+                            <?php esc_html_e('Pickup', 'obydullah-restaurant-pos-for-woocommerce'); ?>
                         </label>
                     </div>
 
                     <div id="dineInOptions" class="pos-tab-content">
                         <div class="form-group mb-2">
-                            <label class="form-label"><?php esc_html_e('Table Number', 'obydullah-pos-for-woocommerce'); ?></label>
+                            <label class="form-label"><?php esc_html_e('Table Number', 'obydullah-restaurant-pos-for-woocommerce'); ?></label>
                             <input type="text" id="table-number" class="form-control form-control-sm"
-                                placeholder="<?php esc_attr_e('Enter table number', 'obydullah-pos-for-woocommerce'); ?>">
+                                placeholder="<?php esc_attr_e('Enter table number', 'obydullah-restaurant-pos-for-woocommerce'); ?>">
                         </div>
                         <div class="form-group mb-0">
-                            <label class="form-label"><?php esc_html_e('Cooking Instructions', 'obydullah-pos-for-woocommerce'); ?></label>
+                            <label class="form-label"><?php esc_html_e('Cooking Instructions', 'obydullah-restaurant-pos-for-woocommerce'); ?></label>
                             <textarea id="dinein-instructions" class="form-control form-control-sm" rows="2"
-                                placeholder="<?php esc_attr_e('Add special cooking instructions...', 'obydullah-pos-for-woocommerce'); ?>"></textarea>
+                                placeholder="<?php esc_attr_e('Add special cooking instructions...', 'obydullah-restaurant-pos-for-woocommerce'); ?>"></textarea>
                         </div>
                     </div>
 
                     <div id="takeAwayOptions" class="pos-tab-content opfw-hidden">
                         <div class="form-group mb-2">
-                            <label class="form-label"><?php esc_html_e('Customer Name', 'obydullah-pos-for-woocommerce'); ?></label>
+                            <label class="form-label"><?php esc_html_e('Customer Name', 'obydullah-restaurant-pos-for-woocommerce'); ?></label>
                             <input type="text" id="takeaway-name" class="form-control form-control-sm"
-                                placeholder="<?php esc_attr_e('Enter customer name', 'obydullah-pos-for-woocommerce'); ?>">
+                                placeholder="<?php esc_attr_e('Enter customer name', 'obydullah-restaurant-pos-for-woocommerce'); ?>">
                         </div>
                         <div class="form-group mb-2">
-                            <label class="form-label"><?php esc_html_e('Delivery Address', 'obydullah-pos-for-woocommerce'); ?></label>
+                            <label class="form-label"><?php esc_html_e('Delivery Address', 'obydullah-restaurant-pos-for-woocommerce'); ?></label>
                             <textarea id="takeaway-address" class="form-control form-control-sm" rows="2"
-                                placeholder="<?php esc_attr_e('Enter delivery address', 'obydullah-pos-for-woocommerce'); ?>"></textarea>
+                                placeholder="<?php esc_attr_e('Enter delivery address', 'obydullah-restaurant-pos-for-woocommerce'); ?>"></textarea>
                         </div>
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group mb-2">
-                                    <label class="form-label"><?php esc_html_e('Email', 'obydullah-pos-for-woocommerce'); ?></label>
+                                    <label class="form-label"><?php esc_html_e('Email', 'obydullah-restaurant-pos-for-woocommerce'); ?></label>
                                     <input type="email" id="takeaway-email" class="form-control form-control-sm"
-                                        placeholder="<?php esc_attr_e('Enter email address', 'obydullah-pos-for-woocommerce'); ?>">
+                                        placeholder="<?php esc_attr_e('Enter email address', 'obydullah-restaurant-pos-for-woocommerce'); ?>">
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-group mb-2">
-                                    <label class="form-label"><?php esc_html_e('Mobile', 'obydullah-pos-for-woocommerce'); ?></label>
+                                    <label class="form-label"><?php esc_html_e('Mobile', 'obydullah-restaurant-pos-for-woocommerce'); ?></label>
                                     <input type="text" id="takeaway-mobile" class="form-control form-control-sm"
-                                        placeholder="<?php esc_attr_e('Enter mobile number', 'obydullah-pos-for-woocommerce'); ?>">
+                                        placeholder="<?php esc_attr_e('Enter mobile number', 'obydullah-restaurant-pos-for-woocommerce'); ?>">
                                 </div>
                             </div>
                         </div>
                         <div class="form-group mb-0">
-                            <label class="form-label"><?php esc_html_e('Cooking Instructions', 'obydullah-pos-for-woocommerce'); ?></label>
+                            <label class="form-label"><?php esc_html_e('Cooking Instructions', 'obydullah-restaurant-pos-for-woocommerce'); ?></label>
                             <textarea id="takeaway-instructions" class="form-control form-control-sm" rows="2"
-                                placeholder="<?php esc_attr_e('Enter Cooking Instructions', 'obydullah-pos-for-woocommerce'); ?>"></textarea>
+                                placeholder="<?php esc_attr_e('Enter Cooking Instructions', 'obydullah-restaurant-pos-for-woocommerce'); ?>"></textarea>
                         </div>
                     </div>
 
                     <div id="pickupOptions" class="pos-tab-content opfw-hidden">
                         <div class="form-group mb-2">
-                            <label class="form-label"><?php esc_html_e('Customer Name', 'obydullah-pos-for-woocommerce'); ?></label>
+                            <label class="form-label"><?php esc_html_e('Customer Name', 'obydullah-restaurant-pos-for-woocommerce'); ?></label>
                             <input type="text" id="pickup-name" class="form-control form-control-sm"
-                                placeholder="<?php esc_attr_e('Enter customer name', 'obydullah-pos-for-woocommerce'); ?>">
+                                placeholder="<?php esc_attr_e('Enter customer name', 'obydullah-restaurant-pos-for-woocommerce'); ?>">
                         </div>
                         <div class="form-group mb-0">
-                            <label class="form-label"><?php esc_html_e('Mobile', 'obydullah-pos-for-woocommerce'); ?></label>
+                            <label class="form-label"><?php esc_html_e('Mobile', 'obydullah-restaurant-pos-for-woocommerce'); ?></label>
                             <input type="tel" id="pickup-mobile" class="form-control form-control-sm"
-                                placeholder="<?php esc_attr_e('Enter mobile number', 'obydullah-pos-for-woocommerce'); ?>">
+                                placeholder="<?php esc_attr_e('Enter mobile number', 'obydullah-restaurant-pos-for-woocommerce'); ?>">
                         </div>
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <h4><?php esc_html_e('Cart', 'obydullah-pos-for-woocommerce'); ?></h4>
+                    <h4><?php esc_html_e('Cart', 'obydullah-restaurant-pos-for-woocommerce'); ?></h4>
                     <div class="opfw-cart-items" id="opfw-cart-items">
-                        <div class="text-center py-3 text-muted"><?php esc_html_e('Cart is empty', 'obydullah-pos-for-woocommerce'); ?></div>
+                        <div class="text-center py-3 text-muted"><?php esc_html_e('Cart is empty', 'obydullah-restaurant-pos-for-woocommerce'); ?></div>
                     </div>
                 </div>
 
@@ -175,35 +175,35 @@ class Obydullah_POS_For_WooCommerce_POS
                         <table class="table table-sm table-borderless mb-0">
                             <tbody>
                                 <tr>
-                                    <td class="pl-0"><?php esc_html_e('Subtotal:', 'obydullah-pos-for-woocommerce'); ?></td>
+                                    <td class="pl-0"><?php esc_html_e('Subtotal:', 'obydullah-restaurant-pos-for-woocommerce'); ?></td>
                                     <td class="text-right pr-0 font-weight-bold" id="opfw-subtotal"><?php echo esc_html($this->helpers->opfw_format_currency(0)); ?></td>
                                 </tr>
                                 <tr>
-                                    <td class="pl-0"><?php esc_html_e('Discount:', 'obydullah-pos-for-woocommerce'); ?></td>
+                                    <td class="pl-0"><?php esc_html_e('Discount:', 'obydullah-restaurant-pos-for-woocommerce'); ?></td>
                                     <td class="text-right pr-0">
                                         <input type="number" id="opfw-discount" class="form-control form-control-sm d-inline-block" value="0" min="0" step="0.01">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="pl-0"><?php esc_html_e('Delivery:', 'obydullah-pos-for-woocommerce'); ?></td>
+                                    <td class="pl-0"><?php esc_html_e('Delivery:', 'obydullah-restaurant-pos-for-woocommerce'); ?></td>
                                     <td class="text-right pr-0">
                                         <input type="number" id="opfw-delivery" class="form-control form-control-sm d-inline-block" value="0" min="0" step="0.01">
                                     </td>
                                 </tr>
                                 <?php if ($this->helpers->opfw_is_tax_enabled()): ?>
                                 <tr>
-                                    <td class="pl-0"><?php esc_html_e('Tax:', 'obydullah-pos-for-woocommerce'); ?></td>
+                                    <td class="pl-0"><?php esc_html_e('Tax:', 'obydullah-restaurant-pos-for-woocommerce'); ?></td>
                                     <td class="text-right pr-0" id="opfw-tax"><?php echo esc_html($this->helpers->opfw_format_currency(0)); ?></td>
                                 </tr>
                                 <?php endif; ?>
                                 <?php if ($this->helpers->opfw_is_vat_enabled()): ?>
                                 <tr>
-                                    <td class="pl-0"><?php esc_html_e('VAT:', 'obydullah-pos-for-woocommerce'); ?></td>
+                                    <td class="pl-0"><?php esc_html_e('VAT:', 'obydullah-restaurant-pos-for-woocommerce'); ?></td>
                                     <td class="text-right pr-0" id="opfw-vat"><?php echo esc_html($this->helpers->opfw_format_currency(0)); ?></td>
                                 </tr>
                                 <?php endif; ?>
                                 <tr class="border-top">
-                                    <td class="pl-0 pt-2"><strong><?php esc_html_e('Total:', 'obydullah-pos-for-woocommerce'); ?></strong></td>
+                                    <td class="pl-0 pt-2"><strong><?php esc_html_e('Total:', 'obydullah-restaurant-pos-for-woocommerce'); ?></strong></td>
                                     <td class="text-right pr-0 pt-2"><strong id="opfw-grand-total" class="text-primary"><?php echo esc_html($this->helpers->opfw_format_currency(0)); ?></strong></td>
                                 </tr>
                             </tbody>
@@ -214,27 +214,27 @@ class Obydullah_POS_For_WooCommerce_POS
                 <div class="mb-3">
                     <div class="row">
                         <div class="col-4">
-                            <button type="button" id="opfw-clear-cart" class="btn btn-outline-danger btn-block"><?php esc_html_e('Clear', 'obydullah-pos-for-woocommerce'); ?></button>
+                            <button type="button" id="opfw-clear-cart" class="btn btn-outline-danger btn-block"><?php esc_html_e('Clear', 'obydullah-restaurant-pos-for-woocommerce'); ?></button>
                         </div>
                         <div class="col-4">
-                            <button type="button" id="opfw-save-sale" class="btn btn-outline-primary btn-block"><?php esc_html_e('Save', 'obydullah-pos-for-woocommerce'); ?></button>
+                            <button type="button" id="opfw-save-sale" class="btn btn-outline-primary btn-block"><?php esc_html_e('Save', 'obydullah-restaurant-pos-for-woocommerce'); ?></button>
                         </div>
                         <div class="col-4">
-                            <button type="button" id="opfw-complete-sale" class="btn btn-primary btn-block"><?php esc_html_e('Complete', 'obydullah-pos-for-woocommerce'); ?></button>
+                            <button type="button" id="opfw-complete-sale" class="btn btn-primary btn-block"><?php esc_html_e('Complete', 'obydullah-restaurant-pos-for-woocommerce'); ?></button>
                         </div>
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="opfw-notes" class="form-label"><?php esc_html_e('Notes:', 'obydullah-pos-for-woocommerce'); ?></label>
+                    <label for="opfw-notes" class="form-label"><?php esc_html_e('Notes:', 'obydullah-restaurant-pos-for-woocommerce'); ?></label>
                     <textarea id="opfw-notes" class="form-control form-control-sm" rows="2"
-                        placeholder="<?php esc_attr_e('Add any notes here...', 'obydullah-pos-for-woocommerce'); ?>"></textarea>
+                        placeholder="<?php esc_attr_e('Add any notes here...', 'obydullah-restaurant-pos-for-woocommerce'); ?>"></textarea>
                 </div>
 
                 <div class="mt-3">
-                    <h5 class="mb-2"><?php esc_html_e('Saved Sales', 'obydullah-pos-for-woocommerce'); ?></h5>
+                    <h5 class="mb-2"><?php esc_html_e('Saved Sales', 'obydullah-restaurant-pos-for-woocommerce'); ?></h5>
                     <button type="button" id="opfw-load-saved" class="btn btn-outline-secondary btn-sm mb-2">
-                        <?php esc_html_e('Refresh List', 'obydullah-pos-for-woocommerce'); ?>
+                        <?php esc_html_e('Refresh List', 'obydullah-restaurant-pos-for-woocommerce'); ?>
                     </button>
                     <div class="opfw-saved-list" id="opfw-saved-list"></div>
                 </div>
@@ -249,11 +249,11 @@ class Obydullah_POS_For_WooCommerce_POS
     public function opfw_ajax_get_categories_for_pos()
     {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-restaurant-pos-for-woocommerce'));
         }
         $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
         if (!wp_verify_nonce($opfw_nonce, 'opfw_get_categories_for_pos')) {
-            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
+            wp_die(esc_html__('Security check failed.', 'obydullah-restaurant-pos-for-woocommerce'));
         }
 
         $categories = Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_get_or_set('categories', function () {
@@ -282,11 +282,11 @@ class Obydullah_POS_For_WooCommerce_POS
     public function opfw_ajax_get_customers_for_pos()
     {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-restaurant-pos-for-woocommerce'));
         }
         $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
         if (!wp_verify_nonce($opfw_nonce, 'opfw_get_customers_for_pos')) {
-            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
+            wp_die(esc_html__('Security check failed.', 'obydullah-restaurant-pos-for-woocommerce'));
         }
 
         $formatted = Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_get_or_set('customers', function () {
@@ -313,7 +313,7 @@ class Obydullah_POS_For_WooCommerce_POS
     {
         $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
         if (!wp_verify_nonce($opfw_nonce, 'opfw_get_products_by_category')) {
-            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
+            wp_die(esc_html__('Security check failed.', 'obydullah-restaurant-pos-for-woocommerce'));
         }
 
         if (!current_user_can('manage_options')) {
@@ -360,11 +360,11 @@ class Obydullah_POS_For_WooCommerce_POS
     public function opfw_ajax_get_saved_sales()
     {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-restaurant-pos-for-woocommerce'));
         }
         $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
         if (!wp_verify_nonce($opfw_nonce, 'opfw_get_saved_sales')) {
-            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
+            wp_die(esc_html__('Security check failed.', 'obydullah-restaurant-pos-for-woocommerce'));
         }
 
         $formatted = Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_get_or_set('saved_sales', function () {
@@ -402,14 +402,14 @@ class Obydullah_POS_For_WooCommerce_POS
     public function opfw_ajax_load_saved_sale()
     {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-restaurant-pos-for-woocommerce'));
         }
         $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
         if (!wp_verify_nonce($opfw_nonce, 'opfw_load_saved_sale')) {
-            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
+            wp_die(esc_html__('Security check failed.', 'obydullah-restaurant-pos-for-woocommerce'));
         }
 
-        $order_id = intval($_GET['sale_id'] ?? 0);
+        $order_id = intval(sanitize_text_field(wp_unslash($_GET['sale_id'] ?? '')));
         if (!$order_id) {
             wp_send_json_error('Invalid order ID');
         }
@@ -446,21 +446,21 @@ class Obydullah_POS_For_WooCommerce_POS
     public function opfw_ajax_delete_saved_sale()
     {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-restaurant-pos-for-woocommerce'));
         }
         $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
         if (!wp_verify_nonce($opfw_nonce, 'opfw_delete_saved_sale')) {
-            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
+            wp_die(esc_html__('Security check failed.', 'obydullah-restaurant-pos-for-woocommerce'));
         }
 
-        $order_id = intval($_POST['sale_id'] ?? 0);
+        $order_id = intval(sanitize_text_field(wp_unslash($_POST['sale_id'] ?? '')));
         if (!$order_id) {
-            wp_send_json_error(['message' => __('Invalid order ID', 'obydullah-pos-for-woocommerce')]);
+            wp_send_json_error(['message' => __('Invalid order ID', 'obydullah-restaurant-pos-for-woocommerce')]);
         }
 
         $order = wc_get_order($order_id);
         if (!$order) {
-            wp_send_json_error(['message' => __('Order not found', 'obydullah-pos-for-woocommerce')]);
+            wp_send_json_error(['message' => __('Order not found', 'obydullah-restaurant-pos-for-woocommerce')]);
         }
 
         $invoice_id = $order->get_meta('_invoice_id');
@@ -470,7 +470,7 @@ class Obydullah_POS_For_WooCommerce_POS
         Obydullah_POS_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_sales');
 
         wp_send_json_success([
-            'message' => __('Saved sale deleted successfully', 'obydullah-pos-for-woocommerce'),
+            'message' => __('Saved sale deleted successfully', 'obydullah-restaurant-pos-for-woocommerce'),
             'deleted_id' => $order_id,
             'invoice_id' => $invoice_id,
         ]);
@@ -479,21 +479,22 @@ class Obydullah_POS_For_WooCommerce_POS
     public function opfw_ajax_process_sale()
     {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Insufficient permissions', 'obydullah-pos-for-woocommerce'));
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-restaurant-pos-for-woocommerce'));
         }
         $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
         if (!wp_verify_nonce($opfw_nonce, 'opfw_process_sale')) {
-            wp_die(esc_html__('Security check failed.', 'obydullah-pos-for-woocommerce'));
+            wp_die(esc_html__('Security check failed.', 'obydullah-restaurant-pos-for-woocommerce'));
         }
 
         try {
-            if (!isset($_POST['sale_data']) || empty($_POST['sale_data'])) {
-                throw new Exception(__('Sale data is required', 'obydullah-pos-for-woocommerce'));
+            $sale_data_raw = wp_unslash($_POST['sale_data'] ?? '');
+            if (empty($sale_data_raw)) {
+                throw new Exception(__('Sale data is required', 'obydullah-restaurant-pos-for-woocommerce'));
             }
 
-            $data = json_decode(sanitize_text_field(wp_unslash($_POST['sale_data'])), true);
+            $data = json_decode($sale_data_raw, true);
             if (!$data || !is_array($data) || empty($data['items'])) {
-                throw new Exception(__('Invalid sale data', 'obydullah-pos-for-woocommerce'));
+                throw new Exception(__('Invalid sale data', 'obydullah-restaurant-pos-for-woocommerce'));
             }
 
             $action = $data['action'] ?? 'save';
@@ -503,7 +504,7 @@ class Obydullah_POS_For_WooCommerce_POS
             if ($is_updating) {
                 $order = wc_get_order($order_id);
                 if (!$order) {
-                    throw new Exception(__('Saved sale not found', 'obydullah-pos-for-woocommerce'));
+                    throw new Exception(__('Saved sale not found', 'obydullah-restaurant-pos-for-woocommerce'));
                 }
                 $order->remove_order_items();
                 $order->save();
@@ -541,13 +542,13 @@ class Obydullah_POS_For_WooCommerce_POS
                 $product = wc_get_product($product_id);
                 if (!$product) {
                     throw new Exception(sprintf(/* translators: %d: product ID */
-                        __('Product not found: %d', 'obydullah-pos-for-woocommerce'), $product_id));
+                        __('Product not found: %d', 'obydullah-restaurant-pos-for-woocommerce'), $product_id));
                 }
 
                 if ($action === 'complete' && $product->get_manage_stock() && $product->get_stock_quantity() < $quantity) {
                     throw new Exception(sprintf(
                         /* translators: 1: product name, 2: available stock quantity */
-                        __('Insufficient stock for: %1$s. Available: %2$d', 'obydullah-pos-for-woocommerce'),
+                        __('Insufficient stock for: %1$s. Available: %2$d', 'obydullah-restaurant-pos-for-woocommerce'),
                         $product->get_name(),
                         $product->get_stock_quantity()
                     ));
@@ -570,7 +571,7 @@ class Obydullah_POS_For_WooCommerce_POS
             if ($delivery_cost > 0) {
                 $order->set_shipping_total($delivery_cost);
                 $shipping_item = new WC_Order_Item_Shipping();
-                $shipping_item->set_method_title(__('Delivery', 'obydullah-pos-for-woocommerce'));
+                $shipping_item->set_method_title(__('Delivery', 'obydullah-restaurant-pos-for-woocommerce'));
                 $shipping_item->set_method_id('delivery');
                 $shipping_item->set_total($delivery_cost);
                 $order->add_item($shipping_item);
@@ -637,11 +638,15 @@ class Obydullah_POS_For_WooCommerce_POS
                 global $wpdb;
                 $accounting_table = $wpdb->prefix . 'opfw_accounting';
                 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- POS income record, flushed after via cache groups
-                $wpdb->insert($accounting_table, [
-                    'in_amount' => floatval($order->get_total()),
-                    'description' => $invoice_id,
-                    'created_at' => current_time('mysql'),
-                ], ['%f', '%s', '%s']);
+                $wpdb->insert(
+                    $accounting_table,
+                    [
+                        'in_amount' => floatval($order->get_total()),
+                        'description' => $invoice_id,
+                        'created_at' => current_time('mysql'),
+                    ],
+                    ['%f', '%s', '%s']
+                );
             } else {
                 $order->update_status('pending');
             }
@@ -661,8 +666,8 @@ class Obydullah_POS_For_WooCommerce_POS
                 'sale_id' => $order_id,
                 'invoice_id' => $invoice_id,
                 'message' => $action === 'complete'
-                    ? __('Sale completed successfully!', 'obydullah-pos-for-woocommerce')
-                    : __('Sale saved successfully!', 'obydullah-pos-for-woocommerce'),
+                    ? __('Sale completed successfully!', 'obydullah-restaurant-pos-for-woocommerce')
+                    : __('Sale saved successfully!', 'obydullah-restaurant-pos-for-woocommerce'),
             ]);
 
         } catch (Exception $e) {

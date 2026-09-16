@@ -2,7 +2,7 @@
 /**
  * Fired when the plugin is uninstalled.
  *
- * @package Obydullah_POS_For_WooCommerce
+ * @package Obydullah_Restaurant_POS_For_WooCommerce
  * @since   1.0.0
  * @version 1.0.0
  */
@@ -35,6 +35,7 @@ foreach ($opfw_options as $opfw_option) {
 $opfw_tables = [
     'opfw_accounting',
     'opfw_stock_adjustment_log',
+    'opfw_customers',
 ];
 
 foreach ($opfw_tables as $opfw_table) {
