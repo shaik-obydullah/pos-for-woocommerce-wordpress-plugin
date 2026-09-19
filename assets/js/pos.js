@@ -1,6 +1,6 @@
 /**
  * POS System
- * Plugin: Obydullah_POS_For_WooCommerce
+ * Plugin: Obydullah_Restaurant_Sales_Terminal
  * Version: 1.0.1
  */
 (function ($) {

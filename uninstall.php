@@ -2,7 +2,7 @@
 /**
  * Fired when the plugin is uninstalled.
  *
- * @package Obydullah_Restaurant_POS_For_WooCommerce
+ * @package Obydullah_Restaurant_Sales_Terminal_For_WooCommerce
  * @since   1.0.0
  * @version 1.0.0
  */

@@ -1,15 +1,14 @@
 <?php
 /**
- * Plugin Name: Obydullah Restaurant POS for WooCommerce
+ * Plugin Name: Obydullah Restaurant Sales Terminal for WooCommerce
  * Plugin URI: https://obydullah.com/project/woocommerce-pos-plugin
- * Description: Obydullah Restaurant POS for WooCommerce is a complete restaurant Point of Sale with order management, inventory, and sales tracking.
+ * Description: Obydullah Restaurant Sales Terminal for WooCommerce is a complete restaurant Point of Sale with order management, inventory, and sales tracking.
  * Version: 1.0.0
  * Author: Shaik Obydullah
  * Author URI: https://obydullah.com
- * Text Domain: obydullah-restaurant-pos-for-woocommerce
+ * Text Domain: obydullah-restaurant-sales-terminal-for-woocommerce
  * Domain Path: /languages
  * Requires at least: 6.0
- * Tested up to: 7.1
  * Requires PHP: 8.0
  * WooCommerce requires at least: 8.0
  * WooCommerce tested up to: 11.0
@@ -32,26 +31,26 @@ add_action('before_woocommerce_init', function () {
     }
 });
 
-require_once OPFW_PATH . 'includes/class-obydullah-restaurant-pos-for-woocommerce-handler.php';
-require_once OPFW_PATH . 'includes/class-obydullah-restaurant-pos-for-woocommerce-activator.php';
-require_once OPFW_PATH . 'includes/class-obydullah-restaurant-pos-for-woocommerce-deactivator.php';
+require_once OPFW_PATH . 'includes/class-obydullah-restaurant-sales-terminal-for-woocommerce-handler.php';
+require_once OPFW_PATH . 'includes/class-obydullah-restaurant-sales-terminal-for-woocommerce-activator.php';
+require_once OPFW_PATH . 'includes/class-obydullah-restaurant-sales-terminal-for-woocommerce-deactivator.php';
 
 add_action('plugins_loaded', 'opfw_init');
 function opfw_init()
 {
     if (!class_exists('WooCommerce')) {
         add_action('admin_notices', function () {
-            echo '<div class="error"><p><strong>Obydullah Restaurant POS for WooCommerce</strong> requires WooCommerce to be installed and active.</p></div>';
+            echo '<div class="error"><p><strong>Obydullah Restaurant Sales Terminal for WooCommerce</strong> requires WooCommerce to be installed and active.</p></div>';
         });
         return;
     }
 
     static $plugin = null;
     if (null === $plugin) {
-        $plugin = new Obydullah_POS_For_WooCommerce_Handler();
+        $plugin = new Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Handler();
     }
     return $plugin;
 }
 
-register_activation_hook(__FILE__, ['Obydullah_POS_For_WooCommerce_Activator', 'opfw_activate']);
-register_deactivation_hook(__FILE__, ['Obydullah_POS_For_WooCommerce_Deactivator', 'opfw_deactivate']);
+register_activation_hook(__FILE__, ['Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Activator', 'opfw_activate']);
+register_deactivation_hook(__FILE__, ['Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Deactivator', 'opfw_deactivate']);

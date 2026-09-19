@@ -1,6 +1,6 @@
 /**
  * Product Management — WooCommerce Products (Read-only + Buy Price)
- * Plugin: Obydullah_POS_For_WooCommerce
+ * Plugin: Obydullah_Restaurant_Sales_Terminal
  * Version: 2.0.0
  */
 (function ($) {

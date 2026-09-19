@@ -1,6 +1,6 @@
 /**
  * Customer Management
- * Plugin: Obydullah_POS_For_WooCommerce
+ * Plugin: Obydullah_Restaurant_Sales_Terminal
  * Version: 1.0.0
  */
 (function ($) {
