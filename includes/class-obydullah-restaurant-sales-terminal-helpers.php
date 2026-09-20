@@ -2,7 +2,7 @@
 /**
  * Helper functions for Obydullah Restaurant Sales Terminal for WooCommerce
  *
- * @package Obydullah_Restaurant_Sales_Terminal_For_WooCommerce
+ * @package Obydullah_Restaurant_Sales_Terminal
  * @since   1.0.0
  * @version 1.0.0
  */
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 /**
  * Helper functions for Obydullah Restaurant Sales Terminal for WooCommerce
  */
-class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Helpers
+class Obydullah_Restaurant_Sales_Terminal_Helpers
 {
     /**
      * Object cache group used for plugin settings.
@@ -370,7 +370,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Helpers
         $settings = self::opfw_get_settings();
         return !empty($settings['shop_name'])
             ? $settings['shop_name']
-            : __('Restaurant POS', 'obydullah-restaurant-sales-terminal-for-woocommerce');
+            : __('Restaurant POS', 'obydullah-restaurant-sales-terminal');
     }
 
     /**

@@ -2,7 +2,7 @@
 /**
  * Obydullah Restaurant Sales Terminal for WooCommerce Settings Class
  *
- * @package Obydullah_Restaurant_Sales_Terminal_For_WooCommerce
+ * @package Obydullah_Restaurant_Sales_Terminal
  * @since   1.0.0
  * @version 1.0.0
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Settings
+class Obydullah_Restaurant_Sales_Terminal_Settings
 {
 
     public function __construct()
@@ -26,14 +26,14 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Settings
         // General Settings Section
         add_settings_section(
             'opfw_general_section',
-            __('General Settings', 'obydullah-restaurant-sales-terminal-for-woocommerce'),
+            __('General Settings', 'obydullah-restaurant-sales-terminal'),
             array($this, 'opfw_general_section_callback'),
             'obydullah-restaurant-sales-terminal-settings'
         );
 
         add_settings_field(
             'date_format',
-            __('Date Format', 'obydullah-restaurant-sales-terminal-for-woocommerce'),
+            __('Date Format', 'obydullah-restaurant-sales-terminal'),
             array($this, 'opfw_date_format_callback'),
             'obydullah-restaurant-sales-terminal-settings',
             'opfw_general_section'
@@ -41,7 +41,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Settings
 
         add_settings_field(
             'currency',
-            __('Currency', 'obydullah-restaurant-sales-terminal-for-woocommerce'),
+            __('Currency', 'obydullah-restaurant-sales-terminal'),
             array($this, 'opfw_currency_callback'),
             'obydullah-restaurant-sales-terminal-settings',
             'opfw_general_section'
@@ -49,7 +49,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Settings
 
         add_settings_field(
             'currency_position',
-            __('Currency Position', 'obydullah-restaurant-sales-terminal-for-woocommerce'),
+            __('Currency Position', 'obydullah-restaurant-sales-terminal'),
             array($this, 'opfw_currency_position_callback'),
             'obydullah-restaurant-sales-terminal-settings',
             'opfw_general_section'
@@ -57,7 +57,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Settings
 
         add_settings_field(
             'vat_rate',
-            __('VAT Rate (%)', 'obydullah-restaurant-sales-terminal-for-woocommerce'),
+            __('VAT Rate (%)', 'obydullah-restaurant-sales-terminal'),
             array($this, 'opfw_vat_rate_callback'),
             'obydullah-restaurant-sales-terminal-settings',
             'opfw_general_section'
@@ -65,7 +65,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Settings
 
         add_settings_field(
             'tax_rate',
-            __('Tax Rate (%)', 'obydullah-restaurant-sales-terminal-for-woocommerce'),
+            __('Tax Rate (%)', 'obydullah-restaurant-sales-terminal'),
             array($this, 'opfw_tax_rate_callback'),
             'obydullah-restaurant-sales-terminal-settings',
             'opfw_general_section'
@@ -74,14 +74,14 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Settings
         // Shop Information Section
         add_settings_section(
             'opfw_shop_section',
-            __('Shop Information', 'obydullah-restaurant-sales-terminal-for-woocommerce'),
+            __('Shop Information', 'obydullah-restaurant-sales-terminal'),
             array($this, 'opfw_shop_section_callback'),
             'obydullah-restaurant-sales-terminal-settings'
         );
 
         add_settings_field(
             'shop_name',
-            __('Restaurant Name', 'obydullah-restaurant-sales-terminal-for-woocommerce'),
+            __('Restaurant Name', 'obydullah-restaurant-sales-terminal'),
             array($this, 'opfw_shop_name_callback'),
             'obydullah-restaurant-sales-terminal-settings',
             'opfw_shop_section'
@@ -89,7 +89,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Settings
 
         add_settings_field(
             'shop_address',
-            __('Address', 'obydullah-restaurant-sales-terminal-for-woocommerce'),
+            __('Address', 'obydullah-restaurant-sales-terminal'),
             array($this, 'opfw_shop_address_callback'),
             'obydullah-restaurant-sales-terminal-settings',
             'opfw_shop_section'
@@ -97,7 +97,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Settings
 
         add_settings_field(
             'shop_phone',
-            __('Phone Number', 'obydullah-restaurant-sales-terminal-for-woocommerce'),
+            __('Phone Number', 'obydullah-restaurant-sales-terminal'),
             array($this, 'opfw_shop_phone_callback'),
             'obydullah-restaurant-sales-terminal-settings',
             'opfw_shop_section'
@@ -131,13 +131,13 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Settings
         update_option('opfw_shop_phone', $sanitized['shop_phone']);
 
         // Flush cached data that depends on settings (currency, rates, shop info)
-       Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Helpers::opfw_cache_flush_all();
+       Obydullah_Restaurant_Sales_Terminal_Helpers::opfw_cache_flush_all();
 
         // Add settings updated notice
         add_settings_error(
             'opfw_settings',
             'opfw_settings_updated',
-            __('Settings saved successfully.', 'obydullah-restaurant-sales-terminal-for-woocommerce'),
+            __('Settings saved successfully.', 'obydullah-restaurant-sales-terminal'),
             'success'
         );
 
@@ -146,12 +146,12 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Settings
 
     public function opfw_general_section_callback()
     {
-        echo '<p class="text-muted">' . esc_html__('Configure general POS system settings.', 'obydullah-restaurant-sales-terminal-for-woocommerce') . '</p>';
+        echo '<p class="text-muted">' . esc_html__('Configure general POS system settings.', 'obydullah-restaurant-sales-terminal') . '</p>';
     }
 
     public function opfw_shop_section_callback()
     {
-        echo '<p class="text-muted">' . esc_html__('Enter your restaurant/shop information that will be used on receipts and reports.', 'obydullah-restaurant-sales-terminal-for-woocommerce') . '</p>';
+        echo '<p class="text-muted">' . esc_html__('Enter your restaurant/shop information that will be used on receipts and reports.', 'obydullah-restaurant-sales-terminal') . '</p>';
     }
 
     public function opfw_date_format_callback()
@@ -174,7 +174,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Settings
             <?php endforeach; ?>
         </select>
         <p class="form-text text-muted mt-1">
-            <?php esc_html_e('Select the date format to be used throughout the system.', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+            <?php esc_html_e('Select the date format to be used throughout the system.', 'obydullah-restaurant-sales-terminal'); ?>
         </p>
         <?php
     }
@@ -206,7 +206,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Settings
             <?php endforeach; ?>
         </select>
         <p class="form-text text-muted mt-1">
-            <?php esc_html_e('Select the currency symbol for your pricing.', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+            <?php esc_html_e('Select the currency symbol for your pricing.', 'obydullah-restaurant-sales-terminal'); ?>
         </p>
         <?php
     }
@@ -217,20 +217,20 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Settings
         ?>
         <select name="opfw_settings[currency_position]" class="form-control w-auto">
             <option value="left" <?php selected($position, 'left'); ?>>
-                <?php esc_html_e('Left ($100)', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+                <?php esc_html_e('Left ($100)', 'obydullah-restaurant-sales-terminal'); ?>
             </option>
             <option value="right" <?php selected($position, 'right'); ?>>
-                <?php esc_html_e('Right (100$)', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+                <?php esc_html_e('Right (100$)', 'obydullah-restaurant-sales-terminal'); ?>
             </option>
             <option value="left_space" <?php selected($position, 'left_space'); ?>>
-                <?php esc_html_e('Left with space ($ 100)', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+                <?php esc_html_e('Left with space ($ 100)', 'obydullah-restaurant-sales-terminal'); ?>
             </option>
             <option value="right_space" <?php selected($position, 'right_space'); ?>>
-                <?php esc_html_e('Right with space (100 $)', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+                <?php esc_html_e('Right with space (100 $)', 'obydullah-restaurant-sales-terminal'); ?>
             </option>
         </select>
         <p class="form-text text-muted mt-1">
-            <?php esc_html_e('Choose where the currency symbol appears relative to the amount.', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+            <?php esc_html_e('Choose where the currency symbol appears relative to the amount.', 'obydullah-restaurant-sales-terminal'); ?>
         </p>
         <?php
     }
@@ -245,7 +245,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Settings
             <span class="text-muted">%</span>
         </div>
         <p class="form-text text-muted mt-1">
-            <?php esc_html_e('Enter the VAT rate as a percentage (e.g., 20 for 20%). Set to 0 to disable VAT.', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+            <?php esc_html_e('Enter the VAT rate as a percentage (e.g., 20 for 20%). Set to 0 to disable VAT.', 'obydullah-restaurant-sales-terminal'); ?>
         </p>
         <?php
     }
@@ -260,7 +260,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Settings
             <span class="text-muted">%</span>
         </div>
         <p class="form-text text-muted mt-1">
-            <?php esc_html_e('Enter the general tax rate as a percentage (e.g., 8.5 for 8.5%). Set to 0 to disable tax.', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+            <?php esc_html_e('Enter the general tax rate as a percentage (e.g., 8.5 for 8.5%). Set to 0 to disable tax.', 'obydullah-restaurant-sales-terminal'); ?>
         </p>
         <?php
     }
@@ -270,7 +270,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Settings
         $shop_name = get_option('opfw_shop_name', '');
         ?>
         <input type="text" name="opfw_settings[shop_name]" value="<?php echo esc_attr($shop_name); ?>"
-            class="form-control w-50" placeholder="<?php esc_attr_e('Enter restaurant name', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>">
+            class="form-control w-50" placeholder="<?php esc_attr_e('Enter restaurant name', 'obydullah-restaurant-sales-terminal'); ?>">
         <?php
     }
 
@@ -279,7 +279,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Settings
         $shop_address = get_option('opfw_shop_address', '');
         ?>
         <textarea name="opfw_settings[shop_address]" rows="3" class="form-control w-75"
-            placeholder="<?php esc_attr_e('Enter full address', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>"><?php echo esc_textarea($shop_address); ?></textarea>
+            placeholder="<?php esc_attr_e('Enter full address', 'obydullah-restaurant-sales-terminal'); ?>"><?php echo esc_textarea($shop_address); ?></textarea>
         <?php
     }
 
@@ -288,21 +288,21 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Settings
         $shop_phone = get_option('opfw_shop_phone', '');
         ?>
         <input type="text" name="opfw_settings[shop_phone]" value="<?php echo esc_attr($shop_phone); ?>"
-            class="form-control w-50" placeholder="<?php esc_attr_e('Enter phone number', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>">
+            class="form-control w-50" placeholder="<?php esc_attr_e('Enter phone number', 'obydullah-restaurant-sales-terminal'); ?>">
         <?php
     }
 
     public function opfw_render_page()
     {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('You do not have sufficient permissions to access this page.', 'obydullah-restaurant-sales-terminal-for-woocommerce'));
+            wp_die(esc_html__('You do not have sufficient permissions to access this page.', 'obydullah-restaurant-sales-terminal'));
         }
 
         // Show settings errors (success messages)
         settings_errors('opfw_settings');
         ?>
         <div class="wrap">
-            <h1 class="wp-heading-inline mb-3"><?php esc_html_e('Restaurant POS Settings', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?></h1>
+            <h1 class="wp-heading-inline mb-3"><?php esc_html_e('Restaurant POS Settings', 'obydullah-restaurant-sales-terminal'); ?></h1>
             <hr class="wp-header-end">
 
             <div class="row">
@@ -316,7 +316,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Settings
                             ?>
                             <div class="mt-4">
                                 <button type="submit" class="btn btn-primary">
-                                    <?php esc_html_e('Save Settings', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+                                    <?php esc_html_e('Save Settings', 'obydullah-restaurant-sales-terminal'); ?>
                                 </button>
                             </div>
                         </form>
@@ -326,51 +326,51 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Settings
                 <!-- Settings Preview Section -->
                 <div class="col-lg-4">
                     <div class="bg-light p-4 rounded shadow-sm border">
-                        <h3 class="fs-5 fw-semibold mb-3"><?php esc_html_e('Settings Preview', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?></h3>
+                        <h3 class="fs-5 fw-semibold mb-3"><?php esc_html_e('Settings Preview', 'obydullah-restaurant-sales-terminal'); ?></h3>
                         
                         <div class="mb-3">
                             <p class="mb-1">
-                                <strong><?php esc_html_e('Current Date Format:', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?></strong>
-                                <?php echo esc_html(Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Helpers::opfw_get_current_date()); ?>
+                                <strong><?php esc_html_e('Current Date Format:', 'obydullah-restaurant-sales-terminal'); ?></strong>
+                                <?php echo esc_html(Obydullah_Restaurant_Sales_Terminal_Helpers::opfw_get_current_date()); ?>
                             </p>
                             <p class="mb-1">
-                                <strong><?php esc_html_e('Currency Format:', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?></strong>
-                                <?php echo esc_html(Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Helpers::opfw_format_currency(100)); ?>
+                                <strong><?php esc_html_e('Currency Format:', 'obydullah-restaurant-sales-terminal'); ?></strong>
+                                <?php echo esc_html(Obydullah_Restaurant_Sales_Terminal_Helpers::opfw_format_currency(100)); ?>
                             </p>
                             <p class="mb-1">
-                                <strong><?php esc_html_e('VAT Rate:', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?></strong>
+                                <strong><?php esc_html_e('VAT Rate:', 'obydullah-restaurant-sales-terminal'); ?></strong>
                                 <span class="badge bg-info"><?php echo esc_html(get_option('opfw_vat_rate', '0')); ?>%</span>
-                                <?php if (Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Helpers::opfw_is_vat_enabled()): ?>
-                                    <span class="badge bg-success ms-1"><?php esc_html_e('Enabled', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?></span>
+                                <?php if (Obydullah_Restaurant_Sales_Terminal_Helpers::opfw_is_vat_enabled()): ?>
+                                    <span class="badge bg-success ms-1"><?php esc_html_e('Enabled', 'obydullah-restaurant-sales-terminal'); ?></span>
                                 <?php else: ?>
-                                    <span class="badge bg-secondary ms-1"><?php esc_html_e('Disabled', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?></span>
+                                    <span class="badge bg-secondary ms-1"><?php esc_html_e('Disabled', 'obydullah-restaurant-sales-terminal'); ?></span>
                                 <?php endif; ?>
                             </p>
                             <p class="mb-1">
-                                <strong><?php esc_html_e('Tax Rate:', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?></strong>
+                                <strong><?php esc_html_e('Tax Rate:', 'obydullah-restaurant-sales-terminal'); ?></strong>
                                 <span class="badge bg-info"><?php echo esc_html(get_option('opfw_tax_rate', '0')); ?>%</span>
                                 <?php
                                 $tax_rate = floatval(get_option('opfw_tax_rate', '0'));
                                 if ($tax_rate > 0): ?>
-                                    <span class="badge bg-success ms-1"><?php esc_html_e('Enabled', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?></span>
+                                    <span class="badge bg-success ms-1"><?php esc_html_e('Enabled', 'obydullah-restaurant-sales-terminal'); ?></span>
                                 <?php else: ?>
-                                    <span class="badge bg-secondary ms-1"><?php esc_html_e('Disabled', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?></span>
+                                    <span class="badge bg-secondary ms-1"><?php esc_html_e('Disabled', 'obydullah-restaurant-sales-terminal'); ?></span>
                                 <?php endif; ?>
                             </p>
                         </div>
 
-                        <?php if (Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Helpers::opfw_is_vat_enabled()): ?>
+                        <?php if (Obydullah_Restaurant_Sales_Terminal_Helpers::opfw_is_vat_enabled()): ?>
                             <div class="mb-3 p-3 bg-white rounded border">
-                                <h4 class="fs-6 fw-semibold mb-2"><?php esc_html_e('VAT Calculation Example', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?></h4>
+                                <h4 class="fs-6 fw-semibold mb-2"><?php esc_html_e('VAT Calculation Example', 'obydullah-restaurant-sales-terminal'); ?></h4>
                                 <p class="mb-1">
-                                    <small class="text-muted"><?php esc_html_e('On $100:', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?></small>
+                                    <small class="text-muted"><?php esc_html_e('On $100:', 'obydullah-restaurant-sales-terminal'); ?></small>
                                 </p>
                                 <?php
-                                $totals = Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Helpers::opfw_calculate_totals(100);
+                                $totals = Obydullah_Restaurant_Sales_Terminal_Helpers::opfw_calculate_totals(100);
                                 ?>
                                 <p class="mb-0">
-                                    <span class="text-success fw-bold"><?php echo esc_html(Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Helpers::opfw_format_currency($totals['total'])); ?></span>
-                                    <small class="text-muted">(<?php echo esc_html(Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Helpers::opfw_format_currency($totals['subtotal'])); ?> + <?php echo esc_html(Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Helpers::opfw_format_currency($totals['vat_amount'])); ?> VAT)</small>
+                                    <span class="text-success fw-bold"><?php echo esc_html(Obydullah_Restaurant_Sales_Terminal_Helpers::opfw_format_currency($totals['total'])); ?></span>
+                                    <small class="text-muted">(<?php echo esc_html(Obydullah_Restaurant_Sales_Terminal_Helpers::opfw_format_currency($totals['subtotal'])); ?> + <?php echo esc_html(Obydullah_Restaurant_Sales_Terminal_Helpers::opfw_format_currency($totals['vat_amount'])); ?> VAT)</small>
                                 </p>
                             </div>
                         <?php endif; ?>
@@ -379,17 +379,17 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Settings
                         $tax_rate = floatval(get_option('opfw_tax_rate', '0'));
                         if ($tax_rate > 0): ?>
                             <div class="p-3 bg-white rounded border">
-                                <h4 class="fs-6 fw-semibold mb-2"><?php esc_html_e('Tax Calculation Example', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?></h4>
+                                <h4 class="fs-6 fw-semibold mb-2"><?php esc_html_e('Tax Calculation Example', 'obydullah-restaurant-sales-terminal'); ?></h4>
                                 <p class="mb-1">
-                                    <small class="text-muted"><?php esc_html_e('On $100:', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?></small>
+                                    <small class="text-muted"><?php esc_html_e('On $100:', 'obydullah-restaurant-sales-terminal'); ?></small>
                                 </p>
                                 <?php
                                 $tax_amount = (100 * $tax_rate) / 100;
                                 $total_with_tax = 100 + $tax_amount;
                                 ?>
                                 <p class="mb-0">
-                                    <span class="text-success fw-bold"><?php echo esc_html(Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Helpers::opfw_format_currency($total_with_tax)); ?></span>
-                                    <small class="text-muted">(<?php echo esc_html(Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Helpers::opfw_format_currency(100)); ?> + <?php echo esc_html(Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Helpers::opfw_format_currency($tax_amount)); ?> Tax)</small>
+                                    <span class="text-success fw-bold"><?php echo esc_html(Obydullah_Restaurant_Sales_Terminal_Helpers::opfw_format_currency($total_with_tax)); ?></span>
+                                    <small class="text-muted">(<?php echo esc_html(Obydullah_Restaurant_Sales_Terminal_Helpers::opfw_format_currency(100)); ?> + <?php echo esc_html(Obydullah_Restaurant_Sales_Terminal_Helpers::opfw_format_currency($tax_amount)); ?> Tax)</small>
                                 </p>
                             </div>
                         <?php endif; ?>

@@ -2,7 +2,7 @@
 /**
  * Accounting Management
  *
- * @package Obydullah_Restaurant_Sales_Terminal_For_WooCommerce
+ * @package Obydullah_Restaurant_Sales_Terminal
  * @since   1.0.0
  * @version 1.0.0
  */
@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Accounting
+class Obydullah_Restaurant_Sales_Terminal_Accounting
 {
     /**
      * Object cache group used for accounting data.
@@ -35,7 +35,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Accounting
      */
     private function opfw_format_currency($amount)
     {
-        return Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Helpers::opfw_format_currency($amount);
+        return Obydullah_Restaurant_Sales_Terminal_Helpers::opfw_format_currency($amount);
     }
 
     /**
@@ -46,7 +46,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Accounting
      */
     private function opfw_format_date($date_string)
     {
-        return Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Helpers::opfw_format_date($date_string);
+        return Obydullah_Restaurant_Sales_Terminal_Helpers::opfw_format_date($date_string);
     }
 
     /**
@@ -68,7 +68,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Accounting
         if (empty($date)) {
             return '';
         }
-        $date_format = Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Helpers::opfw_get_date_format();
+        $date_format = Obydullah_Restaurant_Sales_Terminal_Helpers::opfw_get_date_format();
         $dt = DateTime::createFromFormat($date_format, $date);
         if ($dt && $dt->format($date_format) === $date) {
             return $dt->format('Y-m-d');
@@ -86,7 +86,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Accounting
         ?>
 <div class="wrap">
     <h1 class="wp-heading-inline mb-3">
-        <?php esc_html_e('Accounting', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+        <?php esc_html_e('Accounting', 'obydullah-restaurant-sales-terminal'); ?>
     </h1>
     <hr class="wp-header-end">
 
@@ -95,7 +95,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Accounting
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="bg-light p-4 rounded shadow-sm stock-summary-card border-left border-success">
                 <h3 class="fs-6 fw-normal text-muted mb-2">
-                    <?php esc_html_e('Total Income', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+                    <?php esc_html_e('Total Income', 'obydullah-restaurant-sales-terminal'); ?>
                 </h3>
                 <p class="summary-number text-success mb-0 fs-3 fw-bold" id="total-income">
                     <?php echo esc_html($this->opfw_format_currency(0)); ?>
@@ -105,7 +105,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Accounting
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="bg-light p-4 rounded shadow-sm stock-summary-card border-left border-danger">
                 <h3 class="fs-6 fw-normal text-muted mb-2">
-                    <?php esc_html_e('Total Expense', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+                    <?php esc_html_e('Total Expense', 'obydullah-restaurant-sales-terminal'); ?>
                 </h3>
                 <p class="summary-number text-danger mb-0 fs-3 fw-bold" id="total-expense">
                     <?php echo esc_html($this->opfw_format_currency(0)); ?>
@@ -119,7 +119,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Accounting
         <div class="col-lg-4 mb-4">
             <div class="bg-light p-4 rounded shadow-sm border h-100">
                 <h2 class="fs-5 fw-semibold mb-3 mt-1 text-dark">
-                    <?php esc_html_e('Add Accounting Entry', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+                    <?php esc_html_e('Add Accounting Entry', 'obydullah-restaurant-sales-terminal'); ?>
                 </h2>
                 <form id="add-accounting-form" method="post">
                     <?php wp_nonce_field('opfw_add_accounting_entry'); ?>
@@ -128,7 +128,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Accounting
                         <!-- Income Amount -->
                         <div class="form-group mb-3">
                             <label for="in-amount" class="form-label fw-semibold">
-                                <?php esc_html_e('Income Amount', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+                                <?php esc_html_e('Income Amount', 'obydullah-restaurant-sales-terminal'); ?>
                             </label>
                             <input name="in_amount" id="in-amount" type="number" step="0.01" min="0" value="0.00"
                                 class="form-control form-control-sm" placeholder="0.00">
@@ -137,7 +137,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Accounting
                         <!-- Expense Amount -->
                         <div class="form-group mb-3">
                             <label for="out-amount" class="form-label fw-semibold">
-                                <?php esc_html_e('Expense Amount', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+                                <?php esc_html_e('Expense Amount', 'obydullah-restaurant-sales-terminal'); ?>
                             </label>
                             <input name="out_amount" id="out-amount" type="number" step="0.01" min="0" value="0.00"
                                 class="form-control form-control-sm" placeholder="0.00">
@@ -146,17 +146,17 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Accounting
                         <!-- Description -->
                         <div class="form-group mb-3">
                             <label for="entry-description" class="form-label fw-semibold">
-                                <?php esc_html_e('Description', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+                                <?php esc_html_e('Description', 'obydullah-restaurant-sales-terminal'); ?>
                             </label>
                             <textarea name="description" id="entry-description" rows="3"
                                 class="form-control form-control-sm"
-                                placeholder="<?php esc_attr_e('Enter description for this entry (optional)', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>"></textarea>
+                                placeholder="<?php esc_attr_e('Enter description for this entry (optional)', 'obydullah-restaurant-sales-terminal'); ?>"></textarea>
                         </div>
 
                         <!-- Date -->
                         <div class="form-group mb-3">
                             <label for="entry-date" class="form-label fw-semibold">
-                                <?php esc_html_e('Date', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+                                <?php esc_html_e('Date', 'obydullah-restaurant-sales-terminal'); ?>
                             </label>
                             <input name="entry_date" id="entry-date" type="date"
                                 value="<?php echo esc_attr($current_date); ?>" class="form-control form-control-sm">
@@ -166,7 +166,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Accounting
                     <div class="mt-4">
                         <button type="submit" id="submit-accounting" class="btn btn-primary w-100">
                             <span
-                                class="btn-text"><?php esc_html_e('Save Entry', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?></span>
+                                class="btn-text"><?php esc_html_e('Save Entry', 'obydullah-restaurant-sales-terminal'); ?></span>
                             <span class="spinner d-none"></span>
                         </button>
                     </div>
@@ -178,7 +178,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Accounting
         <div class="col-lg-8">
             <div class="bg-light p-3 rounded shadow-sm border">
                 <h2 class="h5 mb-3 fw-semibold">
-                    <?php esc_html_e('Accounting Entries', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+                    <?php esc_html_e('Accounting Entries', 'obydullah-restaurant-sales-terminal'); ?>
                 </h2>
 
                 <!-- Date Filter Section -->
@@ -186,27 +186,27 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Accounting
                     <div class="d-flex flex-wrap align-items-center gap-2">
                         <div class="search-group flex-grow-1">
                             <label for="date-from" class="form-label mb-1">
-                                <?php esc_html_e('Date Range', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+                                <?php esc_html_e('Date Range', 'obydullah-restaurant-sales-terminal'); ?>
                             </label>
                             <div class="d-flex align-items-center gap-2">
                                 <div class="d-flex align-items-center gap-2">
                                     <input type="date" id="date-from" class="form-control form-control-sm"
-                                        placeholder="<?php esc_attr_e('From Date', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>">
+                                        placeholder="<?php esc_attr_e('From Date', 'obydullah-restaurant-sales-terminal'); ?>">
                                     <span
-                                        class="text-muted ml-1 mr-1"><?php esc_html_e('to', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?></span>
+                                        class="text-muted ml-1 mr-1"><?php esc_html_e('to', 'obydullah-restaurant-sales-terminal'); ?></span>
                                     <input type="date" id="date-to" class="form-control form-control-sm"
-                                        placeholder="<?php esc_attr_e('To Date', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>">
+                                        placeholder="<?php esc_attr_e('To Date', 'obydullah-restaurant-sales-terminal'); ?>">
                                     <button type="button" id="search-entries" class="btn btn-sm btn-dark">
-                                        <?php esc_html_e('Filter', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+                                        <?php esc_html_e('Filter', 'obydullah-restaurant-sales-terminal'); ?>
                                     </button>
                                     <button type="button" id="reset-filters"
                                         class="btn btn-sm btn-outline-secondary ml-1">
-                                        <?php esc_html_e('Reset', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+                                        <?php esc_html_e('Reset', 'obydullah-restaurant-sales-terminal'); ?>
                                     </button>
                                 </div>
                             </div>
                             <div class="form-text">
-                                <?php esc_html_e('Filter entries by date range', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+                                <?php esc_html_e('Filter entries by date range', 'obydullah-restaurant-sales-terminal'); ?>
                             </div>
                         </div>
                     </div>
@@ -217,19 +217,19 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Accounting
                     <table class="table table-striped table-hover table-bordered mb-2">
                         <thead>
                             <tr class="bg-primary text-white">
-                                <th><?php esc_html_e('Date', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?></th>
-                                <th><?php esc_html_e('Description', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?></th>
-                                <th width="120"><?php esc_html_e('Income', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?></th>
-                                <th width="120"><?php esc_html_e('Expense', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?></th>
+                                <th><?php esc_html_e('Date', 'obydullah-restaurant-sales-terminal'); ?></th>
+                                <th><?php esc_html_e('Description', 'obydullah-restaurant-sales-terminal'); ?></th>
+                                <th width="120"><?php esc_html_e('Income', 'obydullah-restaurant-sales-terminal'); ?></th>
+                                <th width="120"><?php esc_html_e('Expense', 'obydullah-restaurant-sales-terminal'); ?></th>
                                 <th width="100" class="text-right">
-                                    <?php esc_html_e('Actions', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?></th>
+                                    <?php esc_html_e('Actions', 'obydullah-restaurant-sales-terminal'); ?></th>
                             </tr>
                         </thead>
                         <tbody id="accounting-list" class="bg-white">
                             <tr>
                                 <td colspan="5" class="text-center p-4">
                                     <span class="spinner is-active"></span>
-                                    <?php esc_html_e('Loading accounting entries...', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+                                    <?php esc_html_e('Loading accounting entries...', 'obydullah-restaurant-sales-terminal'); ?>
                                 </td>
                             </tr>
                         </tbody>
@@ -240,34 +240,34 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Accounting
                 <div class="d-flex flex-wrap justify-content-between align-items-center mt-2">
                     <div class="tablenav-pages">
                         <span class="displaying-num" id="displaying-num">0
-                            <?php esc_html_e('items', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?></span>
+                            <?php esc_html_e('items', 'obydullah-restaurant-sales-terminal'); ?></span>
                         <span class="pagination-links ms-2">
                             <a class="first-page btn btn-sm btn-dark" href="#"
-                                title="<?php esc_attr_e('First page', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>">«</a>
+                                title="<?php esc_attr_e('First page', 'obydullah-restaurant-sales-terminal'); ?>">«</a>
                             <a class="prev-page btn btn-sm btn-dark" href="#"
-                                title="<?php esc_attr_e('Previous page', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>">‹</a>
+                                title="<?php esc_attr_e('Previous page', 'obydullah-restaurant-sales-terminal'); ?>">‹</a>
                             <span class="paging-input">
                                 <input class="current-page form-control form-control-sm" id="current-page-selector"
                                     type="text" name="paged" value="1">
                                 <span
-                                    class="tablenav-paging-text"><?php esc_html_e('of', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+                                    class="tablenav-paging-text"><?php esc_html_e('of', 'obydullah-restaurant-sales-terminal'); ?>
                                     <span class="total-pages">1</span></span>
                             </span>
                             <a class="next-page btn btn-sm btn-dark" href="#"
-                                title="<?php esc_attr_e('Next page', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>">›</a>
+                                title="<?php esc_attr_e('Next page', 'obydullah-restaurant-sales-terminal'); ?>">›</a>
                             <a class="last-page btn btn-sm btn-dark" href="#"
-                                title="<?php esc_attr_e('Last page', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>">»</a>
+                                title="<?php esc_attr_e('Last page', 'obydullah-restaurant-sales-terminal'); ?>">»</a>
                         </span>
                     </div>
                     <div class="tablenav-pages">
                         <select id="per-page-select" class="form-control form-control-sm">
-                            <option value="10">10 <?php esc_html_e('per page', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+                            <option value="10">10 <?php esc_html_e('per page', 'obydullah-restaurant-sales-terminal'); ?>
                             </option>
-                            <option value="20">20 <?php esc_html_e('per page', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+                            <option value="20">20 <?php esc_html_e('per page', 'obydullah-restaurant-sales-terminal'); ?>
                             </option>
-                            <option value="50">50 <?php esc_html_e('per page', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+                            <option value="50">50 <?php esc_html_e('per page', 'obydullah-restaurant-sales-terminal'); ?>
                             </option>
-                            <option value="100">100 <?php esc_html_e('per page', 'obydullah-restaurant-sales-terminal-for-woocommerce'); ?>
+                            <option value="100">100 <?php esc_html_e('per page', 'obydullah-restaurant-sales-terminal'); ?>
                             </option>
                         </select>
                     </div>
@@ -284,11 +284,11 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Accounting
     {
         $nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
         if (!wp_verify_nonce($nonce, 'opfw_get_accounting_entries')) {
-            wp_send_json_error(__('Security check failed.', 'obydullah-restaurant-sales-terminal-for-woocommerce'));
+            wp_send_json_error(__('Security check failed.', 'obydullah-restaurant-sales-terminal'));
         }
 
         if (!current_user_can('manage_woocommerce')) {
-            wp_send_json_error(__('Insufficient permissions', 'obydullah-restaurant-sales-terminal-for-woocommerce'));
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-restaurant-sales-terminal'));
         }
 
         $get = wp_unslash($_GET);
@@ -379,7 +379,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Accounting
         ];
 
         wp_cache_set($cache_key, $response, self::CACHE_GROUP);
-        Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Helpers::opfw_cache_register($cache_key, self::CACHE_GROUP);
+        Obydullah_Restaurant_Sales_Terminal_Helpers::opfw_cache_register($cache_key, self::CACHE_GROUP);
 
         wp_send_json_success($response);
     }
@@ -390,12 +390,12 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Accounting
         // Check nonce
         $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
         if (!wp_verify_nonce($opfw_nonce, 'opfw_add_accounting_entry')) {
-            wp_die(esc_html__('Security check failed.', 'obydullah-restaurant-sales-terminal-for-woocommerce'));
+            wp_die(esc_html__('Security check failed.', 'obydullah-restaurant-sales-terminal'));
         }
 
         // Check capabilities
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Insufficient permissions', 'obydullah-restaurant-sales-terminal-for-woocommerce'));
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-restaurant-sales-terminal'));
         }
 
         global $wpdb;
@@ -408,12 +408,12 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Accounting
 
         // Validate that amounts are not negative
         if ($in_amount < 0 || $out_amount < 0) {
-            wp_send_json_error(__('Amounts cannot be negative', 'obydullah-restaurant-sales-terminal-for-woocommerce'));
+            wp_send_json_error(__('Amounts cannot be negative', 'obydullah-restaurant-sales-terminal'));
         }
 
         // Validate that at least one amount is entered
         if ($in_amount <= 0 && $out_amount <= 0) {
-            wp_send_json_error(__('Please enter either income or expense amount', 'obydullah-restaurant-sales-terminal-for-woocommerce'));
+            wp_send_json_error(__('Please enter either income or expense amount', 'obydullah-restaurant-sales-terminal'));
         }
 
         // Prepare data
@@ -442,13 +442,13 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Accounting
         );
 
         if (false === $result) {
-            wp_send_json_error(__('Failed to add accounting entry', 'obydullah-restaurant-sales-terminal-for-woocommerce'));
+            wp_send_json_error(__('Failed to add accounting entry', 'obydullah-restaurant-sales-terminal'));
         }
 
-        Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_accounting');
-        Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_dashboard');
+        Obydullah_Restaurant_Sales_Terminal_Helpers::opfw_cache_flush_group('opfw_accounting');
+        Obydullah_Restaurant_Sales_Terminal_Helpers::opfw_cache_flush_group('opfw_dashboard');
 
-        wp_send_json_success(__('Accounting entry added successfully', 'obydullah-restaurant-sales-terminal-for-woocommerce'));
+        wp_send_json_success(__('Accounting entry added successfully', 'obydullah-restaurant-sales-terminal'));
     }
 
     /** Delete accounting entry */
@@ -457,12 +457,12 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Accounting
         // Check nonce
         $opfw_nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
         if (!wp_verify_nonce($opfw_nonce, 'opfw_delete_accounting_entry')) {
-            wp_die(esc_html__('Security check failed.', 'obydullah-restaurant-sales-terminal-for-woocommerce'));
+            wp_die(esc_html__('Security check failed.', 'obydullah-restaurant-sales-terminal'));
         }
 
         // Check capabilities
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Insufficient permissions', 'obydullah-restaurant-sales-terminal-for-woocommerce'));
+            wp_send_json_error(__('Insufficient permissions', 'obydullah-restaurant-sales-terminal'));
         }
 
         global $wpdb;
@@ -470,7 +470,7 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Accounting
         $id = intval(sanitize_text_field(wp_unslash($_POST['id'] ?? '')));
 
         if (!$id) {
-            wp_send_json_error(__('Invalid accounting entry ID', 'obydullah-restaurant-sales-terminal-for-woocommerce'));
+            wp_send_json_error(__('Invalid accounting entry ID', 'obydullah-restaurant-sales-terminal'));
         }
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table write; cache flushed after.
@@ -481,16 +481,16 @@ class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Accounting
         );
 
         if (false === $result) {
-            wp_send_json_error(__('Failed to delete accounting entry', 'obydullah-restaurant-sales-terminal-for-woocommerce'));
+            wp_send_json_error(__('Failed to delete accounting entry', 'obydullah-restaurant-sales-terminal'));
         }
 
         if (0 === $result) {
-            wp_send_json_error(__('Accounting entry not found', 'obydullah-restaurant-sales-terminal-for-woocommerce'));
+            wp_send_json_error(__('Accounting entry not found', 'obydullah-restaurant-sales-terminal'));
         }
 
-        Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_accounting');
-        Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Helpers::opfw_cache_flush_group('opfw_dashboard');
+        Obydullah_Restaurant_Sales_Terminal_Helpers::opfw_cache_flush_group('opfw_accounting');
+        Obydullah_Restaurant_Sales_Terminal_Helpers::opfw_cache_flush_group('opfw_dashboard');
 
-        wp_send_json_success(__('Accounting entry deleted successfully', 'obydullah-restaurant-sales-terminal-for-woocommerce'));
+        wp_send_json_success(__('Accounting entry deleted successfully', 'obydullah-restaurant-sales-terminal'));
     }
 }

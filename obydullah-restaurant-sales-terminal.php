@@ -6,7 +6,7 @@
  * Version: 1.0.0
  * Author: Shaik Obydullah
  * Author URI: https://obydullah.com
- * Text Domain: obydullah-restaurant-sales-terminal-for-woocommerce
+ * Text Domain: obydullah-restaurant-sales-terminal
  * Domain Path: /languages
  * Requires at least: 6.0
  * Requires PHP: 8.0
@@ -31,9 +31,9 @@ add_action('before_woocommerce_init', function () {
     }
 });
 
-require_once OPFW_PATH . 'includes/class-obydullah-restaurant-sales-terminal-for-woocommerce-handler.php';
-require_once OPFW_PATH . 'includes/class-obydullah-restaurant-sales-terminal-for-woocommerce-activator.php';
-require_once OPFW_PATH . 'includes/class-obydullah-restaurant-sales-terminal-for-woocommerce-deactivator.php';
+require_once OPFW_PATH . 'includes/class-obydullah-restaurant-sales-terminal-handler.php';
+require_once OPFW_PATH . 'includes/class-obydullah-restaurant-sales-terminal-activator.php';
+require_once OPFW_PATH . 'includes/class-obydullah-restaurant-sales-terminal-deactivator.php';
 
 add_action('plugins_loaded', 'opfw_init');
 function opfw_init()
@@ -47,10 +47,10 @@ function opfw_init()
 
     static $plugin = null;
     if (null === $plugin) {
-        $plugin = new Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Handler();
+        $plugin = new Obydullah_Restaurant_Sales_Terminal_Handler();
     }
     return $plugin;
 }
 
-register_activation_hook(__FILE__, ['Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Activator', 'opfw_activate']);
-register_deactivation_hook(__FILE__, ['Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Deactivator', 'opfw_deactivate']);
+register_activation_hook(__FILE__, ['Obydullah_Restaurant_Sales_Terminal_Activator', 'opfw_activate']);
+register_deactivation_hook(__FILE__, ['Obydullah_Restaurant_Sales_Terminal_Deactivator', 'opfw_deactivate']);

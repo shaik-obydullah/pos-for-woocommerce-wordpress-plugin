@@ -2,7 +2,7 @@
 /**
  * Fired during plugin activation
  *
- * @package Obydullah_Restaurant_Sales_Terminal_For_WooCommerce
+ * @package Obydullah_Restaurant_Sales_Terminal
  * @since   1.0.0
  * @version 1.0.0
  */
@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class Obydullah_Restaurant_Sales_Terminal_For_WooCommerce_Activator
+class Obydullah_Restaurant_Sales_Terminal_Activator
 {
     public static function opfw_activate()
     {
