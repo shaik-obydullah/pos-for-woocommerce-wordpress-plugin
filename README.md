@@ -2,6 +2,16 @@
 
 * Plugin Homepage: https://wordpress.org/plugins/obydullah-restaurant-sales-terminal/
 
+![Version](https://img.shields.io/badge/Version-1.0.0-21759B?style=flat-square)
+![WordPress](https://img.shields.io/badge/Tested%20up%20to-WordPress%207.1-21759B?style=flat-square&logo=wordpress&logoColor=white)
+![WordPress requires](https://img.shields.io/badge/Requires%20at%20least-WordPress%206.0-21759B?style=flat-square&logo=wordpress&logoColor=white)
+![PHP](https://img.shields.io/badge/Requires-PHP%208.0-777BB4?style=flat-square&logo=php&logoColor=white)
+![WooCommerce](https://img.shields.io/badge/WooCommerce%20requires%20at%20least-8.0-96588A?style=flat-square&logo=woocommerce&logoColor=white)
+![WooCommerce tested](https://img.shields.io/badge/WooCommerce%20tested%20up%20to-11.0-96588A?style=flat-square&logo=woocommerce&logoColor=white)
+![Text Domain](https://img.shields.io/badge/Text%20Domain-obydullah-restaurant-sales-terminal-7c3aed?style=flat-square)
+![License](https://img.shields.io/badge/License-GPLv2-blue?style=flat-square)
+![Downloads](https://img.shields.io/badge/Downloads-100%2B-28a745?style=flat-square)
+
 A complete restaurant Point of Sale for WooCommerce with order management, inventory, and sales tracking.
 
 ## Description
